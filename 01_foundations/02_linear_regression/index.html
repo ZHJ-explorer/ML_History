@@ -1,147 +1,662 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset=\"UTF-8\">
+<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
 <title>线性回归 — ML History</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../styles/base.css">
+<link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap\" rel=\"stylesheet\">
+<link rel=\"stylesheet\" href=\"../styles/base.css\">
 <style>
-/* Model-specific styles */
+/* ── Linear Regression specific ── */
+.residual-line { stroke: var(--red); stroke-width: 1.5; stroke-dasharray: 4,3; opacity: 0.85; }
+.data-point { fill: var(--accent); stroke: var(--bg-surface); stroke-width: 2; cursor: pointer; transition: r 0.1s; }
+.data-point:hover { r: 7; }
+.fitted-line { stroke: var(--green); stroke-width: 2.5; filter: drop-shadow(0 0 6px rgba(16,185,129,0.4)); }
+.axis-line { stroke: var(--border-strong); stroke-width: 1; }
+.grid-line { stroke: var(--border); stroke-width: 0.5; }
+.axis-label { fill: var(--text-muted); font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+.tick-label { fill: var(--text-faint); font-size: 10px; font-family: 'JetBrains Mono', monospace; }
+.point-circle { fill: var(--accent); stroke: var(--bg-surface); stroke-width: 2; r: 5; }
+.equation-badge { fill: var(--accent-dim); stroke: rgba(113,112,255,0.3); stroke-width: 1; rx: 6; }
+.equation-text { fill: var(--text); font-size: 13px; font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+.residual-label { fill: var(--red); font-size: 10px; font-family: 'JetBrains Mono', monospace; }
+
+/* Interactive demo canvas */
+#demoCanvas { cursor: crosshair; border-radius: var(--radius); display: block; }
+.demo-hint { font-size: 12px; color: var(--text-faint); margin-top: 8px; text-align: center; }
+.demo-info { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 12px; }
+.demo-info-item { font-size: 12px; color: var(--text-muted); }
+.demo-info-item span { color: var(--text); font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+.demo-controls { display: flex; gap: 8px; margin-top: 12px; }
+.demo-btn-secondary { background: var(--bg-elevated); color: var(--text-muted); border: 1px solid var(--border-strong); padding: 8px 16px; border-radius: var(--radius); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+.demo-btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Formula highlight */
+.formula-card.highlight-accent { border-color: rgba(113,112,255,0.3); }
+.formula-card.highlight-green { border-color: rgba(16,185,129,0.3); }
+.formula-card .formula .hl-accent { color: var(--accent); }
+.formula-card .formula .hl-green { color: var(--green); }
+.formula-card .formula .hl-red { color: var(--red); }
+
+/* Diagram wrapper */
+.svg-diagram { width: 100%; max-width: 720px; margin: 0 auto; display: block; }
+
+@media (max-width: 768px) {
+  .diagram-container { padding: 16px; }
+}
 </style>
 </head>
 <body>
 
-<nav class="nav">
-  <div class="nav-inner">
-    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
-    <div class="nav-links">
-      <a href="../index.html">全部模型</a>
-      <a href="../01_foundations/index.html">01_foundations阶段</a>
-      <span class="nav-badge">1809</span>
+<nav class=\"nav\">
+  <div class=\"nav-inner\">
+    <a href=\"../index.html\" class=\"nav-logo\"><div class=\"nav-logo-icon\">L</div>ML History</a>
+    <div class=\"nav-links\">
+      <a href=\"../index.html\">全部模型</a>
+      <a href=\"../01_foundations/index.html\">01_foundations阶段</a>
+      <span class=\"nav-badge\">1809</span>
     </div>
   </div>
 </nav>
 
-<main class="container">
+<main class=\"container\">
 
-  <section class="hero">
-    <div class="hero-eyebrow">01_foundations阶段 · 1809</div>
+  <!-- HERO -->
+  <section class=\"hero\">
+    <div class=\"hero-eyebrow\">01_foundations阶段 · 1809</div>
     <h1>线性回归</h1>
-    <p class="hero-subtitle">暂无简介</p>
-    <div class="hero-meta">
-      <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">1809</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Carl Friedrich Gauss & Adrien-Marie Legendre</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">回归</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">框架</span><span class="hero-meta-value">PyTorch</span></div>
+    <p class=\"hero-subtitle\">最小二乘法的奠基之作——从高斯的天体轨道计算，到现代机器学习的基石。用最简单的直线，拟合最复杂的世界。</p>
+    <div class=\"pill-row\">
+      <span class=\"pill pill-accent\">监督学习</span>
+      <span class=\"pill pill-green\">回归</span>
+      <span class=\"pill\">最小二乘法</span>
+      <span class=\"pill\">解析解</span>
+    </div>
+    <div class=\"hero-meta\">
+      <div class=\"hero-meta-item\"><span class=\"hero-meta-label\">年份</span><span class=\"hero-meta-value\">1809</span></div>
+      <div class=\"hero-meta-item\"><span class=\"hero-meta-label\">提出者</span><span class=\"hero-meta-value\">Gauss & Legendre</span></div>
+      <div class=\"hero-meta-item\"><span class=\"hero-meta-label\">类型</span><span class=\"hero-meta-value\">回归</span></div>
+      <div class=\"hero-meta-item\"><span class=\"hero-meta-label\">框架</span><span class=\"hero-meta-value\">NumPy / PyTorch</span></div>
     </div>
   </section>
 
-  <div class="stats-grid">
-    <div class="stat-cell"><span class="stat-value">1809</span><span class="stat-label">提出年份</span></div>
-    <div class="stat-cell"><span class="stat-value">回归</span><span class="stat-label">模型类型</span></div>
-    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
-    <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
+  <!-- STATS GRID -->
+  <div class=\"stats-grid\">
+    <div class=\"stat-cell\"><span class=\"stat-value\">1809</span><span class=\"stat-label\">提出年份</span></div>
+    <div class=\"stat-cell\"><span class=\"stat-value\">O(n³)</span><span class=\"stat-label\">解析解复杂度</span></div>
+    <div class=\"stat-cell\"><span class=\"stat-value\">MSE</span><span class=\"stat-label\">损失函数</span></div>
+    <div class=\"stat-cell\"><span class=\"stat-value\">R²</span><span class=\"stat-label\">评估指标</span></div>
   </div>
 
-  <section class="section">
-    <div class="section-label">网络架构</div>
-    <div class="section-title">结构示意</div>
-    <div class="diagram-container">
-      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
-        <!-- Generic architecture diagram -->
-        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
-        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
-        
-        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
-        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
-        
-        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
-        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
-        
+  <!-- SVG DIAGRAM: Scatter + Fitted Line + Residuals -->
+  <section class=\"section\">
+    <div class=\"section-label\">可视化示意</div>
+    <div class=\"section-title\">数据拟合与残差</div>
+    <div class=\"section-body\" style=\"margin-bottom:20px;\">
+      <p>下图展示了线性回归的核心思想：通过最小化<strong>残差平方和</strong>（红色虚线），找到一条最佳拟合直线，使得所有数据点到直线的垂直距离之和最小。</p>
+    </div>
+    <div class=\"diagram-container\">
+      <svg class=\"svg-diagram\" viewBox=\"0 0 720 400\" xmlns=\"http://www.w3.org/2000/svg\">
         <defs>
-          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-            <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
+          <marker id=\"arr-gray\" markerWidth=\"8\" markerHeight=\"8\" refX=\"7\" refY=\"3\" orient=\"auto\">
+            <path d=\"M0,0 L0,6 L7,3 z\" fill=\"var(--text-faint)\"/>
           </marker>
+          <marker id=\"arr-green\" markerWidth=\"8\" markerHeight=\"8\" refX=\"7\" refY=\"3\" orient=\"auto\">
+            <path d=\"M0,0 L0,6 L7,3 z\" fill=\"var(--green)\"/>
+          </marker>
+          <filter id=\"glow-green\">
+            <feGaussianBlur stdDeviation=\"3\" result=\"blur\"/>
+            <feMerge><feMergeNode in=\"blur\"/><feMergeNode in=\"SourceGraphic\"/></feMerge>
+          </filter>
+          <filter id=\"glow-red\">
+            <feGaussianBlur stdDeviation=\"2\" result=\"blur\"/>
+            <feMerge><feMergeNode in=\"blur\"/><feMergeNode in=\"SourceGraphic\"/></feMerge>
+          </filter>
         </defs>
+
+        <!-- Grid -->
+        <g class=\"grid\">
+          <line class=\"grid-line\" x1=\"80\" y1=\"40\" x2=\"80\" y2=\"340\"/>
+          <line class=\"grid-line\" x1=\"80\" y1=\"340\" x2=\"680\" y2=\"340\"/>
+          <line class=\"grid-line\" x1=\"80\" y1=\"190\" x2=\"680\" y2=\"190\" stroke-dasharray=\"2,6\" opacity=\"0.5\"/>
+          <line class=\"grid-line\" x1=\"380\" y1=\"40\" x2=\"380\" y2=\"340\" stroke-dasharray=\"2,6\" opacity=\"0.5\"/>
+        </g>
+
+        <!-- Axes -->
+        <line class=\"axis-line\" x1=\"80\" y1=\"340\" x2=\"680\" y2=\"340\" marker-end=\"url(#arr-gray)\"/>
+        <line class=\"axis-line\" x1=\"80\" y1=\"340\" x2=\"80\" y2=\"30\" marker-end=\"url(#arr-gray)\"/>
+        <text class=\"axis-label\" x=\"380\" y=\"385\" text-anchor=\"middle\">x（特征）</text>
+        <text class=\"axis-label\" x=\"35\" y=\"190\" text-anchor=\"middle\" transform=\"rotate(-90,35,190)\">y（目标）</text>
+
+        <!-- Tick labels -->
+        <text class=\"tick-label\" x=\"80\" y=\"358\" text-anchor=\"middle\">0</text>
+        <text class=\"tick-label\" x=\"230\" y=\"358\" text-anchor=\"middle\">2</text>
+        <text class=\"tick-label\" x=\"380\" y=\"358\" text-anchor=\"middle\">4</text>
+        <text class=\"tick-label\" x=\"530\" y=\"358\" text-anchor=\"middle\">6</text>
+        <text class=\"tick-label\" x=\"680\" y=\"358\" text-anchor=\"middle\">8</text>
+        <text class=\"tick-label\" x=\"72\" y=\"340\" text-anchor=\"end\">0</text>
+        <text class=\"tick-label\" x=\"72\" y=\"265\" text-anchor=\"end\">2</text>
+        <text class=\"tick-label\" x=\"72\" y=\"190\" text-anchor=\"end\">4</text>
+        <text class=\"tick-label\" x=\"72\" y=\"115\" text-anchor=\"end\">6</text>
+        <text class=\"tick-label\" x=\"72\" y=\"45\" text-anchor=\"end\">8</text>
+
+        <!-- Fitted line: y = 0.8x + 1.5 mapped to SVG coords -->
+        <!-- SVG: x_svg = 80 + x*75, y_svg = 340 - y*30 -->
+        <!-- Line from (0, 1.5) to (8, 7.9) -->
+        <line class=\"fitted-line\" x1=\"80\" y1=\"295\" x2=\"680\" y2=\"103\" filter=\"url(#glow-green)\"/>
+
+        <!-- Data points + residuals -->
+        <!-- Point 1: x=1, y=2.2 → svg(155, 274), pred=2.3, residual=-0.1 → residual line to (155,269) -->
+        <line class=\"residual-line\" x1=\"155\" y1=\"274\" x2=\"155\" y2=\"269\" filter=\"url(#glow-red)\"/>
+        <circle class=\"point-circle\" cx=\"155\" cy=\"274\" r=\"5\"/>
+        <text class=\"residual-label\" x=\"162\" y=\"273\">e₁</text>
+
+        <!-- Point 2: x=2, y=3.5 → svg(230, 235), pred=3.1, residual=0.4 → to (230,223) -->
+        <line class=\"residual-line\" x1=\"230\" y1=\"235\" x2=\"230\" y2=\"223\" filter=\"url(#glow-red)\"/>
+        <circle class=\"point-circle\" cx=\"230\" cy=\"235\" r=\"5\"/>
+
+        <!-- Point 3: x=3, y=3.8 → svg(305, 226), pred=3.9, residual=-0.1 → to (305,229) -->
+        <line class=\"residual-line\" x1=\"305\" y1=\"226\" x2=\"305\" y2=\"229\" filter=\"url(#glow-red)\"/>
+        <circle class=\"point-circle\" cx=\"305\" cy=\"226\" r=\"5\"/>
+
+        <!-- Point 4: x=4, y=5.0 → svg(380, 190), pred=4.7, residual=0.3 → to (380,181) -->
+        <line class=\"residual-line\" x1=\"380\" y1=\"190\" x2=\"380\" y2=\"181\" filter=\"url(#glow-red)\"/>
+        <circle class=\"point-circle\" cx=\"380\" cy=\"190\" r=\"5\"/>
+
+        <!-- Point 5: x=5, y=5.5 → svg(455, 175), pred=5.5, residual=0 → on line -->
+        <circle class=\"point-circle\" cx=\"455\" cy=\"175\" r=\"5\"/>
+
+        <!-- Point 6: x=6, y=6.8 → svg(530, 136), pred=6.3, residual=0.5 → to (530,121) -->
+        <line class=\"residual-line\" x1=\"530\" y1=\"136\" x2=\"530\" y2=\"121\" filter=\"url(#glow-red)\"/>
+        <circle class=\"point-circle\" cx=\"530\" cy=\"136\" r=\"5\"/>
+
+        <!-- Point 7: x=7, y=7.0 → svg(605, 110), pred=7.1, residual=-0.1 → to (605,113) -->
+        <line class=\"residual-line\" x1=\"605\" y1=\"110\" x2=\"605\" y2=\"113\" filter=\"url(#glow-red)\"/>
+        <circle class=\"point-circle\" cx=\"605\" cy=\"110\" r=\"5\"/>
+
+        <!-- Legend -->
+        <rect class=\"equation-badge\" x=\"520\" y=\"48\" width=\"185\" height=\"72\" rx=\"8\"/>
+        <text class=\"equation-text\" x=\"532\" y=\"70\">拟合直线 ŷ = 0.8x + 1.5</text>
+        <text class=\"equation-text\" x=\"532\" y=\"90\" fill=\"var(--green)\">—— 最小二乘解</text>
+        <text class=\"equation-text\" x=\"532\" y=\"110\" fill=\"var(--red)\">- - - 残差 eᵢ = yᵢ - ŷᵢ</text>
+
+        <!-- Annotation: MSE label -->
+        <text class=\"equation-text\" x=\"532\" y=\"130\" fill=\"var(--text-muted)\">J(w,b) = ¼Σeᵢ² → min</text>
       </svg>
     </div>
-    <p class="diagram-caption">图: 线性回归 通用架构示意</p>
+    <p class=\"diagram-caption\">图: 线性回归拟合示意 — 绿色实线为最小二乘拟合直线，红色虚线为残差</p>
   </section>
 
-  <section class="section">
-    <div class="section-label">历史背景</div>
-    <div class="section-title">从问题到突破</div>
-    <div class="section-body">
-      <p><strong>Carl Friedrich Gauss & Adrien-Marie Legendre</strong> 在 <strong>1809</strong> 年提出了 线性回归，这是机器学习发展史上的一个重要里程碑。</p>
-      <p>线性回归是最经典、最简单的监督学习算法之一。早在19世纪，高斯和勒让德就独立发展了最小二乘法（Least Squares Method），用于天体轨道计算。
-
-**当时的问题**：
-- 科学家需要拟合实验数据，找到变量之间的线性关系
-- 没有系统的机器学习理论，主要是数学统计方法
-- 计算能力有限，需要高效的算法
-
-**核心突破**：
-- 最小二乘法提供了求解线性回归的解析解
-- 为后续所有回归问...</p>
+  <!-- HISTORY TIMELINE -->
+  <section class=\"section\">
+    <div class=\"section-label\">历史背景</div>
+    <div class=\"section-title\">从问题到突破</div>
+    <div class=\"section-body\">
+      <p><strong>Carl Friedrich Gauss</strong> 与 <strong>Adrien-Marie Legendre</strong> 在 <strong>1809</strong> 年独立提出了最小二乘法，用于天体轨道的计算。这是机器学习发展史上最早的系统性方法之一。</p>
     </div>
-  </section>
-
-  <section class="section">
-    <div class="section-label">数学原理</div>
-    <div class="section-title">核心公式</div>
-    <div class="formula-card">
-      <div class="formula-label">核心公式</div>
-      <div class="formula">f(x) = ...</div>
-      <div class="formula-note">根据具体模型填写</div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="section-label">代码实现</div>
-    <div class="section-title">model.py 核心逻辑</div>
-    <div class="code-block">
-      <div class="code-header">
-        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
-        <span class="code-lang">Python · model.py</span>
+    <div class=\"timeline\">
+      <div class=\"timeline-item\">
+        <div class=\"timeline-year\">1795</div>
+        <div class=\"timeline-title\">高斯的预见</div>
+        <div class=\"timeline-desc\">Gauss 在少年时期就用最小二乘法预测了谷神星的轨道，但未发表方法。</div>
       </div>
-      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">线性回归</span>(nn.Module):
-    <span class="kw">def</span> <span class="fn">__init__</span>(self):
-        super().__span class="fn">init__</span>()
-        <span class="cm"># 模型定义</span>
-        
-    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
-        <span class="cm"># 前向传播</span>
-        <span class="kw">return</span> x</pre></div>
+      <div class=\"timeline-item\">
+        <div class=\"timeline-year\">1805</div>
+        <div class=\"timeline-title\">Legendre 首次发表</div>
+        <div class=\"timeline-desc\">Legendre 在《彗星轨道新确定法》中首次公开发布最小二乘法，命名为 \"least squares\"。</div>
+      </div>
+      <div class=\"timeline-item\">
+        <div class=\"timeline-year\">1809</div>
+        <div class=\"timeline-title\">Gauss 的严格证明</div>
+        <div class=\"timeline-desc\">Gauss 在《天体运动论》中给出了最小二乘法的概率论证明，确立了其理论基础。</div>
+      </div>
+      <div class=\"timeline-item\">
+        <div class=\"timeline-year\">19世纪中叶</div>
+        <div class=\"timeline-title\">广泛应用</div>
+        <div class=\"timeline-desc\">最小二乘法被广泛应用于大地测量、气象学和经济学等领域，成为科学计算的基石。</div>
+      </div>
     </div>
   </section>
 
-  <section class="section">
-    <div class="section-label">学习心得</div>
-    <div class="section-title">关键洞察</div>
-    <div class="notes-card">
+  <!-- FORMULA CARDS -->
+  <section class=\"section\">
+    <div class=\"section-label\">数学原理</div>
+    <div class=\"section-title\">核心公式</div>
+
+    <div class=\"formula-card highlight-accent\">
+      <div class=\"formula-label\">模型定义</div>
+      <div class=\"formula\">y = <span class=\"hl-accent\">w</span>ᵀx + b</div>
+      <div class=\"formula-note\">目标变量 y 是输入特征 x 的线性组合，w 为权重向量，b 为偏置项。</div>
+    </div>
+
+    <div class=\"formula-card highlight-green\">
+      <div class=\"formula-label\">损失函数 — 均方误差 (MSE)</div>
+      <div class=\"formula\">J(<span class=\"hl-accent\">w</span>, b) = <span class=\"hl-green\">¼</span><span class=\"hl-green\">∑</span>(yᵢ - (<span class=\"hl-accent\">w</span>ᵀxᵢ + b))²</div>
+      <div class=\"formula-note\">最小化残差平方和，使预测值与真实值之间的差距最小。</div>
+    </div>
+
+    <div class=\"formula-card\">
+      <div class=\"formula-label\">方法一：正规方程（解析解）</div>
+      <div class=\"formula\"><span class=\"hl-accent\">w</span> = (<span class=\"hl-accent\">X</span>ᵀ<span class=\"hl-accent\">X</span>)<sup>-1</span><span class=\"hl-accent\">X</span>ᵀ<span class=\"hl-accent\">y</span></div>
+      <div class=\"formula-note\">直接求解，无需迭代；但当特征数很大时，O(n³) 的矩阵求逆代价较高。</div>
+    </div>
+
+    <div class=\"formula-card\">
+      <div class=\"formula-label\">方法二：梯度下降</div>
+      <div class=\"formula\"><span class=\"hl-accent\">w</span> := <span class=\"hl-accent\">w</span> - α · <span class=\"hl-green\">∂J</span>/<span class=\"hl-green\">∂w</span></div>
+      <div class=\"formula-note\">梯度 ∂J/∂w = -<span class=\"hl-green\">(2/n)</span><span class=\"hl-accent\">X</span>ᵀ(<span class=\"hl-accent\">y</span> - <span class=\"hl-accent\">X</span><span class=\"hl-accent\">w</span>)，需要仔细选择学习率 α。</div>
+    </div>
+  </section>
+
+  <!-- CODE BLOCK -->
+  <section class=\"section\">
+    <div class=\"section-label\">代码实现</div>
+    <div class=\"section-title\">model.py 核心逻辑</div>
+    <div class=\"code-block\">
+      <div class=\"code-header\">
+        <div class=\"code-dots\"><div class=\"code-dot\"></div><div class=\"code-dot\"></div><div class=\"code-dot\"></div></div>
+        <span class=\"code-lang\">Python · model.py</span>
+      </div>
+      <div class=\"code-body\"><pre><span class=\"kw\">class</span> <span class=\"cls\">LinearRegression</span>:
+    <span class=\"kw\">def</span> <span class=\"fn\">__init__</span>(self, lr=<span class=\"num\">0.01</span>, max_iter=<span class=\"num\">1000</span>):
+        self.lr = lr
+        self.max_iter = max_iter
+        self.weights = <span class=\"num\">None</span>
+        self.bias = <span class=\"num\">None</span>
+
+    <span class=\"kw\">def</span> <span class=\"fn\">fit_closed_form</span>(self, X, y):
+        <span class=\"cm\"># 正规方程: w = (XᵀX)⁻¹Xᵀy</span>
+        Xb = np.<span class=\"fn\">hstack</span>([np.<span class=\"fn\">ones</span>((X.shape[<span class=\"num\">0</span>], <span class=\"num\">1</span>)), X])
+        self.weights = np.<span class=\"fn\">linalg</span>.<span class=\"fn\">pinv</span>(Xb.T @ Xb) @ Xb.T @ y
+        self.bias = self.weights[<span class=\"num\">0</span>]
+        self.weights = self.weights[<span class=\"num\">1</span>:]
+
+    <span class=\"kw\">def</span> <span class=\"fn\">fit_gd</span>(self, X, y):
+        <span class=\"cm\"># 梯度下降迭代更新</span>
+        self.weights = np.<span class=\"fn\">zeros</span>(X.shape[<span class=\"num\">1</span>])
+        self.bias = <span class=\"num\">0</span>
+        <span class=\"kw\">for</span> i <span class=\"kw\">in</span> <span class=\"fn\">range</span>(self.max_iter):
+            pred = X @ self.weights + self.bias
+            error = pred - y
+            self.weights -= self.lr * (<span class=\"num\">2</span>/len(y)) * X.T @ error
+            self.bias -= self.lr * (<span class=\"num\">2</span>/len(y)) * <span class=\"fn\">sum</span>(error)
+
+    <span class=\"kw\">def</span> <span class=\"fn\">predict</span>(self, X):
+        <span class=\"kw\">return</span> X @ self.weights + self.bias
+
+    <span class=\"kw\">def</span> <span class=\"fn\">score</span>(self, X, y):
+        <span class=\"cm\"># R² 分数</span>
+        ss_res = <span class=\"fn\">sum</span>((y - self.<span class=\"fn\">predict</span>(X))**<span class=\"num\">2</span>)
+        ss_tot = <span class=\"fn\">sum</span>((y - np.<span class=\"fn\">mean</span>(y))**<span class=\"num\">2</span>)
+        <span class=\"kw\">return</span> <span class=\"num\">1</span> - ss_res / ss_tot</pre></div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE DEMO -->
+  <section class=\"section\">
+    <div class=\"section-label\">交互演示</div>
+    <div class=\"section-title\">点击添加数据点，观察拟合线变化</div>
+    <div class=\"demo-container\">
+      <div class=\"demo-title\">Interactive Demo</div>
+      <canvas id=\"demoCanvas\" width=\"720\" height=\"380\"></canvas>
+      <p class=\"demo-hint\">💡 点击画布添加数据点 · 拖动数据点调整位置 · 支持拖拽拟合线端点调节斜率</p>
+      <div class=\"demo-info\" id=\"demoInfo\">
+        <div class=\"demo-info-item">点数: <span id=\"infoN\">0</span></div>
+        <div class=\"demo-info-item\">权重 w: <span id=\"infoW\">—</span></div>
+        <div class=\"demo-info-item\">偏置 b: <span id=\"infoB\">—</span></div>
+        <div class=\"demo-info-item">R²: <span id=\"infoR2\">—</span></div>
+      </div>
+      <div class=\"demo-controls\">
+        <button class=\"demo-btn\" onclick=\"addPresetPoints()\">🎲 随机生成10点</button>
+        <button class=\"demo-btn-secondary\" onclick=\"resetDemo()\">重置</button>
+        <button class=\"demo-btn-secondary\" onclick=\"clearDemo()\">清空</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIMITATIONS -->
+  <section class=\"section\">
+    <div class=\"section-label\">局限性</div>
+    <div class=\"section-title\">已知约束</div>
+    <div class=\"comparison-grid\">
+      <div class=\"comparison-panel\">
+        <h4>只能捕捉线性关系</h4>
+        <p>无法处理非线性问题，对于复杂的模式拟合效果有限。</p>
+      </div>
+      <div class=\"comparison-panel\">
+        <h4>对异常值敏感</h4>
+        <p>MSE 损失函数对离群点放大了影响，单个异常值可显著偏移拟合线。</p>
+      </div>
+      <div class=\"comparison-panel\">
+        <h4>假设特征独立</h4>
+        <p>忽略了特征之间的相关性（共线性），可能引入估计偏差。</p>
+      </div>
+      <div class=\"comparison-panel\">
+        <h4>需要特征缩放</h4>
+        <p>不同量纲的特征会影响梯度下降的收敛速度，正规方程不受影响。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- INFLUENCE -->
+  <section class=\"section\">
+    <div class=\"section-label\">历史影响</div>
+    <div class=\"section-title\">启蒙与传承</div>
+    <div class=\"section-body\">
+      <p>线性回归直接启发了后续众多重要模型与方法：</p>
+    </div>
+    <div class=\"stats-grid\" style=\"grid-template-columns: repeat(4,1fr);\">
+      <div class=\"stat-cell\">
+        <span class=\"stat-value\" style=\"color:var(--accent);\">逻辑回归</span>
+        <span class=\"stat-label\">二分类扩展</span>
+      </div>
+      <div class=\"stat-cell\">
+        <span class=\"stat-value\" style=\"color:var(--green);\">岭回归 / Lasso</span>
+        <span class=\"stat-label\">正则化方法</span>
+      </div>
+      <div class=\"stat-cell\">
+        <span class=\"stat-value\" style=\"color:var(--orange);\">广义线性模型</span>
+        <span class=\"stat-label\">GLM 框架</span>
+      </div>
+      <div class=\"stat-cell\">
+        <span class=\"stat-value\" style=\"color:var(--red);\">核方法</span>
+        <span class=\"stat-label\">非线性推广</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTES -->
+  <section class=\"section\">
+    <div class=\"section-label\">学习心得</div>
+    <div class=\"section-title\">关键洞察</div>
+    <div class=\"notes-card\">
       <h4>学到的知识</h4>
       <ul>
-        <li>线性回归 是机器学习发展史上的重要模型</li>
-        <li>理解其数学原理有助于掌握后续模型</li>
+        <li><strong>最小二乘法</strong>：线性回归的标准解法，具有闭式解</li>
+        <li><strong>两种求解方法</strong>：解析解（正规方程）和梯度下降，各有适用场景</li>
+        <li><strong>特征缩放的重要性</strong>：不同量纲的特征会影响梯度下降收敛速度</li>
+        <li><strong>R² 分数</strong>：衡量回归模型性能的标准指标，取值范围 (-∞, 1]</li>
+      </ul>
+    </div>
+    <div class=\"notes-card\">
+      <h4>踩坑记录</h4>
+      <ul>
+        <li>正规方程在特征数量很大时计算成本高（O(n³)），此时应改用梯度下降</li>
+        <li>梯度下降需要仔细选择学习率——太大不收敛，太小太慢</li>
+      </ul>
+    </div>
+    <div class=\"notes-card\">
+      <h4>思考题</h4>
+      <ul>
+        <li>为什么需要特征缩放？答：不同量纲导致梯度方向偏向大数值特征，收敛变慢</li>
+        <li>正则化如何改善线性回归？答：岭回归(L2)防过拟合，Lasso(L1)做特征选择</li>
+        <li>岭回归和Lasso回归有什么区别？答：L2缩小权重但不归零，L1可将部分权重压缩为零</li>
       </ul>
     </div>
   </section>
 
-  <div class="nav-footer">
-    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
-    <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
+  <!-- FOOTER NAV -->
+  <div class=\"nav-footer\">
+    <a href=\"../index.html\" class=\"nav-footer-prev\">
+      <span class=\"nav-footer-label\">← 返回</span>
+      <span class=\"nav-footer-title\">全部模型</span>
+    </a>
+    <span class=\"nav-footer-center\"><a href=\"../index.html\">ML History</a> · 28 models</span>
+    <a href=\"../01_foundations/03_logistic_regression/index.html\" class=\"nav-footer-next\" style=\"text-align:right;\">
+      <span class=\"nav-footer-label\">下一个 →</span>
+      <span class=\"nav-footer-title\">逻辑回归</span>
+    </a>
   </div>
 
 </main>
+
+<script>
+// ── Interactive Canvas Demo ──
+const canvas = document.getElementById('demoCanvas');
+const ctx = canvas.getContext('2d');
+
+// Responsive canvas
+function resizeCanvas() {
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const w = Math.min(720, rect.width - 48);
+  canvas.style.width = w + 'px';
+  canvas.style.height = (w * 380 / 720) + 'px';
+  canvas.width = 720;
+  canvas.height = 380;
+  draw();
+}
+
+const MARGIN = { top: 30, right: 30, bottom: 50, left: 60 };
+const PLOT_W = 720 - MARGIN.left - MARGIN.right;
+const PLOT_H = 380 - MARGIN.top - MARGIN.bottom;
+
+let points = [];
+let dragPoint = null;
+let dragOffset = { x: 0, y: 0 };
+
+function dataToSvg(x, y) {
+  return {
+    sx: MARGIN.left + x * PLOT_W,
+    sy: MARGIN.top + (1 - y) * PLOT_H
+  };
+}
+
+function svgToData(sx, sy) {
+  return {
+    x: (sx - MARGIN.left) / PLOT_W,
+    y: 1 - (sy - MARGIN.top) / PLOT_H
+  };
+}
+
+function linearRegression(pts) {
+  if (pts.length < 2) return { w: 0, b: 0, r2: 0 };
+  const n = pts.length;
+  let sx = 0, sy = 0, sxx = 0, sxy = 0, syy = 0;
+  for (const p of pts) { sx += p.x; sy += p.y; sxx += p.x * p.x; sxy += p.x * p.y; syy += p.y * p.y; }
+  const denom = n * sxx - sx * sx;
+  if (Math.abs(denom) < 1e-10) return { w: 0, b: sy / n, r2: 0 };
+  const w = (n * sxy - sx * sy) / denom;
+  const b = (sy - w * sx) / n;
+  const yMean = sy / n;
+  let ssRes = 0, ssTot = 0;
+  for (const p of pts) {
+    const pred = w * p.x + b;
+    ssRes += (p.y - pred) ** 2;
+    ssTot += (p.y - yMean) ** 2;
+  }
+  const r2 = ssTot === 0 ? 1 : 1 - ssRes / ssTot;
+  return { w, b, r2 };
+}
+
+function drawGrid() {
+  ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--border').trim();
+  ctx.lineWidth = 0.5;
+  for (let i = 0; i <= 10; i++) {
+    const x = MARGIN.left + (i / 10) * PLOT_W;
+    const y = MARGIN.top + (i / 10) * PLOT_H;
+    ctx.beginPath(); ctx.moveTo(x, MARGIN.top); ctx.lineTo(x, MARGIN.top + PLOT_H); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(MARGIN.left, y); ctx.lineTo(MARGIN.left + PLOT_W, y); ctx.stroke();
+  }
+}
+
+function drawAxes() {
+  ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--border-strong').trim();
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(MARGIN.left, MARGIN.top);
+  ctx.lineTo(MARGIN.left, MARGIN.top + PLOT_H);
+  ctx.lineTo(MARGIN.left + PLOT_W, MARGIN.top + PLOT_H);
+  ctx.stroke();
+
+  ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-muted').trim();
+  ctx.font = '11px JetBrains Mono, monospace';
+  ctx.textAlign = 'center';
+  for (let i = 0; i <= 10; i++) {
+    const x = MARGIN.left + (i / 10) * PLOT_W;
+    ctx.fillText((i / 10).toFixed(1), x, MARGIN.top + PLOT_H + 20);
+  }
+  ctx.textAlign = 'right';
+  for (let i = 0; i <= 10; i++) {
+    const y = MARGIN.top + (1 - i / 10) * PLOT_H;
+    ctx.fillText((i / 10).toFixed(1), MARGIN.left - 8, y + 4);
+  }
+  ctx.fillText('x', MARGIN.left + PLOT_W + 15, MARGIN.top + PLOT_H);
+  ctx.save();
+  ctx.translate(15, MARGIN.top + PLOT_H / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('y', 0, 0);
+  ctx.restore();
+}
+
+function drawLine(w, b) {
+  const x1 = 0, y1 = b;
+  const x2 = 1, y2 = w + b;
+  const s1 = dataToSvg(x1, y1);
+  const s2 = dataToSvg(x2, y2);
+
+  ctx.strokeStyle = '#10b981';
+  ctx.lineWidth = 2.5;
+  ctx.shadowColor = 'rgba(16,185,129,0.4)';
+  ctx.shadowBlur = 6;
+  ctx.beginPath();
+  ctx.moveTo(s1.sx, s1.sy);
+  ctx.lineTo(s2.sx, s2.sy);
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Equation label
+  ctx.fillStyle = '#10b981';
+  ctx.font = '12px JetBrains Mono, monospace';
+  ctx.textAlign = 'left';
+  const label = `ŷ = ${w.toFixed(2)}x + ${b.toFixed(2)}`;
+  ctx.fillText(label, MARGIN.left + 10, MARGIN.top + 18);
+}
+
+function drawPoints() {
+  for (const p of points) {
+    const s = dataToSvg(p.x, p.y);
+    ctx.fillStyle = '#7170ff';
+    ctx.strokeStyle = '#0f1011';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(s.sx, s.sy, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+  }
+}
+
+function drawResiduals(w, b) {
+  if (points.length < 2) return;
+  ctx.strokeStyle = '#ef4444';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([4, 3]);
+  for (const p of points) {
+    const pred = w * p.x + b;
+    const s = dataToSvg(p.x, p.y);
+    const sp = dataToSvg(p.x, pred);
+    ctx.beginPath();
+    ctx.moveTo(s.sx, s.sy);
+    ctx.lineTo(sp.sx, sp.sy);
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
+}
+
+function draw() {
+  ctx.clearRect(0, 0, 720, 380);
+  drawGrid();
+  drawAxes();
+  if (points.length >= 2) {
+    const { w, b, r2 } = linearRegression(points);
+    drawLine(w, b);
+    drawResiduals(w, b);
+    document.getElementById('infoN').textContent = points.length;
+    document.getElementById('infoW').textContent = w.toFixed(4);
+    document.getElementById('infoB').textContent = b.toFixed(4);
+    document.getElementById('infoR2').textContent = r2.toFixed(4);
+  } else {
+    document.getElementById('infoN').textContent = points.length;
+    document.getElementById('infoW').textContent = '—';
+    document.getElementById('infoB').textContent = '—';
+    document.getElementById('infoR2').textContent = '—';
+  }
+  drawPoints();
+}
+
+// Mouse events
+canvas.addEventListener('mousedown', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = 720 / rect.width;
+  const scaleY = 380 / rect.height;
+  const mx = (e.clientX - rect.left) * scaleX;
+  const my = (e.clientY - rect.top) * scaleY;
+  const d = svgToData(mx, my);
+
+  // Check if clicking near existing point
+  for (let i = points.length - 1; i >= 0; i--) {
+    const s = dataToSvg(points[i].x, points[i].y);
+    const dist = Math.hypot(mx - s.sx, my - s.sy);
+    if (dist < 15) {
+      dragPoint = points[i];
+      dragOffset = { x: mx - s.sx, y: my - s.sy };
+      return;
+    }
+  }
+
+  // Add new point (clamp to [0,1])
+  const nx = Math.max(0, Math.min(1, d.x));
+  const ny = Math.max(0, Math.min(1, d.y));
+  const np = { x: nx, y: ny, id: Date.now() };
+  points.push(np);
+  dragPoint = np;
+  const ns = dataToSvg(nx, ny);
+  dragOffset = { x: mx - ns.sx, y: my - ns.sy };
+  draw();
+});
+
+canvas.addEventListener('mousemove', (e) => {
+  if (!dragPoint) return;
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = 720 / rect.width;
+  const scaleY = 380 / rect.height;
+  const mx = (e.clientX - rect.left) * scaleX + dragOffset.x;
+  const my = (e.clientY - rect.top) * scaleY + dragOffset.y;
+  const d = svgToData(mx, my);
+  dragPoint.x = Math.max(0, Math.min(1, d.x));
+  dragPoint.y = Math.max(0, Math.min(1, d.y));
+  draw();
+});
+
+canvas.addEventListener('mouseup', () => { dragPoint = null; });
+canvas.addEventListener('mouseleave', () => { dragPoint = null; });
+
+function addPresetPoints() {
+  points = [];
+  for (let i = 0; i < 10; i++) {
+    const x = 0.1 + Math.random() * 0.8;
+    const trueY = 0.6 * x + 0.2 + (Math.random() - 0.5) * 0.3;
+    points.push({ x, y: Math.max(0, Math.min(1, trueY)), id: i });
+  }
+  draw();
+}
+
+function resetDemo() {
+  points = [
+    { x: 0.1, y: 0.25 }, { x: 0.25, y: 0.38 }, { x: 0.4, y: 0.42 },
+    { x: 0.55, y: 0.55 }, { x: 0.7, y: 0.62 }, { x: 0.85, y: 0.78 }
+  ];
+  draw();
+}
+
+function clearDemo() {
+  points = [];
+  draw();
+}
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+resetDemo();
+</script>
 
 </body>
 </html>
