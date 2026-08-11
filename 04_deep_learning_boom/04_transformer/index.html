@@ -7,7 +7,63 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
-/* Model-specific styles */
+/* ── Transformer-specific enhancements ── */
+.attention-legend { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
+.attention-legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
+.attention-legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+.interactive-demo-area { min-height: 200px; position: relative; }
+.token-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 8px 14px; margin: 4px; border-radius: var(--radius);
+  background: var(--bg-surface); border: 1px solid var(--border-strong);
+  color: var(--text-secondary); font-size: 14px; cursor: pointer;
+  transition: all 0.15s; font-family: 'Inter', sans-serif;
+}
+.token-btn:hover { border-color: var(--accent); color: var(--text); }
+.token-btn.selected { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
+.heatmap-cell { transition: all 0.2s; cursor: pointer; }
+.heatmap-cell:hover { opacity: 0.8; }
+.heatmap-cell.highlighted { filter: brightness(1.3); }
+.stat-highlight { color: var(--accent); }
+.model-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 999px;
+  font-size: 11px; font-weight: 600;
+  background: var(--accent-dim); color: var(--accent);
+  border: 1px solid rgba(113,112,255,0.3);
+}
+.code-keyword { color: #c678dd; }
+.code-function { color: #61afef; }
+.code-string { color: #98c379; }
+.code-number { color: #d19a66; }
+.code-comment { color: var(--text-faint); font-style: italic; }
+.code-operator { color: #56b6c2; }
+.code-variable { color: #e06c75; }
+.code-class { color: #e5c07b; }
+.formula-highlight { background: var(--accent-dim); padding: 2px 6px; border-radius: 4px; }
+.svg-node { transition: all 0.2s; cursor: pointer; }
+.svg-node:hover { filter: brightness(1.2); }
+.svg-arrow { stroke-dasharray: 5,3; animation: dash 20s linear infinite; }
+@keyframes dash { to { stroke-dashoffset: -100; } }
+.pill-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 999px;
+  font-size: 12px; font-weight: 500; color: var(--text-muted);
+  background: transparent; border: 1px solid var(--border-strong);
+  transition: all 0.15s;
+}
+.pill:hover { border-color: var(--accent); color: var(--accent); }
+.pill-accent { color: var(--accent); border-color: rgba(113,112,255,0.3); background: var(--accent-dim); }
+.pill-green { color: var(--green); border-color: rgba(16,185,129,0.3); background: var(--green-dim); }
+.pill-orange { color: var(--orange); border-color: rgba(245,158,11,0.3); background: var(--orange-dim); }
+.pill-red { color: var(--red); border-color: rgba(239,68,68,0.3); background: var(--red-dim); }
+.info-box {
+  background: var(--bg); border: 1px solid var(--border-strong);
+  border-radius: var(--radius); padding: 16px; margin: 16px 0;
+  font-size: 14px; color: var(--text-muted);
+}
+.info-box strong { color: var(--text-secondary); }
 </style>
 </head>
 <body>
@@ -25,114 +81,546 @@
 
 <main class="container">
 
+  <!-- HERO -->
   <section class="hero">
-    <div class="hero-eyebrow">04_deep_learning_boom阶段 · 2017</div>
+    <div class="hero-eyebrow">04_deep_learning_boom阶段 · Attention Is All You Need</div>
     <h1>Transformer</h1>
-    <p class="hero-subtitle">暂无简介</p>
+    <p class="hero-subtitle">完全基于自注意力机制的序列到序列模型，抛弃了传统的循环和卷积结构，开启了大语言模型时代。</p>
     <div class="hero-meta">
+      <div class="hero-meta-item"><span class="hero-meta-label">论文</span><span class="hero-meta-value">Vaswani et al.</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">机构</span><span class="hero-meta-value">Google Research</span></div>
       <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">2017</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Vaswani et al.</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">注意力机制</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">框架</span><span class="hero-meta-value">PyTorch</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">注意力机制 / Seq2Seq</span></div>
+    </div>
+    <div class="pill-row" style="margin-top: 20px;">
+      <span class="pill pill-accent">自注意力</span>
+      <span class="pill pill-green">多头机制</span>
+      <span class="pill pill-orange">位置编码</span>
+      <span class="pill pill-red">全并行化</span>
     </div>
   </section>
 
+  <!-- STATS GRID -->
   <div class="stats-grid">
-    <div class="stat-cell"><span class="stat-value">2017</span><span class="stat-label">提出年份</span></div>
-    <div class="stat-cell"><span class="stat-value">注意力机制</span><span class="stat-label">模型类型</span></div>
-    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
-    <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
+    <div class="stat-cell"><span class="stat-value">512</span><span class="stat-label">模型维度 d_model</span></div>
+    <div class="stat-cell"><span class="stat-value">8</span><span class="stat-label">注意力头数</span></div>
+    <div class="stat-cell"><span class="stat-value">6</span><span class="stat-label">编码器层数</span></div>
+    <div class="stat-cell"><span class="stat-value">28.4</span><span class="stat-label">WMT14 英德 BLEU</span></div>
   </div>
 
+  <!-- ARCHITECTURE DIAGRAM -->
   <section class="section">
-    <div class="section-label">网络架构</div>
-    <div class="section-title">结构示意</div>
+    <div class="section-label">架构总览</div>
+    <div class="section-title">Encoder-Decoder 结构</div>
+    <div class="section-body" style="margin-bottom: 20px;">
+      <p>Transformer 由 <strong>编码器</strong>（Encoder）和 <strong>解码器</strong>（Decoder）两部分堆叠而成，每部分包含 N 层（论文中 N=6）。编码器处理输入序列，解码器生成输出序列。</p>
+    </div>
     <div class="diagram-container">
-      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
-        <!-- Generic architecture diagram -->
-        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
-        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
+      <svg viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:900px;">
+        <!-- Input Embedding -->
+        <rect x="20" y="150" width="100" height="60" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="1.5"/>
+        <text x="70" y="178" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter" font-weight="500">输入</text>
+        <text x="70" y="195" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Embed</text>
         
-        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
+        <!-- Positional Encoding -->
+        <rect x="20" y="230" width="100" height="60" rx="8" fill="var(--bg-elevated)" stroke="var(--orange)" stroke-width="1.5"/>
+        <text x="70" y="258" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter" font-weight="500">位置编码</text>
+        <text x="70" y="275" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Sinusoid</text>
         
-        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
-        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
+        <!-- Sum -->
+        <circle cx="70" cy="310" r="18" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1.5"/>
+        <text x="70" y="315" text-anchor="middle" fill="var(--text)" font-size="14" font-family="Inter" font-weight="600">+</text>
         
-        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
+        <!-- Encoder Stack -->
+        <rect x="220" y="100" width="180" height="220" rx="12" fill="var(--bg-surface)" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4,4"/>
+        <text x="310" y="130" text-anchor="middle" fill="var(--accent)" font-size="13" font-family="Inter" font-weight="600">Encoder Stack ×N</text>
         
-        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
-        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
+        <!-- Encoder Internal -->
+        <rect x="240" y="150" width="140" height="50" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="310" y="175" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter">Multi-Head Self-Attn</text>
+        <text x="310" y="190" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">O(n²) complexity</text>
         
+        <line x1="310" y1="200" x2="310" y2="215" stroke="var(--text-faint)" stroke-width="1.5"/>
+        
+        <rect x="240" y="215" width="140" height="40" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="310" y="240" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter">Add &amp; Norm</text>
+        
+        <line x1="310" y1="255" x2="310" y2="270" stroke="var(--text-faint)" stroke-width="1.5"/>
+        
+        <rect x="240" y="270" width="140" height="50" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="310" y="295" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter">Position-wise FFN</text>
+        <text x="310" y="310" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">d_ff = 2048</text>
+        
+        <line x1="310" y1="320" x2="310" y2="335" stroke="var(--text-faint)" stroke-width="1.5"/>
+        
+        <rect x="240" y="335" width="140" height="30" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="310" y="355" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter">Add &amp; Norm</text>
+        
+        <!-- Arrow Encoder -->
+        <line x1="170" y1="310" x2="220" y2="210" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrow)"/>
+        
+        <!-- Decoder Stack -->
+        <rect x="480" y="100" width="180" height="220" rx="12" fill="var(--bg-surface)" stroke="var(--green)" stroke-width="1.5" stroke-dasharray="4,4"/>
+        <text x="570" y="130" text-anchor="middle" fill="var(--green)" font-size="13" font-family="Inter" font-weight="600">Decoder Stack ×N</text>
+        
+        <!-- Decoder Internal -->
+        <rect x="500" y="150" width="140" height="50" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="570" y="175" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter">Masked Multi-Head</text>
+        <text x="570" y="190" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">Causal attention</text>
+        
+        <line x1="570" y1="200" x2="570" y2="215" stroke="var(--text-faint)" stroke-width="1.5"/>
+        
+        <rect x="500" y="215" width="140" height="40" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="570" y="240" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter">Add &amp; Norm</text>
+        
+        <line x1="570" y1="255" x2="570" y2="270" stroke="var(--text-faint)" stroke-width="1.5"/>
+        
+        <rect x="500" y="270" width="140" height="50" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="570" y="295" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter">Cross Attention</text>
+        <text x="570" y="310" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">Query from Decoder</text>
+        
+        <line x1="570" y1="320" x2="570" y2="335" stroke="var(--text-faint)" stroke-width="1.5"/>
+        
+        <rect x="500" y="335" width="140" height="30" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="570" y="355" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter">Add &amp; Norm</text>
+        
+        <!-- Arrow Decoder -->
+        <line x1="400" y1="210" x2="480" y2="210" stroke="var(--green)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-green)"/>
+        
+        <!-- Output -->
+        <rect x="720" y="170" width="100" height="60" rx="8" fill="var(--bg-elevated)" stroke="var(--blue)" stroke-width="1.5"/>
+        <text x="770" y="195" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter" font-weight="500">输出</text>
+        <text x="770" y="212" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Linear → Softmax</text>
+        
+        <line x1="660" y1="210" x2="720" y2="200" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrow)"/>
+        
+        <!-- Arrow Definitions -->
         <defs>
           <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
             <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
           </marker>
+          <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="var(--green)"/>
+          </marker>
         </defs>
       </svg>
     </div>
-    <p class="diagram-caption">图: Transformer 通用架构示意</p>
+    <p class="diagram-caption">图: Transformer Encoder-Decoder 架构概览</p>
   </section>
 
+  <!-- SELF-ATTENTION SVG -->
   <section class="section">
-    <div class="section-label">历史背景</div>
+    <div class="section-label">核心机制</div>
+    <div class="section-title">Self-Attention 与 Q/K/V 计算</div>
+    <div class="section-body" style="margin-bottom: 20px;">
+      <p>自注意力的核心思想是：<strong>每个位置都问自己"哪些其他位置对我最重要？"</strong>。通过 Query (Q)、Key (K)、Value (V) 三个矩阵，计算序列中任意两个位置之间的关联度。</p>
+    </div>
+    <div class="diagram-container">
+      <svg viewBox="0 0 800 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:800px;">
+        <!-- Input Tokens -->
+        <text x="40" y="30" fill="var(--text-muted)" font-size="11" font-family="Inter" font-weight="600">输入序列</text>
+        <rect x="20" y="45" width="120" height="32" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="80" y="66" text-anchor="middle" fill="var(--text)" font-size="13" font-family="Inter">"The"</text>
+        <rect x="150" y="45" width="100" height="32" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="200" y="66" text-anchor="middle" fill="var(--text)" font-size="13" font-family="Inter">"cat"</text>
+        <rect x="260" y="45" width="100" height="32" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="310" y="66" text-anchor="middle" fill="var(--text)" font-size="13" font-family="Inter">"sat"</text>
+        <rect x="370" y="45" width="100" height="32" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="420" y="66" text-anchor="middle" fill="var(--text)" font-size="13" font-family="Inter">"on"</text>
+        <rect x="480" y="45" width="100" height="32" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="530" y="66" text-anchor="middle" fill="var(--text)" font-size="13" font-family="Inter">"the"</text>
+        <rect x="590" y="45" width="100" height="32" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="640" y="66" text-anchor="middle" fill="var(--text)" font-size="13" font-family="Inter">"mat"</text>
+        
+        <!-- Arrows down to Q/K/V -->
+        <line x1="80" y1="77" x2="80" y2="110" stroke="var(--text-faint)" stroke-width="1" stroke-dasharray="3,2"/>
+        <line x1="200" y1="77" x2="200" y2="110" stroke="var(--text-faint)" stroke-width="1" stroke-dasharray="3,2"/>
+        <line x1="310" y1="77" x2="310" y2="110" stroke="var(--text-faint)" stroke-width="1" stroke-dasharray="3,2"/>
+        <line x1="420" y1="77" x2="420" y2="110" stroke="var(--text-faint)" stroke-width="1" stroke-dasharray="3,2"/>
+        <line x1="530" y1="77" x2="530" y2="110" stroke="var(--text-faint)" stroke-width="1" stroke-dasharray="3,2"/>
+        <line x1="640" y1="77" x2="640" y2="110" stroke="var(--text-faint)" stroke-width="1" stroke-dasharray="3,2"/>
+        
+        <!-- Q/K/V Matrices -->
+        <text x="40" y="135" fill="var(--text-muted)" font-size="11" font-family="Inter" font-weight="600">投影矩阵</text>
+        
+        <!-- Q Matrix -->
+        <rect x="20" y="145" width="110" height="45" rx="6" fill="rgba(113,112,255,0.15)" stroke="var(--accent)" stroke-width="1.5"/>
+        <text x="75" y="168" text-anchor="middle" fill="var(--accent)" font-size="14" font-family="Inter" font-weight="600">Q</text>
+        <text x="75" y="183" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">Query</text>
+        
+        <!-- K Matrix -->
+        <rect x="145" y="145" width="110" height="45" rx="6" fill="rgba(16,185,129,0.15)" stroke="var(--green)" stroke-width="1.5"/>
+        <text x="200" y="168" text-anchor="middle" fill="var(--green)" font-size="14" font-family="Inter" font-weight="600">K</text>
+        <text x="200" y="183" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">Key</text>
+        
+        <!-- V Matrix -->
+        <rect x="270" y="145" width="110" height="45" rx="6" fill="rgba(245,158,11,0.15)" stroke="var(--orange)" stroke-width="1.5"/>
+        <text x="325" y="168" text-anchor="middle" fill="var(--orange)" font-size="14" font-family="Inter" font-weight="600">V</text>
+        <text x="325" y="183" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">Value</text>
+        
+        <!-- Attention Calculation -->
+        <text x="430" y="135" fill="var(--text-muted)" font-size="11" font-family="Inter" font-weight="600">注意力计算</text>
+        
+        <!-- Attention formula box -->
+        <rect x="430" y="145" width="200" height="80" rx="8" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="440" y="168" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">Scaled Dot-Product Attention:</text>
+        <text x="440" y="190" fill="var(--text)" font-size="13" font-family="JetBrains Mono">Attention(Q,K,V) = softmax(</text>
+        <text x="440" y="208" fill="var(--accent)" font-size="13" font-family="JetBrains Mono">Q·Kᵀ / √dₖ</text>
+        <text x="530" y="208" fill="var(--text)" font-size="13" font-family="JetBrains Mono">)·V</text>
+        
+        <!-- Attention weights matrix visualization -->
+        <text x="40" y="240" fill="var(--text-muted)" font-size="11" font-family="Inter" font-weight="600">注意力权重矩阵</text>
+        
+        <!-- Heatmap -->
+        <rect x="20" y="255" width="320" height="160" rx="8" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="40" y="275" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">6 × 6 attention weights</text>
+        
+        <!-- Row labels -->
+        <text x="25" y="295" fill="var(--text)" font-size="9" font-family="Inter">The</text>
+        <text x="25" y="320" fill="var(--text)" font-size="9" font-family="Inter">cat</text>
+        <text x="25" y="345" fill="var(--text)" font-size="9" font-family="Inter">sat</text>
+        <text x="25" y="370" fill="var(--text)" font-size="9" font-family="Inter">on</text>
+        <text x="25" y="395" fill="var(--text)" font-size="9" font-family="Inter">the</text>
+        <text x="25" y="410" fill="var(--text)" font-size="9" font-family="Inter">mat</text>
+        
+        <!-- Column labels -->
+        <text x="50" y="270" fill="var(--text)" font-size="9" font-family="Inter" text-anchor="middle">The</text>
+        <text x="95" y="270" fill="var(--text)" font-size="9" font-family="Inter" text-anchor="middle">cat</text>
+        <text x="145" y="270" fill="var(--text)" font-size="9" font-family="Inter" text-anchor="middle">sat</text>
+        <text x="195" y="270" fill="var(--text)" font-size="9" font-family="Inter" text-anchor="middle">on</text>
+        <text x="245" y="270" fill="var(--text)" font-size="9" font-family="Inter" text-anchor="middle">the</text>
+        <text x="295" y="270" fill="var(--text)" font-size="9" font-family="Inter" text-anchor="middle">mat</text>
+        
+        <!-- Heatmap cells (simplified) -->
+        <rect x="40" y="280" width="35" height="22" rx="2" fill="#7170ff" opacity="0.9"/><rect x="80" y="280" width="35" height="22" rx="2" fill="#7170ff" opacity="0.3"/><rect x="120" y="280" width="35" height="22" rx="2" fill="#7170ff" opacity="0.2"/><rect x="160" y="280" width="35" height="22" rx="2" fill="#7170ff" opacity="0.15"/><rect x="200" y="280" width="35" height="22" rx="2" fill="#7170ff" opacity="0.25"/><rect x="240" y="280" width="35" height="22" rx="2" fill="#7170ff" opacity="0.1"/>
+        <rect x="40" y="305" width="35" height="22" rx="2" fill="#7170ff" opacity="0.2"/><rect x="80" y="305" width="35" height="22" rx="2" fill="#7170ff" opacity="0.85"/><rect x="120" y="305" width="35" height="22" rx="2" fill="#7170ff" opacity="0.7"/><rect x="160" y="305" width="35" height="22" rx="2" fill="#7170ff" opacity="0.15"/><rect x="200" y="305" width="35" height="22" rx="2" fill="#7170ff" opacity="0.6"/><rect x="240" y="305" width="35" height="22" rx="2" fill="#7170ff" opacity="0.2"/>
+        <rect x="40" y="330" width="35" height="22" rx="2" fill="#7170ff" opacity="0.15"/><rect x="80" y="330" width="35" height="22" rx="2" fill="#7170ff" opacity="0.2"/><rect x="120" y="330" width="35" height="22" rx="2" fill="#7170ff" opacity="0.9"/><rect x="160" y="330" width="35" height="22" rx="2" fill="#7170ff" opacity="0.1"/><rect x="200" y="330" width="35" height="22" rx="2" fill="#7170ff" opacity="0.15"/><rect x="240" y="330" width="35" height="22" rx="2" fill="#7170ff" opacity="0.25"/>
+        <rect x="40" y="355" width="35" height="22" rx="2" fill="#7170ff" opacity="0.1"/><rect x="80" y="355" width="35" height="22" rx="2" fill="#7170ff" opacity="0.15"/><rect x="120" y="355" width="35" height="22" rx="2" fill="#7170ff" opacity="0.2"/><rect x="160" y="355" width="35" height="22" rx="2" fill="#7170ff" opacity="0.85"/><rect x="200" y="355" width="35" height="22" rx="2" fill="#7170ff" opacity="0.1"/><rect x="240" y="355" width="35" height="22" rx="2" fill="#7170ff" opacity="0.3"/>
+        <rect x="40" y="380" width="35" height="22" rx="2" fill="#7170ff" opacity="0.25"/><rect x="80" y="380" width="35" height="22" rx="2" fill="#7170ff" opacity="0.6"/><rect x="120" y="380" width="35" height="22" rx="2" fill="#7170ff" opacity="0.15"/><rect x="160" y="380" width="35" height="22" rx="2" fill="#7170ff" opacity="0.1"/><rect x="200" y="380" width="35" height="22" rx="2" fill="#7170ff" opacity="0.8"/><rect x="240" y="380" width="35" height="22" rx="2" fill="#7170ff" opacity="0.2"/>
+        <rect x="40" y="405" width="35" height="22" rx="2" fill="#7170ff" opacity="0.1"/><rect x="80" y="405" width="35" height="22" rx="2" fill="#7170ff" opacity="0.2"/><rect x="120" y="405" width="35" height="22" rx="2" fill="#7170ff" opacity="0.25"/><rect x="160" y="405" width="35" height="22" rx="2" fill="#7170ff" opacity="0.3"/><rect x="200" y="405" width="35" height="22" rx="2" fill="#7170ff" opacity="0.15"/><rect x="240" y="405" width="35" height="22" rx="2" fill="#7170ff" opacity="0.9"/>
+        
+        <!-- Multi-head attention -->
+        <text x="430" y="240" fill="var(--text-muted)" font-size="11" font-family="Inter" font-weight="600">多头注意力 (Multi-Head)</text>
+        
+        <rect x="430" y="255" width="350" height="155" rx="8" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
+        
+        <!-- Head boxes -->
+        <rect x="445" y="270" width="75" height="50" rx="6" fill="rgba(113,112,255,0.2)" stroke="var(--accent)" stroke-width="1"/>
+        <text x="482" y="293" text-anchor="middle" fill="var(--accent)" font-size="11" font-family="Inter" font-weight="600">Head 1</text>
+        <text x="482" y="308" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">语义关系</text>
+        
+        <rect x="530" y="270" width="75" height="50" rx="6" fill="rgba(16,185,129,0.2)" stroke="var(--green)" stroke-width="1"/>
+        <text x="567" y="293" text-anchor="middle" fill="var(--green)" font-size="11" font-family="Inter" font-weight="600">Head 2</text>
+        <text x="567" y="308" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">语法结构</text>
+        
+        <rect x="615" y="270" width="75" height="50" rx="6" fill="rgba(245,158,11,0.2)" stroke="var(--orange)" stroke-width="1"/>
+        <text x="652" y="293" text-anchor="middle" fill="var(--orange)" font-size="11" font-family="Inter" font-weight="600">Head 3</text>
+        <text x="652" y="308" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">指代关系</text>
+        
+        <rect x="700" y="270" width="70" height="50" rx="6" fill="rgba(113,112,255,0.1)" stroke="var(--text-faint)" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="735" y="293" text-anchor="middle" fill="var(--text-faint)" font-size="11" font-family="Inter" font-weight="600">...×6</text>
+        <text x="735" y="308" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">更多头</text>
+        
+        <!-- Concat output -->
+        <rect x="445" y="340" width="325" height="45" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.5"/>
+        <text x="607" y="360" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter">Concat (Head₁, Head₂, ..., Head₈)</text>
+        <text x="607" y="375" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">→ Linear projection → Output</text>
+        
+        <!-- Legend -->
+        <div class="attention-legend" style="position:absolute; bottom:10px; left:40px;">
+          <div class="attention-legend-item"><div class="attention-legend-dot" style="background:var(--accent)"></div>Query</div>
+          <div class="attention-legend-item"><div class="attention-legend-dot" style="background:var(--green)"></div>Key</div>
+          <div class="attention-legend-item"><div class="attention-legend-dot" style="background:var(--orange)"></div>Value</div>
+        </div>
+      </svg>
+    </div>
+    <p class="diagram-caption">图: Self-Attention 机制详解 — Q/K/V 投影、注意力权重矩阵、多头并行</p>
+  </section>
+
+  <!-- HISTORY TIMELINE -->
+  <section class="section">
+    <div class="section-label">历史意义</div>
     <div class="section-title">从问题到突破</div>
-    <div class="section-body">
-      <p><strong>Vaswani et al.</strong> 在 <strong>2017</strong> 年提出了 Transformer，这是机器学习发展史上的一个重要里程碑。</p>
-      <p></p>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">2014</div>
+        <div class="timeline-title">RNN/LSTM 主导 NLP</div>
+        <div class="timeline-desc">序列模型依赖循环结构，长距离依赖难以捕获，训练速度慢</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2015</div>
+        <div class="timeline-title">Attention 机制萌芽</div>
+        <div class="timeline-desc">Bahdanau 等人提出注意力机制，用于机器翻译的编码-解码框架</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2017</div>
+        <div class="timeline-title">Transformer 诞生</div>
+        <div class="timeline-desc">Vaswani et al. 发表 "Attention Is All You Need"，完全抛弃循环结构，提出 Self-Attention 和 Multi-Head Attention</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2018</div>
+        <div class="timeline-title">BERT & GPT</div>
+        <div class="timeline-desc">BERT 引入双向预训练；GPT 引入因果掩码实现单向生成，开启预训练大模型时代</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2020+</div>
+        <div class="timeline-title">GPT 系列爆发</div>
+        <div class="timeline-desc">GPT-3、GPT-4、PaLM 等巨型模型持续刷新性能边界，Transformer 成为 AI 基础设施</div>
+      </div>
     </div>
   </section>
 
+  <!-- FORMULA CARDS -->
   <section class="section">
     <div class="section-label">数学原理</div>
     <div class="section-title">核心公式</div>
+    
     <div class="formula-card">
-      <div class="formula-label">核心公式</div>
-      <div class="formula">f(x) = ...</div>
-      <div class="formula-note">根据具体模型填写</div>
+      <div class="formula-label">Scaled Dot-Product Attention</div>
+      <div class="formula">Attention(Q, K, V) = softmax(<span class="formula-highlight">QK<sup>T</sup> / √d<sub>k</sub></span>) · V</div>
+      <div class="formula-note">除以 √dₖ 防止点积过大导致 softmax 梯度消失。dₖ 是 Key 向量的维度。</div>
+    </div>
+    
+    <div class="formula-card">
+      <div class="formula-label">Multi-Head Attention</div>
+      <div class="formula">MultiHead(Q,K,V) = <span class="formula-highlight">Concat</span>(head₁, ..., head<sub>h</sub>) · W<sup>O</sup><br><span style="padding-left: 22px;">其中 head<sub>i</sub> = Attention(QW<sup>i</sup><sub>Q</sub>, KW<sup>i</sup><sub>K</sub>, VW<sup>i</sup><sub>V</sub>)</span></div>
+      <div class="formula-note">每个头使用不同的投影矩阵，捕捉不同类型的语义关系。h=8 为默认头数。</div>
+    </div>
+    
+    <div class="formula-card">
+      <div class="formula-label">Positional Encoding (Sinusoidal)</div>
+      <div class="formula">PE<sub>(pos, 2i)</sub> = sin(pos / 10000<sup>2i/d<sub>model</sub></sup>)<br>PE<sub>(pos, 2i+1)</sub> = cos(pos / 10000<sup>2i/d<sub>model</sub></sup>)</div>
+      <div class="formula-note">用正弦/余弦函数注入位置信息，无需学习参数。不同位置产生不同的编码向量。</div>
+    </div>
+    
+    <div class="formula-card">
+      <div class="formula-label">Layer Normalization</div>
+      <div class="formula">LayerNorm(x) = <span class="formula-highlight">(x - μ) / σ</span> · γ + β</div>
+      <div class="formula-note">对每个位置的 <strong>特征维度</strong> 做归一化（而非 Batch 维度），使深层训练更稳定。</div>
     </div>
   </section>
 
+  <!-- CODE BLOCK -->
   <section class="section">
     <div class="section-label">代码实现</div>
-    <div class="section-title">model.py 核心逻辑</div>
+    <div class="section-title">PyTorch 核心实现</div>
     <div class="code-block">
       <div class="code-header">
         <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
-        <span class="code-lang">Python · model.py</span>
+        <span class="code-lang">Python · transformer.py</span>
       </div>
-      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">Transformer</span>(nn.Module):
-    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+      <div class="code-body"><pre><span class="kw">import</span> torch
+<span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+<span class="kw">import</span> math
+
+<span class="kw">class</span> <span class="cls">ScaledDotProductAttention</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">forward</span>(self, Q, K, V, mask=<span class="kw">None</span>):
+        d_k = Q.size(-<span class="num">1</span>)
+        scores = torch.matmul(Q, K.transpose(-<span class="num">2</span>, -<span class="num">1</span>)) / math.sqrt(d_k)
+        <span class="kw">if</span> mask <span class="kw">is not None</span>:
+            scores = scores.masked_fill(mask == <span class="num">0</span>, -<span class="num">1e9</span>)
+        attn = torch.softmax(scores, dim=-<span class="num">1</span>)
+        <span class="kw">return</span> torch.matmul(attn, V), attn
+
+<span class="kw">class</span> <span class="cls">MultiHeadAttention</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, d_model, num_heads):
         super().__span class="fn">init__</span>()
-        <span class="cm"># 模型定义</span>
-        
-    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
-        <span class="cm"># 前向传播</span>
-        <span class="kw">return</span> x</pre></div>
+        self.num_heads = num_heads
+        self.d_k = d_model // num_heads
+        self.W_q = nn.Linear(d_model, d_model)
+        self.W_k = nn.Linear(d_model, d_model)
+        self.W_v = nn.Linear(d_model, d_model)
+        self.W_o = nn.Linear(d_model, d_model)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x, mask=<span class="kw">None</span>):
+        batch_size = x.size(<span class="num">0</span>)
+        Q = self.W_q(x).view(batch_size, -<span class="num">1</span>, self.num_heads, self.d_k).transpose(<span class="num">1</span>, <span class="num">2</span>)
+        K = self.W_k(x).view(batch_size, -<span class="num">1</span>, self.num_heads, self.d_k).transpose(<span class="num">1</span>, <span class="num">2</span>)
+        V = self.W_v(x).view(batch_size, -<span class="num">1</span>, self.num_heads, self.d_k).transpose(<span class="num">1</span>, <span class="num">2</span>)
+        attn_output, attn_weights = <span class="fn">ScaledDotProductAttention</span>(<span class="kw">self</span>)(Q, K, V, mask)
+        out = attn_output.transpose(<span class="num">1</span>, <span class="num">2</span>).contiguous().view(batch_size, -<span class="num">1</span>, self.num_heads * self.d_k)
+        <span class="kw">return</span> self.W_o(out), attn_weights</pre></div>
     </div>
   </section>
 
+  <!-- INTERACTIVE DEMO -->
+  <section class="section">
+    <div class="section-label">交互演示</div>
+    <div class="section-title">注意力权重可视化</div>
+    <div class="section-body" style="margin-bottom: 16px;">
+      <p>点击下方词汇，查看该位置对其他所有位置的注意力权重分布。</p>
+    </div>
+    <div class="demo-container">
+      <div class="demo-title">注意力权重热力图 — 点击词汇查看分布</div>
+      <div id="token-container" style="margin-bottom: 16px;"></div>
+      <div class="interactive-demo-area">
+        <svg id="heatmap-svg" viewBox="0 0 500 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px;"></svg>
+      </div>
+      <div id="attention-info" class="info-box" style="margin-top: 16px;">
+        <strong>说明：</strong>点击上方词汇，观察其对其他词的注意力权重分布。对角线表示自我关注，高权重表示强关联。
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTES -->
   <section class="section">
     <div class="section-label">学习心得</div>
     <div class="section-title">关键洞察</div>
     <div class="notes-card">
       <h4>学到的知识</h4>
       <ul>
-        <li>Transformer 是机器学习发展史上的重要模型</li>
-        <li>理解其数学原理有助于掌握后续模型</li>
+        <li>Transformer 的核心是<strong>自注意力机制</strong>，通过 Q/K/V 三个矩阵计算 Token 之间的关联度</li>
+        <li><strong>多头注意力</strong>允许模型在不同子空间中同时关注不同位置的信息</li>
+        <li><strong>位置编码</strong>解决了序列顺序问题，用正弦/余弦函数而非学习参数注入位置信息</li>
+        <li>残差连接 + Layer Normalization 是训练深层 Transformer 的关键技巧</li>
+        <li>Transformer 的 O(n²) 注意力复杂度是后续长序列模型的优化方向</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>关键洞察</h4>
+      <ul>
+        <li>自注意力的本质是：<strong>每个位置都问自己"哪些其他位置对我最重要？"</strong></li>
+        <li>Q（Query）代表当前词的"查询需求"，K（Key）代表其他词的"可被查询属性"，V（Value）是被传递的"实际内容"</li>
+        <li>多头并行的直觉：就像多人从不同角度解读一句话，各自关注不同的语义维度</li>
+        <li>LayerNorm 作用在特征维度上（而非 Batch 维度），使训练更稳定</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>与前后模型的关联</h4>
+      <ul>
+        <li><strong>承前</strong>：比 RNN/LSTM 更高效地处理长距离依赖，解决了梯度消失问题</li>
+        <li><strong>启后</strong>：BERT 在此基础上加入双向预训练；GPT 加入因果掩码实现单向生成；T5/BERT 等衍生模型进一步扩展了应用范围</li>
       </ul>
     </div>
   </section>
 
+  <!-- FOOTER NAV -->
   <div class="nav-footer">
     <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
+    <a href="../04_deep_learning_boom/05_bert/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">BERT</span></a>
   </div>
 
 </main>
+
+<script>
+// ── Interactive Attention Demo ──
+const tokens = ['The', 'cat', 'sat', 'on', 'the', 'mat'];
+// Simulated attention weights (6x6 matrix, row = query position)
+const attentionWeights = [
+  [0.45, 0.25, 0.15, 0.08, 0.05, 0.02],  // The
+  [0.12, 0.55, 0.20, 0.05, 0.06, 0.02],  // cat
+  [0.05, 0.25, 0.60, 0.03, 0.05, 0.02],  // sat
+  [0.03, 0.08, 0.15, 0.55, 0.07, 0.12],  // on
+  [0.08, 0.30, 0.10, 0.05, 0.40, 0.07],  // the
+  [0.02, 0.10, 0.20, 0.15, 0.08, 0.45]   // mat
+];
+
+let selectedIndex = -1;
+const tokenContainer = document.getElementById('token-container');
+const heatmapSvg = document.getElementById('heatmap-svg');
+const infoBox = document.getElementById('attention-info');
+
+// Create token buttons
+tokens.forEach((token, i) => {
+  const btn = document.createElement('button');
+  btn.className = 'token-btn';
+  btn.textContent = `"${token}"`;
+  btn.onclick = () => selectToken(i);
+  tokenContainer.appendChild(btn);
+});
+
+function selectToken(index) {
+  selectedIndex = index;
+  // Update button states
+  const buttons = tokenContainer.querySelectorAll('.token-btn');
+  buttons.forEach((btn, i) => {
+    btn.classList.toggle('selected', i === index);
+  });
+  
+  // Update info
+  infoBox.innerHTML = `<strong>Query: "${tokens[index]}"</strong> 的注意力分布 — 点击其他词汇切换视角`;
+  
+  renderHeatmap(index);
+}
+
+function renderHeatmap(queryIndex) {
+  const cellSize = 55;
+  const startX = 70;
+  const startY = 30;
+  const rows = tokens.length;
+  const cols = tokens.length;
+  
+  let svgContent = '';
+  
+  // Header labels (column tokens)
+  tokens.forEach((token, col) => {
+    svgContent += `<text x="${startX + col * cellSize + cellSize/2}" y="${startY - 8}" text-anchor="middle" fill="var(--text)" font-size="10" font-family="Inter">${token}</text>`;
+  });
+  
+  // Row labels
+  tokens.forEach((token, row) => {
+    svgContent += `<text x="${startX - 8}" y="${startY + row * cellSize + cellSize/2 + 4}" text-anchor="end" fill="var(--text)" font-size="10" font-family="Inter">${token}</text>`;
+  });
+  
+  // Heatmap cells
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const weight = attentionWeights[row][col];
+      const opacity = 0.1 + weight * 0.9;
+      const isHighlight = row === queryIndex;
+      const fillColor = isHighlight ? '#7170ff' : '#6362e0';
+      
+      svgContent += `<rect 
+        class="heatmap-cell ${isHighlight ? 'highlighted' : ''}"
+        x="${startX + col * cellSize + 2}" 
+        y="${startY + row * cellSize + 2}" 
+        width="${cellSize - 4}" 
+        height="${cellSize - 4}" 
+        rx="4"
+        fill="${fillColor}" 
+        opacity="${opacity}"
+        onclick="selectToken(${row})"
+      />`;
+      
+      // Weight value text
+      if (weight >= 0.3) {
+        svgContent += `<text x="${startX + col * cellSize + cellSize/2}" y="${startY + row * cellSize + cellSize/2 + 4}" text-anchor="middle" fill="${isHighlight ? '#fff' : 'var(--text-muted)'}" font-size="9" font-family="JetBrains Mono">${weight.toFixed(2)}</text>`;
+      }
+    }
+  }
+  
+  // Highlight current query row
+  if (queryIndex >= 0) {
+    svgContent += `<rect 
+      x="${startX + 2}" 
+      y="${startY + queryIndex * cellSize + 2}" 
+      width="${cols * cellSize - 4}" 
+      height="${cellSize - 4}" 
+      rx="4"
+      fill="none"
+      stroke="var(--accent)"
+      stroke-width="2"
+      stroke-dasharray="4,2"
+    />`;
+  }
+  
+  // Column labels at bottom
+  tokens.forEach((token, col) => {
+    svgContent += `<text x="${startX + col * cellSize + cellSize/2}" y="${startY + rows * cellSize + 20}" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="Inter">${token}</text>`;
+  });
+  
+  // Row labels at left
+  tokens.forEach((token, row) => {
+    svgContent += `<text x="${startX - 10}" y="${startY + row * cellSize + cellSize/2 + 4}" text-anchor="end" fill="var(--text-faint)" font-size="9" font-family="Inter">${token}</text>`;
+  });
+  
+  heatmapSvg.innerHTML = svgContent;
+}
+
+// Initialize with first token selected
+selectToken(0);
+</script>
 
 </body>
 </html>
