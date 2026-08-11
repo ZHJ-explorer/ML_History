@@ -7,14 +7,299 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
-/* Model-specific styles */
+/* GBDT-specific styles */
+.tree-visual {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin: 20px 0;
+}
+
+.boost-step {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.boost-step.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 16px var(--accent-dim);
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.step-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.step-number {
+  width: 24px;
+  height: 24px;
+  background: var(--accent);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.residual-bar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.residual-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.residual-label {
+  width: 60px;
+  font-size: 11px;
+  color: var(--text-faint);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.residual-bar-bg {
+  flex: 1;
+  height: 24px;
+  background: var(--bg-elevated);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.residual-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+}
+
+.residual-bar.positive { background: linear-gradient(90deg, var(--green-dim), var(--green)); }
+.residual-bar.negative { background: linear-gradient(90deg, var(--red-dim), var(--red)); }
+.residual-bar.zero { background: var(--bg-elevated); }
+
+.residual-value {
+  font-size: 10px;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+svg .tree-node {
+  fill: var(--bg-elevated);
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+svg .tree-node:hover {
+  fill: var(--accent-dim);
+  stroke-width: 2;
+}
+
+svg .tree-edge {
+  stroke: var(--text-muted);
+  stroke-width: 1.5;
+  fill: none;
+}
+
+svg .tree-label {
+  fill: var(--text);
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.svg-container {
+  overflow-x: auto;
+  padding: 16px 0;
+}
+
+/* Comparison table */
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+.comparison-table th,
+.comparison-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.comparison-table th {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.comparison-table td {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.comparison-table tr:hover td {
+  background: var(--bg-surface);
+}
+
+/* Interactive controls */
+.interactive-controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
+.ctrl-btn {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.ctrl-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.ctrl-btn.active {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.slider-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.slider-container input[type="range"] {
+  flex: 1;
+}
+
+.slider-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--accent);
+  min-width: 40px;
+  text-align: right;
+}
+
+/* Progress indicator */
+.progress-track {
+  display: flex;
+  gap: 4px;
+  margin: 20px 0;
+}
+
+.progress-segment {
+  flex: 1;
+  height: 4px;
+  background: var(--bg-elevated);
+  border-radius: 2px;
+  transition: background 0.3s ease;
+}
+
+.progress-segment.completed {
+  background: var(--accent);
+}
+
+.progress-segment.current {
+  background: var(--accent-dim);
+  position: relative;
+}
+
+.progress-segment.current::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: var(--accent);
+  border-radius: 2px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* Flow diagram */
+.flow-diagram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 24px 0;
+}
+
+.flow-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  text-align: center;
+  min-width: 120px;
+}
+
+.flow-box-title {
+  font-size: 11px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+
+.flow-box-value {
+  font-size: 16px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.flow-arrow {
+  color: var(--accent);
+  font-size: 20px;
+}
 </style>
 </head>
 <body>
 
 <nav class="nav">
   <div class="nav-inner">
-    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
+    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">G</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
       <a href="../02_statistical_learning/index.html">02_statistical_learning阶段</a>
@@ -28,7 +313,7 @@
   <section class="hero">
     <div class="hero-eyebrow">02_statistical_learning阶段 · 2001</div>
     <h1>GBDT</h1>
-    <p class="hero-subtitle">暂无简介</p>
+    <p class="hero-subtitle">梯度提升决策树 — 用梯度下降优化思想训练决策树集成，每棵新树拟合前一轮的负梯度（伪残差），逐步逼近最优预测。</p>
     <div class="hero-meta">
       <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">2001</span></div>
       <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Jerome Friedman</span></div>
@@ -44,57 +329,191 @@
     <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
   </div>
 
+  <!-- Flow Diagram Section -->
+  <section class="section">
+    <div class="section-label">算法流程</div>
+    <div class="section-title">梯度提升迭代流程</div>
+    <div class="flow-diagram">
+      <div class="flow-box">
+        <div class="flow-box-title">初始化</div>
+        <div class="flow-box-value">f₀(x)</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">
+        <div class="flow-box-title">计算残差</div>
+        <div class="flow-box-value">rᵢₘ</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">
+        <div class="flow-box-title">拟合树</div>
+        <div class="flow-box-value">hₘ(x)</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">
+        <div class="flow-box-title">更新模型</div>
+        <div class="flow-box-value">fₘ(x)</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">
+        <div class="flow-box-title">继续迭代</div>
+        <div class="flow-box-value">M棵树</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Boosting Demo -->
+  <section class="section">
+    <div class="section-label">交互演示</div>
+    <div class="section-title">逐步展示 Boosting 过程</div>
+    <div class="demo-container">
+      <div class="demo-title">Boosting 迭代可视化</div>
+      <div class="interactive-controls">
+        <button class="ctrl-btn active" onclick="startDemo()" id="startBtn">▶ 开始演示</button>
+        <button class="ctrl-btn" onclick="resetDemo()">↺ 重置</button>
+        <button class="ctrl-btn" onclick="stepDemo()">⏭ 单步前进</button>
+      </div>
+      <div class="slider-container">
+        <span class="demo-slider-label">迭代次数：</span>
+        <input type="range" class="demo-slider" id="iterationSlider" min="1" max="5" value="3" oninput="updateIteration(this.value)">
+        <span class="slider-value" id="iterationValue">3</span>
+      </div>
+      <div class="progress-track" id="progressTrack">
+        <div class="progress-segment" data-step="1"></div>
+        <div class="progress-segment" data-step="2"></div>
+        <div class="progress-segment" data-step="3"></div>
+        <div class="progress-segment" data-step="4"></div>
+        <div class="progress-segment" data-step="5"></div>
+      </div>
+      <div id="demoOutput" class="demo-output"></div>
+    </div>
+  </section>
+
+  <!-- SVG Architecture Diagram -->
   <section class="section">
     <div class="section-label">网络架构</div>
-    <div class="section-title">结构示意</div>
+    <div class="section-title">梯度提升树结构示意</div>
     <div class="diagram-container">
-      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
-        <!-- Generic architecture diagram -->
-        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
-        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
-        
-        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
-        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
-        
-        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
-        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
-        
+      <svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:800px;">
         <defs>
           <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
             <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
           </marker>
+          <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:var(--accent);stop-opacity:0.3"/>
+            <stop offset="100%" style="stop-color:var(--accent);stop-opacity:0"/>
+          </linearGradient>
         </defs>
+        
+        <!-- Initial Model -->
+        <rect x="20" y="100" width="100" height="100" rx="12" fill="var(--bg-elevated)" stroke="var(--text-muted)" stroke-width="1.5"/>
+        <text x="70" y="140" text-anchor="middle" fill="var(--text)" font-size="13" font-family="Inter" font-weight="500">初始模型</text>
+        <text x="70" y="160" text-anchor="middle" fill="var(--text-muted)" font-size="11" font-family="JetBrains Mono">f₀(x)</text>
+        <text x="70" y="185" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">argmin ΣL(y,γ)</text>
+        
+        <!-- Arrow to first tree -->
+        <line x1="120" y1="150" x2="160" y2="150" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
+        
+        <!-- Tree 1 -->
+        <g transform="translate(180, 60)">
+          <rect x="0" y="0" width="80" height="50" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="40" y="20" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter">决策树 h₁</text>
+          <text x="40" y="38" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">拟合残差 rᵢ₁</text>
+        </g>
+        
+        <!-- Arrow to sum -->
+        <line x1="260" y1="85" x2="320" y2="150" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
+        <text x="285" y="100" fill="var(--accent)" font-size="11" font-family="JetBrains Mono">ν·h₁</text>
+        
+        <!-- Sum node 1 -->
+        <circle cx="340" cy="150" r="20" fill="var(--accent-dim)" stroke="var(--accent)" stroke-width="1.5"/>
+        <text x="340" y="155" text-anchor="middle" fill="var(--accent)" font-size="14" font-family="JetBrains Mono" font-weight="600">+</text>
+        
+        <!-- Result 1 -->
+        <rect x="380" y="100" width="100" height="100" rx="12" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="1.5"/>
+        <text x="430" y="140" text-anchor="middle" fill="var(--text)" font-size="13" font-family="Inter" font-weight="500">f₁(x)</text>
+        <text x="430" y="160" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">= f₀ + ν·h₁</text>
+        
+        <!-- Arrow to Tree 2 -->
+        <line x1="480" y1="150" x2="540" y2="150" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
+        
+        <!-- Tree 2 -->
+        <g transform="translate(560, 60)">
+          <rect x="0" y="0" width="80" height="50" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="40" y="20" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter">决策树 h₂</text>
+          <text x="40" y="38" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">拟合残差 rᵢ₂</text>
+        </g>
+        
+        <!-- Arrow to sum 2 -->
+        <line x1="640" y1="85" x2="700" y2="150" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
+        <text x="665" y="100" fill="var(--accent)" font-size="11" font-family="JetBrains Mono">ν·h₂</text>
+        
+        <!-- Final result -->
+        <rect x="720" y="100" width="60" height="100" rx="12" fill="var(--bg-elevated)" stroke="var(--green)" stroke-width="1.5"/>
+        <text x="750" y="140" text-anchor="middle" fill="var(--green)" font-size="13" font-family="Inter" font-weight="500">...Σ</text>
+        <text x="750" y="160" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">最终预测</text>
+        
+        <!-- Legend -->
+        <text x="400" y="260" text-anchor="middle" fill="var(--text-faint)" font-size="12" font-family="Inter">每一棵决策树拟合前一阶段的负梯度（伪残差），最终通过加权求和得到预测结果</text>
       </svg>
     </div>
-    <p class="diagram-caption">图: GBDT 通用架构示意</p>
+    <p class="diagram-caption">图: GBDT 梯度提升迭代架构 — 每棵树拟合前一轮的残差，逐步优化</p>
   </section>
 
+  <!-- History Timeline -->
   <section class="section">
     <div class="section-label">历史背景</div>
     <div class="section-title">从问题到突破</div>
-    <div class="section-body">
-      <p><strong>Jerome Friedman</strong> 在 <strong>2001</strong> 年提出了 GBDT，这是机器学习发展史上的一个重要里程碑。</p>
-      <p>Jerome Friedman于2001年正式提出梯度提升机（Gradient Boosting Machine, GBM），将梯度下降优化思想应用于决策树集成。其核心创新是用负梯度（伪残差）来拟合每棵新树。后续XGBoost（2016）和LightGBM（2017）在其基础上进一步引入了正则化和直方图算法等优化。</p>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">2001</div>
+        <div class="timeline-title">GBDT 诞生</div>
+        <div class="timeline-desc">Jerome Friedman 发表《Greedy Function Approximation: A Gradient Boosting Machine》，首次将梯度下降思想应用于决策树集成学习。</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2002</div>
+        <div class="timeline-title">扩展与改进</div>
+        <div class="timeline-desc">Friedman 进一步提出半梯度提升（Half-Grebby Boosting）等变体，提升模型泛化能力。</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2016</div>
+        <div class="timeline-title">XGBoost 发布</div>
+        <div class="timeline-desc">陈天奇提出 XGBoost，引入二阶导数优化、正则化和并行计算，成为竞赛首选工具。</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2017</div>
+        <div class="timeline-title">LightGBM 诞生</div>
+        <div class="timeline-desc">微软团队提出 LightGBM，使用直方图算法和 GOSS 采样技术，大幅提升训练效率。</div>
+      </div>
     </div>
   </section>
 
+  <!-- Mathematical Formula -->
   <section class="section">
     <div class="section-label">数学原理</div>
     <div class="section-title">核心公式</div>
+    
     <div class="formula-card">
-      <div class="formula-label">核心公式</div>
-      <div class="formula">f(x) = ...</div>
-      <div class="formula-note">根据具体模型填写</div>
+      <div class="formula-label">初始化</div>
+      <div class="formula">f₀(x) = argmin<sub>γ</sub> Σ<sub>i</sub> L(y<sub>i</sub>, γ)</div>
+      <div class="formula-note">选择常数项使损失函数最小化，通常取训练标签的均值（回归）或逻辑值（分类）</div>
+    </div>
+    
+    <div class="formula-card">
+      <div class="formula-label">迭代优化 — 第 m 步</div>
+      <div class="formula">r<sub>im</sub> = −[∂L(y<sub>i</sub>, f(x<sub>i</sub>)) / ∂f(x<sub>i</sub>)]<sub>f=f<sub>m−1</sub></sub><br/>
+        h<sub>m</sub> = argmin Σ<sub>i</sub> (y<sub>i</sub> − h(x<sub>i</sub>))²<br/>
+        f<sub>m</sub>(x) = f<sub>m−1</sub>(x) + ν · h<sub>m</sub>(x)</div>
+      <div class="formula-note">计算负梯度（伪残差）→ 用决策树拟合 → 按学习率 ν 更新模型</div>
+    </div>
+    
+    <div class="formula-card">
+      <div class="formula-label">最终预测</div>
+      <div class="formula">F(x) = Σ<sub>m=1</sub><sup>M</sup> ν · h<sub>m</sub>(x)</div>
+      <div class="formula-note">M 棵树的加权求和，ν 为学习率（shrinkage），控制每棵树的贡献权重</div>
     </div>
   </section>
 
+  <!-- Code Implementation -->
   <section class="section">
     <div class="section-label">代码实现</div>
     <div class="section-title">model.py 核心逻辑</div>
@@ -103,25 +522,106 @@
         <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
         <span class="code-lang">Python · model.py</span>
       </div>
-      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">GBDT</span>(nn.Module):
-    <span class="kw">def</span> <span class="fn">__init__</span>(self):
-        super().__span class="fn">init__</span>()
-        <span class="cm"># 模型定义</span>
+      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">DecisionTree</span>:
+    <span class="kw">def</span> <span class="fn">fit</span>(self, X, y):
+        <span class="cm"># 构建决策树拟合目标值</span>
+        self.root = self._build_tree(X, y)
+        <span class="kw">return</span> self
+    
+    <span class="kw">def</span> <span class="fn">predict</span>(self, X):
+        <span class="kw">return</span> np.array([self._predict_one(x, self.root) <span class="kw">for</span> x <span class="kw">in</span> X])
+
+
+<span class="kw">class</span> <span class="cls">GBDT</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, n_estimators=100, learning_rate=0.1, max_depth=3):
+        self.n_estimators = n_estimators
+        self.learning_rate = learning_rate
+        self.trees = []
+    
+    <span class="kw">def</span> <span class="fn">fit</span>(self, X, y):
+        self.f₀ = np.mean(y)  <span class="cm"># 初始化</span>
+        self.predictions = np.full_like(y, self.f₀)
         
-    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
-        <span class="cm"># 前向传播</span>
-        <span class="kw">return</span> x</pre></div>
+        <span class="kw">for</span> m <span class="kw">in</span> range(self.n_estimators):
+            <span class="cm"># 计算负梯度（伪残差）</span>
+            residuals = y - self.predictions
+            
+            <span class="cm"># 用决策树拟合残差</span>
+            tree = DecisionTree(max_depth=self.max_depth)
+            tree.fit(X, residuals)
+            
+            <span class="cm"># 更新预测</span>
+            predictions = tree.predict(X)
+            self.predictions += self.learning_rate * predictions
+            self.trees.append(tree)
+    
+    <span class="kw">def</span> <span class="fn">predict</span>(self, X):
+        <span class="kw">return</span> self.f₀ + self.learning_rate * <span class="fn">sum</span>(
+            tree.predict(X) <span class="kw">for</span> tree <span class="kw">in</span> self.trees
+        )</pre></div>
     </div>
   </section>
 
+  <!-- Comparison: GBDT vs Random Forest -->
+  <section class="section">
+    <div class="section-label">模型对比</div>
+    <div class="section-title">GBDT vs 随机森林</div>
+    <div class="comparison-grid">
+      <div class="comparison-panel">
+        <h4>GBDT</h4>
+        <p><strong>串行集成</strong>：每棵树拟合前一轮的残差， Sequential 学习<br/>
+        <strong>偏差-方差权衡</strong>：低偏差，可通过增加树数量降低误差<br/>
+        <strong>学习率</strong>：引入 shrinkage 防止过拟合，需要更多树<br/>
+        <strong>适用场景</strong>：结构化数据竞赛、精调任务</p>
+      </div>
+      <div class="comparison-panel">
+        <h4>随机森林</h4>
+        <p><strong>并行集成</strong>：多棵树独立训练，可并行化<br/>
+        <strong>特征采样</strong>：每棵树只用部分特征，增加多样性<br/>
+        <strong>投票机制</strong>：通过多数投票或平均预测<br/>
+        <strong>适用场景</strong>：快速基线、高维数据、防过拟合</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Residual Visualization -->
+  <section class="section">
+    <div class="section-label">交互演示</div>
+    <div class="section-title">残差变化可视化</div>
+    <div class="demo-container">
+      <div class="demo-title">每轮迭代的伪残差分布</div>
+      <div class="slider-container">
+        <span class="demo-slider-label">迭代轮数：</span>
+        <input type="range" class="demo-slider" id="residualSlider" min="1" max="10" value="5" oninput="updateResidualChart(this.value)">
+        <span class="slider-value" id="residualValue">5</span>
+      </div>
+      <svg id="residualChart" viewBox="0 0 600 300" style="width:100%;max-width:600px;margin-top:20px;">
+        <!-- Chart will be generated by JavaScript -->
+      </svg>
+      <p style="font-size: 12px; color: var(--text-faint); margin-top: 12px; text-align: center;">随着迭代进行，残差逐渐减小，模型对训练数据的拟合越来越好</p>
+    </div>
+  </section>
+
+  <!-- Key Insights -->
   <section class="section">
     <div class="section-label">学习心得</div>
     <div class="section-title">关键洞察</div>
     <div class="notes-card">
       <h4>学到的知识</h4>
       <ul>
-        <li>GBDT 是机器学习发展史上的重要模型</li>
-        <li>理解其数学原理有助于掌握后续模型</li>
+        <li>GBDT 的核心思想是用梯度下降优化任意可微损失函数，而不仅是平方损失</li>
+        <li>每棵决策树拟合的是前一阶段的<strong>负梯度</strong>（伪残差），而非原始标签</li>
+        <li>学习率（shrinkage）是控制过拟合的关键超参数，较小的学习率通常需要更多迭代</li>
+        <li>GBDT 对异常值和缺失值有一定鲁棒性，适合处理真实世界数据</li>
+        <li>XGBoost 和 LightGBM 在 GBDT 基础上引入了正则化、直方图优化等创新</li>
+      </ul>
+    </div>
+    <div class="notes-card" style="margin-top: 16px;">
+      <h4>思考题</h4>
+      <ul>
+        <li>GBDT 和随机森林有什么区别？为什么 GBDT 通常效果更好？</li>
+        <li>学习率（shrinkage）在 GBDT 中的作用是什么？如何选择合适的学习率？</li>
+        <li>为什么 GBDT 可以用梯度下降来训练决策树？</li>
       </ul>
     </div>
   </section>
@@ -129,10 +629,210 @@
   <div class="nav-footer">
     <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
+    <a href="../02_statistical_learning/08_xgboost/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">XGBoost</span></a>
   </div>
 
 </main>
+
+<script>
+// Interactive Boosting Demo
+let currentStep = 0;
+let demoInterval = null;
+const totalSteps = 5;
+
+const demoData = [
+  {
+    step: 1,
+    title: '初始化',
+    description: '计算初始预测值 f₀(x)，通常为训练标签的均值',
+    residuals: [0.5, -0.3, 0.8, -0.6, 0.2],
+    truth: [1, 0, 1, 0, 1],
+    prediction: [0.4, 0.4, 0.4, 0.4, 0.4]
+  },
+  {
+    step: 2,
+    title: '第 1 轮',
+    description: '计算负梯度（伪残差），用决策树 h₁ 拟合残差',
+    residuals: [0.6, -0.7, 0.4, -0.2, 0.3],
+    truth: [1, 0, 1, 0, 1],
+    prediction: [0.46, 0.34, 0.46, 0.34, 0.46]
+  },
+  {
+    step: 3,
+    title: '第 2 轮',
+    description: '更新模型 f₂(x) = f₁(x) + ν·h₂(x)，继续拟合新残差',
+    residuals: [0.35, -0.45, 0.2, -0.1, 0.15],
+    truth: [1, 0, 1, 0, 1],
+    prediction: [0.51, 0.29, 0.51, 0.29, 0.51]
+  },
+  {
+    step: 4,
+    title: '第 3 轮',
+    description: '随着迭代进行，残差逐渐减小，模型预测越来越准确',
+    residuals: [0.18, -0.22, 0.1, -0.05, 0.08],
+    truth: [1, 0, 1, 0, 1],
+    prediction: [0.56, 0.24, 0.56, 0.24, 0.56]
+  },
+  {
+    step: 5,
+    title: '收敛',
+    description: '经过多轮迭代，模型已较好地拟合训练数据，残差趋于稳定',
+    residuals: [0.05, -0.08, 0.03, -0.02, 0.04],
+    truth: [1, 0, 1, 0, 1],
+    prediction: [0.61, 0.19, 0.61, 0.19, 0.61]
+  }
+];
+
+function startDemo() {
+  if (demoInterval) clearInterval(demoInterval);
+  currentStep = 0;
+  demoInterval = setInterval(() => {
+    if (currentStep < totalSteps) {
+      showStep(currentStep);
+      currentStep++;
+    } else {
+      clearInterval(demoInterval);
+      demoInterval = null;
+    }
+  }, 1500);
+  showStep(0);
+  currentStep = 1;
+}
+
+function resetDemo() {
+  if (demoInterval) clearInterval(demoInterval);
+  demoInterval = null;
+  currentStep = 0;
+  updateProgress(0);
+  document.getElementById('demoOutput').innerHTML = '<div style="color: var(--text-faint);">点击"开始演示"或"单步前进"查看 Boosting 过程</div>';
+}
+
+function stepDemo() {
+  if (currentStep < totalSteps) {
+    showStep(currentStep);
+    currentStep++;
+    updateProgress(currentStep);
+  }
+}
+
+function showStep(step) {
+  updateProgress(step);
+  const data = demoData[step];
+  const output = document.getElementById('demoOutput');
+  
+  let residualsHTML = '<div class="residual-bar-container" style="margin-top: 16px;">';
+  data.residuals.forEach((r, i) => {
+    const barClass = r > 0 ? 'positive' : r < 0 ? 'negative' : 'zero';
+    const width = Math.min(Math.abs(r) * 80, 100);
+    residualsHTML += `
+      <div class="residual-row">
+        <span class="residual-label">x[${i}]</span>
+        <div class="residual-bar-bg">
+          <div class="residual-bar ${barClass}" style="width: ${width}%;">
+            <span class="residual-value">${r > 0 ? '+' : ''}${r.toFixed(2)}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  residualsHTML += '</div>';
+  
+  output.innerHTML = `
+    <div style="margin-bottom: 12px;">
+      <span class="step-number" style="display: inline-flex; width: 28px; height: 28px;">${data.step}</span>
+      <strong style="color: var(--text); margin-left: 8px;">${data.title}</strong>
+    </div>
+    <p style="color: var(--text-muted); margin-bottom: 16px;">${data.description}</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div>
+        <div style="font-size: 11px; color: var(--text-faint); text-transform: uppercase; margin-bottom: 8px;">真实值 vs 预测值</div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-secondary);">
+          真实: [${data.truth.join(', ')}]<br/>
+          预测: [${data.prediction.map(p => p.toFixed(2)).join(', ')}]
+        </div>
+      </div>
+      <div>
+        <div style="font-size: 11px; color: var(--text-faint); text-transform: uppercase; margin-bottom: 8px;">伪残差分布</div>
+        ${residualsHTML}
+      </div>
+    </div>
+  `;
+}
+
+function updateProgress(step) {
+  const segments = document.querySelectorAll('.progress-segment');
+  segments.forEach((seg, i) => {
+    seg.className = 'progress-segment';
+    if (i < step) seg.classList.add('completed');
+    if (i === step) seg.classList.add('current');
+  });
+}
+
+function updateIteration(value) {
+  document.getElementById('iterationValue').textContent = value;
+  if (demoInterval) {
+    clearInterval(demoInterval);
+    demoInterval = null;
+  }
+  currentStep = Math.min(parseInt(value) - 1, totalSteps - 1);
+  showStep(currentStep);
+  updateProgress(currentStep + 1);
+}
+
+// Residual Chart
+function updateResidualChart(iterations) {
+  document.getElementById('residualValue').textContent = iterations;
+  const svg = document.getElementById('residualChart');
+  const maxIter = 10;
+  const maxResidual = 1.0;
+  
+  let html = `
+    <!-- Grid lines -->
+    <line x1="60" y1="40" x2="60" y2="260" stroke="var(--border-strong)" stroke-width="1"/>
+    <line x1="60" y1="260" x2="560" y2="260" stroke="var(--border-strong)" stroke-width="1"/>
+    
+    <!-- Y axis labels -->
+    <text x="50" y="45" text-anchor="end" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">${maxResidual}</text>
+    <text x="50" y="155" text-anchor="end" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">0.5</text>
+    <text x="50" y="265" text-anchor="end" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">0</text>
+    
+    <!-- X axis labels -->
+  `;
+  
+  for (let i = 1; i <= maxIter; i++) {
+    const x = 60 + (i - 1) * 50;
+    html += `<text x="${x}" y="280" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">${i}</text>`;
+  }
+  
+  // Draw residual curve
+  html += `<path d="`;
+  for (let i = 1; i <= parseInt(iterations); i++) {
+    const x = 60 + (i - 1) * 50;
+    const y = 260 - (Math.exp(-0.3 * i) * maxResidual * 220);
+    if (i === 1) {
+      html += `M${x},${y} `;
+    } else {
+      html += `L${x},${y} `;
+    }
+  }
+  html += `" fill="none" stroke="var(--accent)" stroke-width="2"/>`;
+  
+  // Draw dots
+  for (let i = 1; i <= parseInt(iterations); i++) {
+    const x = 60 + (i - 1) * 50;
+    const y = 260 - (Math.exp(-0.3 * i) * maxResidual * 220);
+    html += `<circle cx="${x}" cy="${y}" r="4" fill="var(--accent)" />`;
+  }
+  
+  // Title
+  html += `<text x="310" y="25" text-anchor="middle" fill="var(--text-muted)" font-size="12" font-family="Inter">残差范数随迭代次数的变化</text>`;
+  
+  svg.innerHTML = html;
+}
+
+// Initialize
+updateResidualChart(5);
+</script>
 
 </body>
 </html>
