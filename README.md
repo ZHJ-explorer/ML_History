@@ -33,17 +33,17 @@ ML_History/
 │   ├── 04_lstm/            # LSTM
 │   ├── 05_word2vec/        # Word2Vec
 │   └── 06_gan/             # GAN
-├── 04_deep_learning_boom/  # 第四阶段：深度学习爆发 (2015-2019) 🚧 进行中
-│   ├── 01_resnet/
-│   ├── 02_xgboost/
-│   ├── 03_lightgbm/
-│   ├── 04_transformer/
-│   ├── 05_bert/
-│   └── 06_gpt/
-├── 05_large_model_era/     # 第五阶段：大模型时代 (2020-)
-│   ├── 01_scaling_law/
-│   ├── 02_diffusion_model/
-│   └── 03_vit/
+├── 04_deep_learning_boom/  # 第四阶段：深度学习爆发 (2015-2019) ✅ 完成
+│   ├── 01_resnet/          # ResNet残差网络
+│   ├── 02_xgboost/         # XGBoost
+│   ├── 03_lightgbm/        # LightGBM
+│   ├── 04_transformer/     # Transformer
+│   ├── 05_bert/            # BERT
+│   └── 06_gpt/             # GPT-1
+├── 05_large_model_era/     # 第五阶段：大模型时代 (2020-) ✅ 完成
+│   ├── 01_scaling_law/     # Scaling Law缩放定律
+│   ├── 02_diffusion_model/ # 扩散模型
+│   └── 03_vit/             # ViT视觉Transformer
 ├── common/                 # 通用工具函数
 ├── docs/                   # 学习笔记与历史背景
 └── IDEA.md                 # 详细项目说明
@@ -72,15 +72,12 @@ ML_History/
 # 安装依赖
 pip install numpy matplotlib scikit-learn torch pytest
 
-# 运行测试
-python -m pytest 01_foundations/*/test_*.py -v
-python -m pytest 02_statistical_learning/*/test_*.py -v
-python -m pytest 03_deep_learning_revival/*/test_*.py -v
-
 # 运行训练演示
 python 01_foundations/01_mp_neuron/train.py
 python 02_statistical_learning/01_decision_tree/train.py
 python 03_deep_learning_revival/01_dbn/train.py
+python 04_deep_learning_boom/01_resnet/train.py
+python 05_large_model_era/01_scaling_law/train.py
 ```
 
 ## 推荐数据集
