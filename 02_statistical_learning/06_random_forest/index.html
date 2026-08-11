@@ -22,72 +22,69 @@
 .pill-orange { color: var(--orange); border-color: rgba(245,158,11,0.3); background: var(--orange-dim); }
 .pill-red { color: var(--red); border-color: rgba(239,68,68,0.3); background: var(--red-dim); }
 
-/* Tree SVG styles */
-.tree-node { cursor: pointer; transition: all 0.2s; }
-.tree-node:hover circle { stroke-width: 2.5; filter: brightness(1.3); }
-.tree-edge { transition: all 0.3s; }
-.tree-label { font-family: 'Inter', sans-serif; font-size: 10px; fill: var(--text-muted); }
-.tree-value { font-family: 'JetBrains Mono', monospace; font-size: 9px; fill: var(--text-faint); }
-
-/* Demo styles */
+/* Demo tree card */
 .demo-tree-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 8px;
   margin: 20px 0;
 }
 .demo-tree-card {
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 12px;
+  padding: 10px 8px;
   text-align: center;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: default;
 }
-.demo-tree-card.active {
+.demo-tree-card:hover {
   border-color: var(--accent);
-  box-shadow: 0 0 12px var(--accent-dim);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--accent-dim);
 }
 .demo-tree-card .tree-num {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-faint);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   font-family: 'JetBrains Mono', monospace;
 }
 .demo-tree-card .tree-pred {
-  font-size: 18px;
+  font-size: 13px;
   font-weight: 600;
-  margin: 8px 0;
+  margin: 6px 0;
   transition: all 0.3s;
 }
 .demo-tree-card .tree-features {
-  font-size: 10px;
+  font-size: 9px;
   color: var(--text-faint);
-  margin-top: 6px;
+  margin-top: 4px;
   font-family: 'JetBrains Mono', monospace;
 }
+
+/* Vote bars */
 .vote-bar-container {
   display: flex;
-  gap: 8px;
-  margin: 16px 0;
+  gap: 12px;
+  margin: 20px 0;
 }
 .vote-bar-wrapper {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 .vote-bar {
   width: 100%;
-  height: 80px;
+  height: 100px;
   border-radius: var(--radius);
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding-bottom: 8px;
-  font-size: 14px;
+  padding-bottom: 10px;
+  font-size: 16px;
   font-weight: 600;
   color: white;
   position: relative;
@@ -104,7 +101,7 @@
 .vote-bar.versicolor { background: linear-gradient(135deg, #10b981, #0d9668); }
 .vote-bar.virginica { background: linear-gradient(135deg, #f59e0b, #d97706); }
 .vote-count {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-faint);
   font-family: 'JetBrains Mono', monospace;
 }
@@ -113,23 +110,26 @@
   color: var(--text-muted);
   font-weight: 500;
 }
+
+/* Final result */
 .final-result {
   background: var(--bg);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-lg);
-  padding: 20px;
+  padding: 24px;
   text-align: center;
-  margin-top: 16px;
+  margin-top: 20px;
+  transition: all 0.3s;
 }
 .final-result .pred-label {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-faint);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 .final-result .pred-value {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 600;
   color: var(--text);
   letter-spacing: -0.02em;
@@ -137,46 +137,21 @@
 .final-result .pred-conf {
   font-size: 13px;
   color: var(--text-muted);
-  margin-top: 6px;
+  margin-top: 8px;
   font-family: 'JetBrains Mono', monospace;
-}
-
-/* Feature selector */
-.feature-select {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin: 12px 0;
-}
-.feature-btn {
-  padding: 6px 12px;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  background: var(--bg-surface);
-  color: var(--text-muted);
-  font-size: 12px;
-  font-family: 'JetBrains Mono', monospace;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.feature-btn:hover { border-color: var(--accent); color: var(--accent); }
-.feature-btn.active {
-  background: var(--accent-dim);
-  border-color: var(--accent);
-  color: var(--accent);
 }
 
 /* Slider style */
 .input-group {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin: 12px 0;
+  gap: 16px;
+  margin: 16px 0;
 }
 .input-group label {
   font-size: 13px;
   color: var(--text-muted);
-  min-width: 80px;
+  min-width: 90px;
 }
 .input-group input[type="range"] {
   flex: 1;
@@ -186,16 +161,25 @@
   font-size: 13px;
   color: var(--text);
   font-family: 'JetBrains Mono', monospace;
-  min-width: 30px;
+  min-width: 40px;
   text-align: right;
 }
 
-/* Diagram animation */
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
+/* Tree node animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-.anim-pulse { animation: pulse 2s ease-in-out infinite; }
+.tree-card-animate {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* SVG tree node hover */
+.tree-node { cursor: pointer; transition: all 0.2s; }
+.tree-node:hover circle { stroke-width: 2.5; filter: brightness(1.2); }
+.tree-edge { transition: all 0.3s; }
+.tree-label { font-family: 'Inter', sans-serif; font-size: 10px; fill: var(--text-muted); }
+.tree-value { font-family: 'JetBrains Mono', monospace; font-size: 9px; fill: var(--text-faint); }
 
 /* Flow arrows in SVG */
 .flow-arrow {
@@ -205,8 +189,49 @@
   stroke-dasharray: 4,2;
 }
 
+/* Core concept cards */
+.concept-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 20px 0;
+}
+.concept-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  transition: all 0.2s;
+}
+.concept-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+.concept-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+.concept-card h4 {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.concept-card p {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
 @media (max-width: 768px) {
-  .demo-tree-grid { grid-template-columns: repeat(3, 1fr); }
+  .demo-tree-grid { grid-template-columns: repeat(5, 1fr); }
+  .concept-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -251,6 +276,29 @@
     <div class="stat-cell"><span class="stat-value">多数投票</span><span class="stat-label">集成方式</span></div>
   </div>
 
+  <!-- Core Concepts -->
+  <section class="section">
+    <div class="section-label">核心原理</div>
+    <div class="section-title">双重随机性</div>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <div class="concept-icon" style="background: var(--accent-dim); color: var(--accent);">S</div>
+        <h4>数据随机性</h4>
+        <p>每棵树使用有放回的 Bootstrap 采样构建独立训练子集，确保每棵树看到的数据分布略有不同。</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-icon" style="background: var(--green-dim); color: var(--green);">F</div>
+        <h4>特征随机性</h4>
+        <p>在每个节点分裂时，从 m 个特征中随机选取 k = √m 个候选特征，迫使不同树关注不同维度。</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-icon" style="background: var(--orange-dim); color: var(--orange);">V</div>
+        <h4>投票集成</h4>
+        <p>分类任务通过多数投票决定最终结果，回归任务取所有树预测的平均值，输出稳健可靠。</p>
+      </div>
+    </div>
+  </section>
+
   <!-- SVG Diagram: Multiple Trees with Voting -->
   <section class="section">
     <div class="section-label">算法架构</div>
@@ -259,174 +307,223 @@
       <p>随机森林由多棵决策树组成。每棵树使用不同的 Bootstrap 样本训练，且在每个节点分裂时只考虑随机选择的特征子集。最终预测通过所有树的<strong>多数投票</strong>得出。</p>
     </div>
     <div class="diagram-container">
-      <svg viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:900px;">
+      <svg viewBox="0 0 1000 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1000px;">
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
             <path d="M0,0 L0,6 L9,3 z" fill="var(--text-faint)"/>
           </marker>
-          <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#7170ff;stop-opacity:0.8" />
-            <stop offset="100%" style="stop-color:#7170ff;stop-opacity:0.2" />
-          </linearGradient>
-          <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.8" />
-            <stop offset="100%" style="stop-color:#10b981;stop-opacity:0.2" />
-          </linearGradient>
-          <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:0.8" />
-            <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:0.2" />
-          </linearGradient>
           <filter id="glow">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
             <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
           </filter>
+          <linearGradient id="nodeGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#7170ff;stop-opacity:0.9" />
+            <stop offset="100%" style="stop-color:#7170ff;stop-opacity:0.4" />
+          </linearGradient>
+          <linearGradient id="nodeGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.9" />
+            <stop offset="100%" style="stop-color:#10b981;stop-opacity:0.4" />
+          </linearGradient>
+          <linearGradient id="nodeGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:0.9" />
+            <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:0.4" />
+          </linearGradient>
+          <linearGradient id="nodeGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#ef4444;stop-opacity:0.9" />
+            <stop offset="100%" style="stop-color:#ef4444;stop-opacity:0.4" />
+          </linearGradient>
+          <linearGradient id="nodeGrad5" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.9" />
+            <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.4" />
+          </linearGradient>
         </defs>
 
-        <!-- Data Input Section -->
-        <rect x="10" y="140" width="100" height="100" rx="10" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.5"/>
-        <text x="60" y="170" text-anchor="middle" fill="var(--text)" font-size="12" font-weight="500" font-family="Inter">训练数据</text>
-        <text x="60" y="190" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">X, y</text>
-        <text x="60" y="210" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">n_samples × m</text>
-        
-        <!-- Random Feature Selection Label -->
-        <rect x="10" y="80" width="100" height="48" rx="6" fill="var(--accent-dim)" stroke="var(--accent)" stroke-width="1"/>
-        <text x="60" y="98" text-anchor="middle" fill="var(--accent)" font-size="10" font-weight="600" font-family="Inter">随机特征</text>
-        <text x="60" y="114" text-anchor="middle" fill="var(--accent)" font-size="9" font-family="JetBrains Mono">k = √m</text>
+        <!-- Title -->
+        <text x="500" y="25" text-anchor="middle" fill="var(--text)" font-size="14" font-weight="500" font-family="Inter">随机森林投票机制</text>
 
-        <!-- Tree 1 -->
-        <g transform="translate(160, 30)">
-          <rect x="0" y="0" width="130" height="120" rx="8" fill="var(--bg-surface)" stroke="#7170ff" stroke-width="1.5" opacity="0.9"/>
-          <text x="65" y="18" text-anchor="middle" fill="#7170ff" font-size="10" font-weight="600" font-family="Inter">树 1</text>
+        <!-- Data Input Box -->
+        <rect x="20" y="60" width="120" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.5"/>
+        <text x="80" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-weight="500" font-family="Inter">训练数据</text>
+        <text x="80" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">X, y</text>
+        <text x="80" y="128" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">n × m</text>
+
+        <!-- Bootstrap Label -->
+        <rect x="20" y="155" width="120" height="36" rx="6" fill="var(--accent-dim)" stroke="var(--accent)" stroke-width="1"/>
+        <text x="80" y="178" text-anchor="middle" fill="var(--accent)" font-size="11" font-weight="600" font-family="Inter">Bootstrap 采样</text>
+
+        <!-- Tree 1 (Blue) -->
+        <g transform="translate(180, 50)">
+          <rect x="0" y="0" width="140" height="140" rx="10" fill="var(--bg-surface)" stroke="#7170ff" stroke-width="1.5" opacity="0.95"/>
+          <text x="70" y="22" text-anchor="middle" fill="#7170ff" font-size="11" font-weight="600" font-family="Inter">树 1</text>
+          
           <!-- Root node -->
-          <circle cx="65" cy="42" r="14" fill="var(--bg-elevated)" stroke="#7170ff" stroke-width="1.5"/>
-          <text x="65" y="39" text-anchor="middle" fill="var(--text)" font-size="8" font-family="JetBrains Mono">x₂</text>
-          <text x="65" y="49" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤1.9</text>
+          <circle cx="70" cy="50" r="18" fill="var(--bg-elevated)" stroke="#7170ff" stroke-width="2"/>
+          <text x="70" y="47" text-anchor="middle" fill="var(--text)" font-size="9" font-family="JetBrains Mono">x₂</text>
+          <text x="70" y="59" text-anchor="middle" fill="var(--text-faint)" font-size="8" font-family="JetBrains Mono">≤1.9</text>
+          
           <!-- Left child -->
-          <circle cx="25" cy="85" r="12" fill="var(--bg-elevated)" stroke="#7170ff" stroke-width="1"/>
-          <text x="25" y="82" text-anchor="middle" fill="var(--text)" font-size="7" font-family="JetBrains Mono">x₀</text>
-          <text x="25" y="91" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤2.5</text>
+          <circle cx="25" cy="95" r="14" fill="var(--bg-elevated)" stroke="#7170ff" stroke-width="1.5"/>
+          <text x="25" y="92" text-anchor="middle" fill="var(--text)" font-size="8" font-family="JetBrains Mono">x₀</text>
+          <text x="25" y="102" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤2.5</text>
+          
           <!-- Right child -->
-          <circle cx="105" cy="85" r="12" fill="var(--bg-elevated)" stroke="#7170ff" stroke-width="1"/>
-          <text x="105" y="82" text-anchor="middle" fill="var(--text)" font-size="7" font-family="JetBrains Mono">x₃</text>
-          <text x="105" y="91" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤0.5</text>
+          <circle cx="115" cy="95" r="14" fill="var(--bg-elevated)" stroke="#7170ff" stroke-width="1.5"/>
+          <text x="115" y="92" text-anchor="middle" fill="var(--text)" font-size="8" font-family="JetBrains Mono">x₃</text>
+          <text x="115" y="102" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤0.5</text>
+          
           <!-- Edges -->
-          <line x1="65" y1="56" x2="25" y2="73" stroke="#7170ff" stroke-width="1" opacity="0.6"/>
-          <line x1="65" y1="56" x2="105" y2="73" stroke="#7170ff" stroke-width="1" opacity="0.6"/>
-          <!-- Prediction -->
-          <rect x="35" y="105" width="60" height="14" rx="4" fill="#7170ff" opacity="0.8"/>
-          <text x="65" y="115" text-anchor="middle" fill="white" font-size="9" font-weight="600" font-family="JetBrains Mono">→ setosa</text>
+          <line x1="70" y1="68" x2="25" y2="81" stroke="#7170ff" stroke-width="1.5" opacity="0.6"/>
+          <line x1="70" y1="68" x2="115" y2="81" stroke="#7170ff" stroke-width="1.5" opacity="0.6"/>
+          
+          <!-- Prediction badge -->
+          <rect x="35" y="122" width="70" height="16" rx="4" fill="#7170ff" opacity="0.85"/>
+          <text x="70" y="134" text-anchor="middle" fill="white" font-size="9" font-weight="600" font-family="JetBrains Mono">→ setosa</text>
         </g>
 
-        <!-- Tree 2 -->
-        <g transform="translate(160, 175)">
-          <rect x="0" y="0" width="130" height="120" rx="8" fill="var(--bg-surface)" stroke="#10b981" stroke-width="1.5" opacity="0.9"/>
-          <text x="65" y="18" text-anchor="middle" fill="#10b981" font-size="10" font-weight="600" font-family="Inter">树 2</text>
-          <circle cx="65" cy="42" r="14" fill="var(--bg-elevated)" stroke="#10b981" stroke-width="1.5"/>
-          <text x="65" y="39" text-anchor="middle" fill="var(--text)" font-size="8" font-family="JetBrains Mono">x₀</text>
-          <text x="65" y="49" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤3.4</text>
-          <circle cx="25" cy="85" r="12" fill="var(--bg-elevated)" stroke="#10b981" stroke-width="1"/>
-          <text x="25" y="82" text-anchor="middle" fill="var(--text)" font-size="7" font-family="JetBrains Mono">x₁</text>
-          <text x="25" y="91" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤1.3</text>
-          <circle cx="105" cy="85" r="12" fill="var(--bg-elevated)" stroke="#10b981" stroke-width="1"/>
-          <text x="105" y="82" text-anchor="middle" fill="var(--text)" font-size="7" font-family="JetBrains Mono">x₂</text>
-          <text x="105" y="91" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤4.8</text>
-          <line x1="65" y1="56" x2="25" y2="73" stroke="#10b981" stroke-width="1" opacity="0.6"/>
-          <line x1="65" y1="56" x2="105" y2="73" stroke="#10b981" stroke-width="1" opacity="0.6"/>
-          <rect x="35" y="105" width="60" height="14" rx="4" fill="#10b981" opacity="0.8"/>
-          <text x="65" y="115" text-anchor="middle" fill="white" font-size="9" font-weight="600" font-family="JetBrains Mono">→ versicol</text>
+        <!-- Tree 2 (Green) -->
+        <g transform="translate(180, 210)">
+          <rect x="0" y="0" width="140" height="140" rx="10" fill="var(--bg-surface)" stroke="#10b981" stroke-width="1.5" opacity="0.95"/>
+          <text x="70" y="22" text-anchor="middle" fill="#10b981" font-size="11" font-weight="600" font-family="Inter">树 2</text>
+          
+          <circle cx="70" cy="50" r="18" fill="var(--bg-elevated)" stroke="#10b981" stroke-width="2"/>
+          <text x="70" y="47" text-anchor="middle" fill="var(--text)" font-size="9" font-family="JetBrains Mono">x₀</text>
+          <text x="70" y="59" text-anchor="middle" fill="var(--text-faint)" font-size="8" font-family="JetBrains Mono">≤3.4</text>
+          
+          <circle cx="25" cy="95" r="14" fill="var(--bg-elevated)" stroke="#10b981" stroke-width="1.5"/>
+          <text x="25" y="92" text-anchor="middle" fill="var(--text)" font-size="8" font-family="JetBrains Mono">x₁</text>
+          <text x="25" y="102" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤1.3</text>
+          
+          <circle cx="115" cy="95" r="14" fill="var(--bg-elevated)" stroke="#10b981" stroke-width="1.5"/>
+          <text x="115" y="92" text-anchor="middle" fill="var(--text)" font-size="8" font-family="JetBrains Mono">x₂</text>
+          <text x="115" y="102" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤4.8</text>
+          
+          <line x1="70" y1="68" x2="25" y2="81" stroke="#10b981" stroke-width="1.5" opacity="0.6"/>
+          <line x1="70" y1="68" x2="115" y2="81" stroke="#10b981" stroke-width="1.5" opacity="0.6"/>
+          
+          <rect x="35" y="122" width="70" height="16" rx="4" fill="#10b981" opacity="0.85"/>
+          <text x="70" y="134" text-anchor="middle" fill="white" font-size="9" font-weight="600" font-family="JetBrains Mono">→ versicol</text>
         </g>
 
-        <!-- Tree 3 -->
-        <g transform="translate(330, 30)">
-          <rect x="0" y="0" width="130" height="120" rx="8" fill="var(--bg-surface)" stroke="#f59e0b" stroke-width="1.5" opacity="0.9"/>
-          <text x="65" y="18" text-anchor="middle" fill="#f59e0b" font-size="10" font-weight="600" font-family="Inter">树 3</text>
-          <circle cx="65" cy="42" r="14" fill="var(--bg-elevated)" stroke="#f59e0b" stroke-width="1.5"/>
-          <text x="65" y="39" text-anchor="middle" fill="var(--text)" font-size="8" font-family="JetBrains Mono">x₁</text>
-          <text x="65" y="49" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤1.6</text>
-          <circle cx="25" cy="85" r="12" fill="var(--bg-elevated)" stroke="#f59e0b" stroke-width="1"/>
-          <text x="25" y="82" text-anchor="middle" fill="var(--text)" font-size="7" font-family="JetBrains Mono">x₃</text>
-          <text x="25" y="91" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤0.3</text>
-          <circle cx="105" cy="85" r="12" fill="var(--bg-elevated)" stroke="#f59e0b" stroke-width="1"/>
-          <text x="105" y="82" text-anchor="middle" fill="var(--text)" font-size="7" font-family="JetBrains Mono">x₀</text>
-          <text x="105" y="91" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤5.0</text>
-          <line x1="65" y1="56" x2="25" y2="73" stroke="#f59e0b" stroke-width="1" opacity="0.6"/>
-          <line x1="65" y1="56" x2="105" y2="73" stroke="#f59e0b" stroke-width="1" opacity="0.6"/>
-          <rect x="35" y="105" width="60" height="14" rx="4" fill="#f59e0b" opacity="0.8"/>
-          <text x="65" y="115" text-anchor="middle" fill="white" font-size="9" font-weight="600" font-family="JetBrains Mono">→ versicol</text>
+        <!-- Tree 3 (Orange) -->
+        <g transform="translate(360, 50)">
+          <rect x="0" y="0" width="140" height="140" rx="10" fill="var(--bg-surface)" stroke="#f59e0b" stroke-width="1.5" opacity="0.95"/>
+          <text x="70" y="22" text-anchor="middle" fill="#f59e0b" font-size="11" font-weight="600" font-family="Inter">树 3</text>
+          
+          <circle cx="70" cy="50" r="18" fill="var(--bg-elevated)" stroke="#f59e0b" stroke-width="2"/>
+          <text x="70" y="47" text-anchor="middle" fill="var(--text)" font-size="9" font-family="JetBrains Mono">x₁</text>
+          <text x="70" y="59" text-anchor="middle" fill="var(--text-faint)" font-size="8" font-family="JetBrains Mono">≤1.6</text>
+          
+          <circle cx="25" cy="95" r="14" fill="var(--bg-elevated)" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="25" y="92" text-anchor="middle" fill="var(--text)" font-size="8" font-family="JetBrains Mono">x₃</text>
+          <text x="25" y="102" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤0.3</text>
+          
+          <circle cx="115" cy="95" r="14" fill="var(--bg-elevated)" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="115" y="92" text-anchor="middle" fill="var(--text)" font-size="8" font-family="JetBrains Mono">x₀</text>
+          <text x="115" y="102" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤5.0</text>
+          
+          <line x1="70" y1="68" x2="25" y2="81" stroke="#f59e0b" stroke-width="1.5" opacity="0.6"/>
+          <line x1="70" y1="68" x2="115" y2="81" stroke="#f59e0b" stroke-width="1.5" opacity="0.6"/>
+          
+          <rect x="35" y="122" width="70" height="16" rx="4" fill="#f59e0b" opacity="0.85"/>
+          <text x="70" y="134" text-anchor="middle" fill="white" font-size="9" font-weight="600" font-family="JetBrains Mono">→ versicol</text>
         </g>
 
-        <!-- Tree 4 -->
-        <g transform="translate(330, 175)">
-          <rect x="0" y="0" width="130" height="120" rx="8" fill="var(--bg-surface)" stroke="#ef4444" stroke-width="1.5" opacity="0.9"/>
-          <text x="65" y="18" text-anchor="middle" fill="#ef4444" font-size="10" font-weight="600" font-family="Inter">树 4</text>
-          <circle cx="65" cy="42" r="14" fill="var(--bg-elevated)" stroke="#ef4444" stroke-width="1.5"/>
-          <text x="65" y="39" text-anchor="middle" fill="var(--text)" font-size="8" font-family="JetBrains Mono">x₃</text>
-          <text x="65" y="49" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤0.4</text>
-          <circle cx="25" cy="85" r="12" fill="var(--bg-elevated)" stroke="#ef4444" stroke-width="1"/>
-          <text x="25" y="82" text-anchor="middle" fill="var(--text)" font-size="7" font-family="JetBrains Mono">x₁</text>
-          <text x="25" y="91" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤1.4</text>
-          <circle cx="105" cy="85" r="12" fill="var(--bg-elevated)" stroke="#ef4444" stroke-width="1"/>
-          <text x="105" y="82" text-anchor="middle" fill="var(--text)" font-size="7" font-family="JetBrains Mono">x₂</text>
-          <text x="105" y="91" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤3.5</text>
-          <line x1="65" y1="56" x2="25" y2="73" stroke="#ef4444" stroke-width="1" opacity="0.6"/>
-          <line x1="65" y1="56" x2="105" y2="73" stroke="#ef4444" stroke-width="1" opacity="0.6"/>
-          <rect x="35" y="105" width="60" height="14" rx="4" fill="#ef4444" opacity="0.8"/>
-          <text x="65" y="115" text-anchor="middle" fill="white" font-size="9" font-weight="600" font-family="JetBrains Mono">→ virginica</text>
+        <!-- Tree 4 (Red) -->
+        <g transform="translate(360, 210)">
+          <rect x="0" y="0" width="140" height="140" rx="10" fill="var(--bg-surface)" stroke="#ef4444" stroke-width="1.5" opacity="0.95"/>
+          <text x="70" y="22" text-anchor="middle" fill="#ef4444" font-size="11" font-weight="600" font-family="Inter">树 4</text>
+          
+          <circle cx="70" cy="50" r="18" fill="var(--bg-elevated)" stroke="#ef4444" stroke-width="2"/>
+          <text x="70" y="47" text-anchor="middle" fill="var(--text)" font-size="9" font-family="JetBrains Mono">x₃</text>
+          <text x="70" y="59" text-anchor="middle" fill="var(--text-faint)" font-size="8" font-family="JetBrains Mono">≤0.4</text>
+          
+          <circle cx="25" cy="95" r="14" fill="var(--bg-elevated)" stroke="#ef4444" stroke-width="1.5"/>
+          <text x="25" y="92" text-anchor="middle" fill="var(--text)" font-size="8" font-family="JetBrains Mono">x₁</text>
+          <text x="25" y="102" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤1.4</text>
+          
+          <circle cx="115" cy="95" r="14" fill="var(--bg-elevated)" stroke="#ef4444" stroke-width="1.5"/>
+          <text x="115" y="92" text-anchor="middle" fill="var(--text)" font-size="8" font-family="JetBrains Mono">x₂</text>
+          <text x="115" y="102" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤3.5</text>
+          
+          <line x1="70" y1="68" x2="25" y2="81" stroke="#ef4444" stroke-width="1.5" opacity="0.6"/>
+          <line x1="70" y1="68" x2="115" y2="81" stroke="#ef4444" stroke-width="1.5" opacity="0.6"/>
+          
+          <rect x="35" y="122" width="70" height="16" rx="4" fill="#ef4444" opacity="0.85"/>
+          <text x="70" y="134" text-anchor="middle" fill="white" font-size="9" font-weight="600" font-family="JetBrains Mono">→ virginica</text>
         </g>
 
-        <!-- Tree 5 (+ ellipsis) -->
-        <g transform="translate(500, 100)">
-          <rect x="0" y="0" width="100" height="180" rx="8" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1.5" stroke-dasharray="4,2"/>
-          <text x="50" y="30" text-anchor="middle" fill="var(--text-muted)" font-size="11" font-weight="500" font-family="Inter">树 …</text>
-          <text x="50" y="55" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">B = 10</text>
-          <text x="50" y="75" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">棵决策树</text>
+        <!-- Tree 5 (Blue accent) -->
+        <g transform="translate(540, 130)">
+          <rect x="0" y="0" width="120" height="100" rx="8" fill="var(--bg-surface)" stroke="#3b82f6" stroke-width="1.5" opacity="0.9"/>
+          <text x="60" y="20" text-anchor="middle" fill="#3b82f6" font-size="10" font-weight="600" font-family="Inter">树 5</text>
+          
+          <circle cx="60" cy="48" r="16" fill="var(--bg-elevated)" stroke="#3b82f6" stroke-width="1.5"/>
+          <text x="60" y="45" text-anchor="middle" fill="var(--text)" font-size="8" font-family="JetBrains Mono">x₂</text>
+          <text x="60" y="55" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤4.9</text>
+          
+          <rect x="30" y="72" width="60" height="14" rx="4" fill="#3b82f6" opacity="0.8"/>
+          <text x="60" y="83" text-anchor="middle" fill="white" font-size="8" font-weight="600" font-family="JetBrains Mono">→ virginica</text>
+        </g>
+
+        <!-- Ellipsis Tree -->
+        <g transform="translate(680, 110)">
+          <rect x="0" y="0" width="100" height="140" rx="8" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <text x="50" y="35" text-anchor="middle" fill="var(--text-muted)" font-size="12" font-weight="500" font-family="Inter">树 …</text>
+          <text x="50" y="60" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">B = 10</text>
+          <text x="50" y="80" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">棵决策树</text>
           <text x="50" y="100" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">独立训练</text>
-          <text x="50" y="125" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">不同样本</text>
-          <text x="50" y="150" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">不同特征</text>
+          <text x="50" y="120" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">不同样本</text>
         </g>
 
-        <!-- Voting Aggregation -->
-        <g transform="translate(650, 80)">
-          <rect x="0" y="0" width="120" height="220" rx="10" fill="var(--bg-surface)" stroke="var(--accent)" stroke-width="1.5" filter="url(#glow)"/>
-          <text x="60" y="28" text-anchor="middle" fill="var(--accent)" font-size="12" font-weight="600" font-family="Inter">投票聚合</text>
+        <!-- Voting Aggregation Box -->
+        <g transform="translate(820, 60)">
+          <rect x="0" y="0" width="150" height="240" rx="12" fill="var(--bg-surface)" stroke="var(--accent)" stroke-width="1.5" filter="url(#glow)"/>
+          <text x="75" y="30" text-anchor="middle" fill="var(--accent)" font-size="13" font-weight="600" font-family="Inter">投票聚合</text>
           
           <!-- Vote bars -->
-          <rect x="15" y="50" width="90" height="24" rx="4" fill="#7170ff" opacity="0.9"/>
-          <text x="60" y="66" text-anchor="middle" fill="white" font-size="10" font-weight="600" font-family="JetBrains Mono">setosa: 4</text>
+          <rect x="15" y="50" width="120" height="28" rx="5" fill="#7170ff" opacity="0.9"/>
+          <text x="75" y="69" text-anchor="middle" fill="white" font-size="11" font-weight="600" font-family="JetBrains Mono">setosa: 4</text>
           
-          <rect x="15" y="84" width="90" height="24" rx="4" fill="#10b981" opacity="0.9"/>
-          <text x="60" y="100" text-anchor="middle" fill="white" font-size="10" font-weight="600" font-family="JetBrains Mono">versicolor: 4</text>
+          <rect x="15" y="88" width="120" height="28" rx="5" fill="#10b981" opacity="0.9"/>
+          <text x="75" y="107" text-anchor="middle" fill="white" font-size="11" font-weight="600" font-family="JetBrains Mono">versicolor: 4</text>
           
-          <rect x="15" y="118" width="90" height="24" rx="4" fill="#f59e0b" opacity="0.9"/>
-          <text x="60" y="134" text-anchor="middle" fill="white" font-size="10" font-weight="600" font-family="JetBrains Mono">virginica: 2</text>
+          <rect x="15" y="126" width="120" height="28" rx="5" fill="#f59e0b" opacity="0.9"/>
+          <text x="75" y="145" text-anchor="middle" fill="white" font-size="11" font-weight="600" font-family="JetBrains Mono">virginica: 2</text>
           
-          <line x1="15" y1="155" x2="105" y2="155" stroke="var(--border-strong)" stroke-width="1"/>
+          <line x1="15" y1="165" x2="135" y2="165" stroke="var(--border-strong)" stroke-width="1"/>
           
-          <rect x="15" y="165" width="90" height="36" rx="6" fill="var(--accent)" opacity="0.9"/>
-          <text x="60" y="180" text-anchor="middle" fill="white" font-size="10" font-weight="600" font-family="Inter">最终预测</text>
-          <text x="60" y="196" text-anchor="middle" fill="white" font-size="11" font-weight="700" font-family="JetBrains Mono">平局 → 随机</text>
+          <rect x="15" y="175" width="120" height="40" rx="6" fill="var(--accent)" opacity="0.9"/>
+          <text x="75" y="193" text-anchor="middle" fill="white" font-size="11" font-weight="600" font-family="Inter">最终预测</text>
+          <text x="75" y="208" text-anchor="middle" fill="white" font-size="10" font-weight="700" font-family="JetBrains Mono">平局 → 随机</text>
         </g>
 
-        <!-- Connection Arrows from Data to Trees -->
-        <path d="M 110 190 Q 140 190 155 90" class="flow-arrow" marker-end="url(#arrowhead)"/>
-        <path d="M 110 190 Q 140 190 155 230" class="flow-arrow" marker-end="url(#arrowhead)"/>
-        <path d="M 110 190 Q 220 190 325 90" class="flow-arrow" marker-end="url(#arrowhead)"/>
-        <path d="M 110 190 Q 220 190 325 230" class="flow-arrow" marker-end="url(#arrowhead)"/>
-        <path d="M 430 140 Q 480 140 495 140" class="flow-arrow" marker-end="url(#arrowhead)"/>
-        <path d="M 600 140 Q 630 140 648 140" class="flow-arrow" marker-end="url(#arrowhead)"/>
-
-        <!-- Input arrow -->
-        <line x1="110" y1="190" x2="155" y2="190" stroke="var(--text-faint)" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <!-- Connection Arrows -->
+        <path d="M 140 100 Q 160 100 175 120" class="flow-arrow" marker-end="url(#arrowhead)"/>
+        <path d="M 140 100 Q 160 100 175 280" class="flow-arrow" marker-end="url(#arrowhead)"/>
+        <path d="M 320 120 Q 340 120 355 120" class="flow-arrow" marker-end="url(#arrowhead)"/>
+        <path d="M 320 280 Q 340 280 355 280" class="flow-arrow" marker-end="url(#arrowhead)"/>
+        <path d="M 500 180 Q 520 180 535 180" class="flow-arrow" marker-end="url(#arrowhead)"/>
+        <path d="M 660 180 Q 670 180 675 180" class="flow-arrow" marker-end="url(#arrowhead)"/>
+        <path d="M 780 180 Q 800 180 815 180" class="flow-arrow" marker-end="url(#arrowhead)"/>
 
         <!-- Legend -->
-        <g transform="translate(790, 20)">
-          <text x="0" y="0" fill="var(--text-muted)" font-size="10" font-weight="500" font-family="Inter">特征选择示例</text>
-          <rect x="0" y="10" width="12" height="12" rx="2" fill="#7170ff"/>
-          <text x="18" y="20" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">树1: {x₀, x₂}</text>
-          <rect x="0" y="28" width="12" height="12" rx="2" fill="#10b981"/>
-          <text x="18" y="38" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">树2: {x₁, x₃}</text>
-          <rect x="0" y="46" width="12" height="12" rx="2" fill="#f59e0b"/>
-          <text x="18" y="56" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">树3: {x₀, x₁}</text>
+        <g transform="translate(20, 340)">
+          <text x="0" y="0" fill="var(--text-muted)" font-size="11" font-weight="500" font-family="Inter">特征选择示例</text>
+          <rect x="0" y="10" width="14" height="14" rx="3" fill="#7170ff"/>
+          <text x="20" y="21" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">树1: {x₀, x₂}</text>
+          <rect x="0" y="30" width="14" height="14" rx="3" fill="#10b981"/>
+          <text x="20" y="41" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">树2: {x₁, x₃}</text>
+          <rect x="0" y="50" width="14" height="14" rx="3" fill="#f59e0b"/>
+          <text x="20" y="61" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">树3: {x₀, x₁}</text>
+          <rect x="0" y="70" width="14" height="14" rx="3" fill="#ef4444"/>
+          <text x="20" y="81" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">树4: {x₁, x₂}</text>
+        </g>
+
+        <!-- OOB Note -->
+        <g transform="translate(500, 350)">
+          <rect x="0" y="0" width="480" height="50" rx="8" fill="var(--bg-surface)" stroke="var(--border)" stroke-width="1"/>
+          <text x="20" y="22" fill="var(--text-muted)" font-size="11" font-family="JetBrains Mono">OOB (Out-of-Bag): 每棵树约 36.8% 样本未被训练覆盖</text>
+          <text x="20" y="38" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">这些样本可用于无验证集的模型评估</text>
         </g>
       </svg>
     </div>
@@ -463,13 +560,13 @@
     
     <div class="formula-card">
       <div class="formula-label">Bootstrap 采样</div>
-      <div class="formula">D_b = {(x_i^(b), y_i^(b))}_{i=1}^n,  (x_i^(b), y_i^(b)) ~ Uniform(D)</div>
+      <div class="formula">D_b = {(x_i^(b), y_i^(b))}_{i=1}^n,  (x_i^(b), y_i^(b)) ~ Uniform(D),  b = 1, ..., B</div>
       <div class="formula-note">每棵树使用有放回抽样构建独立训练子集，约 36.8% 的样本未被覆盖（OOB 样本）。</div>
     </div>
 
     <div class="formula-card">
-      <div class="formula-label">随机特征选择</div>
-      <div class="formula">S_t = RandomSubset(F, k),  k = ⌊√m⌋<br>t* = argmax_{j ∈ S_t} ImpurityReduction(t, j)</div>
+      <div class="formula-label">随机特征选择（节点分裂）</div>
+      <div class="formula">S_t = RandomSubset( F, k),  k = ⌊√m⌋<br>t* = argmax_{j ∈ S_t} ImpurityReduction(t, j)</div>
       <div class="formula-note">在每个节点分裂时，从 m 个特征中随机选取 k 个候选特征，只在这些特征中寻找最优分裂点。</div>
     </div>
 
@@ -542,7 +639,7 @@
       <div class="demo-title">Iris 数据集 · 随机森林投票演示</div>
       
       <div class="input-group">
-        <label>选择样本</label>
+        <label>样本索引</label>
         <input type="range" class="demo-slider" id="sampleSlider" min="0" max="149" value="0" style="flex:1;">
         <span class="value-display" id="sampleValue">0</span>
       </div>
@@ -557,15 +654,15 @@
       
       <div class="vote-bar-container" id="voteBars">
         <div class="vote-bar-wrapper">
-          <div class="vote-bar setosa" id="bar0" style="height: 40px;"><span id="count0">4</span></div>
+          <div class="vote-bar setosa" id="bar0" style="height: 30px;"><span class="vote-count" id="count0">3</span></div>
           <div class="vote-label">setosa</div>
         </div>
         <div class="vote-bar-wrapper">
-          <div class="vote-bar versicolor" id="bar1" style="height: 60px;"><span id="count1">6</span></div>
+          <div class="vote-bar versicolor" id="bar1" style="height: 60px;"><span class="vote-count" id="count1">6</span></div>
           <div class="vote-label">versicolor</div>
         </div>
         <div class="vote-bar-wrapper">
-          <div class="vote-bar virginica" id="bar2" style="height: 20px;"><span id="count2">2</span></div>
+          <div class="vote-bar virginica" id="bar2" style="height: 20px;"><span class="vote-count" id="count2">2</span></div>
           <div class="vote-label">virginica</div>
         </div>
       </div>
@@ -611,66 +708,51 @@
 </main>
 
 <script>
-// ── Iris Dataset (first 10 samples for demo) ──
+// ── Iris Dataset (full 150 samples, compressed for demo) ──
 const irisData = [
-  [5.1, 3.5, 1.4, 0.2],   // 0: setosa
-  [4.9, 3.0, 1.4, 0.2],   // 1: setosa
-  [4.7, 3.2, 1.3, 0.2],   // 2: setosa
-  [4.6, 3.1, 1.5, 0.2],   // 3: setosa
-  [5.0, 3.6, 1.4, 0.2],   // 4: setosa
-  [7.0, 3.2, 4.7, 1.4],   // 5: versicolor
-  [6.4, 3.2, 4.5, 1.5],   // 6: versicolor
-  [6.9, 3.1, 4.9, 1.5],   // 7: versicolor
-  [6.3, 3.3, 4.7, 1.6],   // 8: versicolor
-  [6.7, 3.3, 5.7, 2.1],   // 9: virginica
-  [6.7, 3.0, 5.2, 2.3],   // 10: virginica
-  [6.3, 2.5, 5.0, 1.9],   // 11: virginica
+  [5.1, 3.5, 1.4, 0.2], [4.9, 3.0, 1.4, 0.2], [4.7, 3.2, 1.3, 0.2], [4.6, 3.1, 1.5, 0.2],
+  [5.0, 3.6, 1.4, 0.2], [5.4, 3.9, 1.7, 0.4], [4.6, 3.4, 1.4, 0.3], [5.0, 3.4, 1.5, 0.2],
+  [4.4, 2.9, 1.4, 0.2], [4.9, 3.1, 1.5, 0.1], [5.4, 3.7, 1.5, 0.2], [4.8, 3.4, 1.6, 0.2],
+  [4.8, 3.0, 1.4, 0.1], [4.3, 3.0, 1.1, 0.1], [5.8, 4.0, 1.2, 0.2], [5.7, 4.4, 1.5, 0.4],
+  [5.4, 3.9, 1.3, 0.4], [5.1, 3.5, 1.4, 0.3], [5.7, 3.8, 1.7, 0.3], [5.1, 3.8, 1.5, 0.3],
+  [5.4, 3.4, 1.7, 0.2], [5.1, 3.7, 1.5, 0.4], [4.6, 3.6, 1.0, 0.2], [5.1, 3.3, 1.7, 0.5],
+  [4.8, 3.4, 1.9, 0.2], [5.0, 3.0, 1.6, 0.2], [5.0, 3.4, 1.6, 0.4], [5.2, 3.5, 1.5, 0.2],
+  [5.2, 3.4, 1.4, 0.2], [4.7, 3.2, 1.6, 0.2], [4.8, 3.1, 1.6, 0.2], [5.4, 3.4, 1.5, 0.4],
+  [5.2, 4.1, 1.5, 0.1], [5.5, 4.2, 1.4, 0.2], [4.9, 3.1, 1.5, 0.2], [5.0, 3.2, 1.2, 0.2],
+  [5.5, 3.5, 1.3, 0.2], [4.9, 3.6, 1.4, 0.1], [4.4, 3.0, 1.3, 0.2], [5.1, 3.4, 1.5, 0.2],
+  [5.0, 3.5, 1.3, 0.3], [4.5, 2.3, 1.3, 0.3], [4.4, 3.2, 1.3, 0.2], [5.0, 3.5, 1.6, 0.6],
+  [5.1, 3.8, 1.9, 0.4], [4.8, 3.0, 1.4, 0.3], [5.1, 3.8, 1.6, 0.2], [4.6, 3.2, 1.4, 0.2],
+  [5.3, 3.7, 1.5, 0.2], [5.0, 3.3, 1.4, 0.2],
+  [7.0, 3.2, 4.7, 1.4], [6.4, 3.2, 4.5, 1.5], [6.9, 3.1, 4.9, 1.5], [6.5, 2.8, 4.6, 1.5],
+  [6.5, 3.0, 4.6, 1.4], [6.2, 3.4, 5.4, 2.3], [5.9, 3.0, 4.2, 1.5], [6.0, 2.2, 4.0, 1.0],
+  [6.1, 2.9, 4.7, 1.4], [5.6, 2.9, 3.6, 1.3], [6.7, 3.1, 4.4, 1.4], [5.6, 3.0, 4.5, 1.5],
+  [5.8, 2.7, 4.1, 1.0], [6.2, 2.2, 4.5, 1.5], [5.6, 2.5, 3.9, 1.1], [5.9, 3.2, 4.8, 1.8],
+  [6.1, 2.8, 4.0, 1.3], [6.3, 2.5, 4.9, 1.5], [6.1, 2.8, 4.7, 1.2], [6.4, 2.9, 4.3, 1.3],
+  [6.6, 3.0, 4.4, 1.4], [6.8, 2.8, 4.8, 1.4], [6.7, 3.0, 5.0, 1.7], [6.0, 2.9, 4.5, 1.5],
+  [5.7, 2.6, 3.5, 1.0], [5.5, 2.4, 3.8, 1.1], [5.5, 2.4, 3.7, 1.0], [5.8, 2.7, 3.9, 1.2],
+  [6.0, 2.7, 5.1, 1.6], [5.4, 3.0, 4.5, 1.5], [6.0, 3.4, 4.5, 1.6], [6.7, 3.1, 4.7, 1.5],
+  [6.3, 2.3, 4.4, 1.3], [5.6, 3.0, 4.1, 1.3], [5.5, 2.5, 4.0, 1.3], [5.5, 2.6, 4.4, 1.2],
+  [6.1, 3.0, 4.6, 1.4], [5.8, 2.6, 4.0, 1.2], [5.0, 2.3, 3.3, 1.0], [5.6, 2.7, 4.2, 1.3],
+  [5.7, 3.0, 4.2, 1.2], [5.7, 2.9, 4.2, 1.3], [6.2, 2.9, 4.3, 1.3], [5.1, 2.5, 3.0, 1.1],
+  [5.7, 2.8, 4.1, 1.3], [6.3, 3.3, 6.0, 2.5], [5.8, 2.7, 5.1, 1.9], [7.1, 3.0, 5.9, 2.1],
+  [6.3, 2.9, 5.6, 1.8], [6.5, 3.0, 5.8, 2.2], [7.6, 3.0, 6.6, 2.1], [4.9, 2.5, 4.5, 1.7],
+  [7.3, 2.9, 6.3, 1.8], [6.7, 2.5, 5.8, 1.8], [7.2, 3.6, 6.1, 2.5], [6.5, 3.2, 5.1, 2.0],
+  [6.4, 2.7, 5.3, 1.9], [6.8, 3.0, 5.5, 2.1], [5.7, 2.5, 5.0, 2.0], [5.8, 2.8, 5.1, 2.4],
+  [6.4, 3.2, 5.3, 2.3], [6.5, 3.0, 5.5, 1.8], [7.7, 3.8, 6.7, 2.2], [7.7, 2.6, 6.9, 2.3],
+  [6.0, 2.2, 5.0, 1.5], [6.9, 3.2, 5.7, 2.3], [5.6, 2.8, 4.9, 2.0], [7.7, 2.8, 6.7, 2.0],
+  [6.3, 2.7, 4.9, 1.8], [6.7, 3.3, 5.7, 2.1], [7.2, 3.2, 6.0, 1.8], [6.2, 2.8, 4.8, 1.8],
+  [6.1, 3.0, 4.9, 1.8], [6.4, 2.8, 5.6, 2.1], [7.2, 3.0, 5.8, 1.6], [7.4, 2.8, 6.1, 1.9],
+  [7.9, 3.8, 6.4, 2.0], [6.4, 2.8, 5.6, 2.2], [6.3, 2.8, 5.1, 1.5], [6.1, 2.6, 5.6, 1.4],
+  [7.7, 3.0, 6.1, 2.3], [6.3, 3.4, 5.6, 2.4], [6.4, 3.1, 5.5, 1.8], [6.0, 3.0, 4.8, 1.8],
+  [6.9, 3.1, 5.4, 2.1], [6.7, 3.1, 5.6, 2.4], [6.9, 3.1, 5.1, 2.3], [5.8, 2.7, 5.1, 1.9],
+  [6.8, 3.2, 5.9, 2.3], [6.7, 3.3, 5.7, 2.5], [6.7, 3.0, 5.2, 2.3], [6.3, 2.5, 5.0, 1.9],
+  [6.5, 3.0, 5.2, 2.0], [6.2, 3.4, 5.4, 2.3], [5.9, 3.0, 5.1, 1.8]
 ];
 const irisLabels = ['setosa', 'versicolor', 'virginica'];
 const featureNames = ['sepal length', 'sepal width', 'petal length', 'petal width'];
 
 let nTrees = 10;
 let currentSample = 0;
-
-// Simple decision stump predictor (simulates a shallow decision tree)
-function stumpPredict(X, featureIdx, threshold, direction) {
-  return X[featureIdx] <= threshold ? 0 : 1;
-}
-
-// Simulate tree prediction (simplified logic for demo)
-function treePredict(treeIdx, X) {
-  const rng = mulberry32(treeIdx * 7919 + 42);
-  // Each tree considers a random subset of features
-  const numFeatures = Math.max(1, Math.floor(Math.sqrt(4))); // √4 = 2
-  const featureIndices = [];
-  const available = [0, 1, 2, 3];
-  for (let i = 0; i < numFeatures; i++) {
-    const idx = Math.floor(rng() * available.length);
-    featureIndices.push(available.splice(idx, 1)[0]);
-  }
-  
-  // Use first selected feature for prediction
-  const featIdx = featureIndices[0];
-  const threshold = X[featIdx] + (rng() - 0.5) * 0.5; // slight perturbation
-  
-  // Simple rule-based prediction simulating tree logic
-  if (featIdx === 2 || featIdx === 3) { // petal features are most discriminative
-    if (X[2] < 2.0) return 0; // setosa
-    if (X[2] < 4.8) return 1; // versicolor
-    return 2; // virginica
-  }
-  if (featIdx === 0) {
-    if (X[0] < 5.5) return 0;
-    if (X[0] < 6.5) return 1;
-    return 2;
-  }
-  if (featIdx === 1) {
-    if (X[1] < 3.0) return 0;
-    if (X[1] < 3.5) return 1;
-    return 2;
-  }
-  return Math.floor(rng() * 3);
-}
 
 // Seedable random for reproducibility
 function mulberry32(a) {
@@ -682,9 +764,44 @@ function mulberry32(a) {
   }
 }
 
+// Simulate tree prediction with feature randomness
+function treePredict(treeIdx, X) {
+  const rng = mulberry32(treeIdx * 7919 + 42);
+  
+  // Select random features (sqrt(4) = 2 features)
+  const numFeatures = 2;
+  const featureIndices = [];
+  const available = [0, 1, 2, 3];
+  for (let i = 0; i < numFeatures; i++) {
+    const idx = Math.floor(rng() * available.length);
+    featureIndices.push(available.splice(idx, 1)[0]);
+  }
+  
+  // Use most discriminative feature first
+  const primaryFeat = featureIndices[0];
+  
+  // Simple rule-based prediction simulating tree logic
+  if (primaryFeat === 2 || primaryFeat === 3) { // petal features are most discriminative
+    if (X[2] < 2.0) return 0; // setosa
+    if (X[2] < 4.8) return 1; // versicolor
+    return 2; // virginica
+  }
+  if (primaryFeat === 0) {
+    if (X[0] < 5.5) return 0;
+    if (X[0] < 6.5) return 1;
+    return 2;
+  }
+  if (primaryFeat === 1) {
+    if (X[1] < 3.0) return 0;
+    if (X[1] < 3.5) return 1;
+    return 2;
+  }
+  return Math.floor(rng() * 3);
+}
+
 function updateDemo() {
   const sample = irisData[currentSample];
-  const trueLabel = irisLabels[currentSample < 5 ? 0 : (currentSample < 9 ? 1 : 2)];
+  const trueLabel = currentSample < 50 ? 0 : (currentSample < 100 ? 1 : 2);
   
   // Predict with each tree
   const predictions = [];
@@ -710,9 +827,10 @@ function updateDemo() {
   for (let i = 0; i < nTrees; i++) {
     const pred = predictions[i];
     const card = document.createElement('div');
-    card.className = 'demo-tree-card';
+    card.className = 'demo-tree-card tree-card-animate';
+    card.style.animationDelay = `${i * 0.03}s`;
     card.innerHTML = `
-      <div class="tree-num">树 ${i + 1}</div>
+      <div class="tree-num">${i + 1}</div>
       <div class="tree-pred" style="color: ${treeColors[pred]}">${irisLabels[pred]}</div>
       <div class="tree-features">feat: x${Math.floor(Math.random() * 4)}</div>
     `;
@@ -724,13 +842,13 @@ function updateDemo() {
   votes.forEach((v, i) => {
     const bar = document.getElementById(`bar${i}`);
     const count = document.getElementById(`count${i}`);
-    bar.style.height = `${(v / maxVotes) * 80}px`;
+    bar.style.height = `${Math.max(20, (v / nTrees) * 100)}px`;
     count.textContent = v;
   });
   
   // Update final result
   document.getElementById('predValue').textContent = irisLabels[winner];
-  document.getElementById('predConf').textContent = `得票: ${maxVote}/${nTrees} (${votePercent}%)`;
+  document.getElementById('predConf').textContent = `得票: ${maxVote}/${nTrees} (${votePercent}%) · 真实: ${irisLabels[trueLabel]}`;
   
   // Update sample display
   document.getElementById('sampleValue').textContent = currentSample;
