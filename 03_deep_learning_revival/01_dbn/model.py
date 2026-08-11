@@ -12,18 +12,18 @@ class RBM(nn.Module):
         self.n_visible = n_visible
         self.n_hidden = n_hidden
         self.w = nn.Parameter(torch.randn(n_visible, n_hidden) * 0.01)
-        selfhb = nn.Parameter(torch.zeros(n_hidden))
-        self.va = nn.Parameter(torch.zeros(n_visible))
+        self.hb = nn.Parameter(torch.zeros(n_hidden))
+        self.vb = nn.Parameter(torch.zeros(n_visible))
 
     def forward(self, v):
-        h_prob = torch.sigmoid(torch.matmul(v, self.w) + selfhb)
+        h_prob = torch.sigmoid(torch.matmul(v, self.w) + self.hb)
         h = torch.bernoulli(h_prob)
-        v_prob = torch.sigmoid(torch.matmul(h, self.w.t()) + self.va)
+        v_prob = torch.sigmoid(torch.matmul(h, self.w.t()) + self.vb)
         return v_prob, h_prob
 
     def train_step(self, v, lr=0.01):
         # 正相
-        h_prob_pos = torch.sigmoid(torch.matmul(v, self.w) + selfhb)
+        h_prob_pos = torch.sigmoid(torch.matmul(v, self.w) + self.hb)
         h_pos = torch.bernoulli(h_prob_pos)
 
         # 负相（k=1 CD）
@@ -32,8 +32,8 @@ class RBM(nn.Module):
 
         # 更新
         self.w.data += lr * (torch.matmul(v.t(), h_prob_pos) - torch.matmul(v_neg.t(), h_neg)) / v.size(0)
-        selfhb.data += lr * (h_prob_pos.mean(0) - h_neg.mean(0))
-        self.va.data += lr * (v_prob.mean(0) - v_neg.mean(0))
+        self.hb.data += lr * (h_prob_pos.mean(0) - h_neg.mean(0))
+        self.vb.data += lr * (v_prob.mean(0) - v_neg.mean(0))
         return self
 
 
