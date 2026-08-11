@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LeLen-5 CNN — ML History</title>
+<title>LeNet-5 CNN — ML History</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
@@ -66,7 +66,7 @@
   <!-- HERO -->
   <section class="hero">
     <div class="hero-eyebrow">03_deep_learning_revival阶段 · 1998</div>
-    <h1>LeLen-5 CNN</h1>
+    <h1>LeNet-5 CNN</h1>
     <p class="hero-subtitle">最早成功的卷积神经网络之一，用于手写数字识别。开创了局部连接、权值共享和层次化特征提取的范式，奠定了现代CNN的研究基础。</p>
     <div class="hero-meta">
       <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">1998</span></div>
@@ -204,7 +204,7 @@
           <text x="815" y="155" text-anchor="middle" fill="#62666d" font-size="9" font-family="JetBrains Mono">784</text>
         </svg>
       </div>
-      <p class="diagram-caption">图：LeLen-5 网络结构，从输入到输出的完整数据流。Conv = 卷积，AvgPool = 平均池化，FC = 全连接。</p>
+      <p class="diagram-caption">图：LeNet-5 网络结构，从输入到输出的完整数据流。Conv = 卷积，AvgPool = 平均池化，FC = 全连接。</p>
     </div>
   </section>
 
@@ -221,7 +221,7 @@
         </div>
         <div class="timeline-item">
           <div class="timeline-year">1998</div>
-          <div class="timeline-title">LeLen-5 正式发表</div>
+          <div class="timeline-title">LeNet-5 正式发表</div>
           <div class="timeline-desc">论文《Gradient-based learning applied to document recognition》发表于 Proceedings of the IEEE</div>
         </div>
         <div class="timeline-item">
@@ -250,7 +250,7 @@
     <div class="formula-card">
       <div class="formula-label">网络层尺寸变换</div>
       <div class="formula">Out = ⌊(In + 2·pad − k) / stride⌋ + 1</div>
-      <div class="formula-note">LeLen-5 中 conv 均用 pad=2，pool 用 stride=2。输入 28→Conv→28→Pool→14→Conv→14→Pool→7</div>
+      <div class="formula-note">LeNet-5 中 conv 均用 pad=2，pool 用 stride=2。输入 28→Conv→28→Pool→14→Conv→14→Pool→7</div>
     </div>
   </section>
 
@@ -280,7 +280,7 @@
         <span class="kw">return</span> (torch.matmul(cols, self.weight.reshape(out_ch,-1).t())
                 + self.bias).reshape(B, out_ch, out_h, out_w)
 
-<span class="cm"># ── LeLen-5 forward ──</span>
+<span class="cm"># ── LeNet-5 forward ──</span>
 x = self.conv1(x)   <span class="layer-tag layer-conv">Conv1: 1→6</span>  <span class="cm"># (B, 6, 28, 28)</span>
 x = torch.relu(x)
 x = self.pool(x)    <span class="layer-tag layer-pool">Pool1: 2×2</span> <span class="cm"># (B, 6, 14, 14)</span>
@@ -356,7 +356,7 @@ x = self.fc3(x)     <span class="layer-tag layer-fc">FC3: 84→10</span></pre></
       <h4>踩坑记录</h4>
       <ul>
         <li>手动卷积时要注意边界处理（padding 和 stride）</li>
-        <li>MNIST 原始图像是 28×28，LeLen-5 设计输入是 32×32，需要填充</li>
+        <li>MNIST 原始图像是 28×28，LeNet-5 设计输入是 32×32，需要填充</li>
         <li>训练时收敛较慢，可能需要调整学习率</li>
       </ul>
     </div>
@@ -365,7 +365,7 @@ x = self.fc3(x)     <span class="layer-tag layer-fc">FC3: 84→10</span></pre></
       <ul>
         <li><strong>为什么卷积层需要权值共享？</strong> — 大幅减少参数量，保持空间局部性，增强泛化能力</li>
         <li><strong>池化层的作用是什么？</strong> — 降低特征图空间维度，提供平移不变性，防止过拟合</li>
-        <li><strong>LeLen-5 与现代 ResNet 有什么本质区别？</strong> — 深度不同（7层 vs 152+层）、激活函数（sigmoid vs ReLU）、训练方法（SGD vs Adam+BN）、残差连接</li>
+        <li><strong>LeNet-5 与现代 ResNet 有什么本质区别？</strong> — 深度不同（7层 vs 152+层）、激活函数（sigmoid vs ReLU）、训练方法（SGD vs Adam+BN）、残差连接</li>
       </ul>
     </div>
   </section>
