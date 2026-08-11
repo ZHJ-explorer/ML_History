@@ -61,6 +61,17 @@ class ResNet(nn.Module):
         self.linear = nn.Linear(512 * block.expansion, num_classes)
     
     def _make_layer(self, block, channels, num_blocks, stride):
+        """构建多层区块。
+
+        Args:
+            block: 基本块类型。
+            channels: 输出通道数。
+            num_blocks: 块数量。
+            stride: 第一块的步长。
+
+        Returns:
+            由多个block组成的nn.Sequential模块。
+        """
         strides = [stride] + [1] * (num_blocks - 1)
         layers = []
         for stride in strides:
@@ -81,4 +92,9 @@ class ResNet(nn.Module):
 
 
 def resnet18():
+    """创建ResNet-18模型实例。
+
+    Returns:
+        ResNet实例，使用BasicBlock和[2,2,2,2]层配置。
+    """
     return ResNet(BasicBlock, [2, 2, 2, 2])
