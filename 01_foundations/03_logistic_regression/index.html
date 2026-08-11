@@ -7,7 +7,66 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
-/* Model-specific styles */
+/* Sigmoid interactive demo */
+.sigmoid-canvas-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-top: 12px;
+}
+.threshold-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+.threshold-row label {
+  font-size: 13px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.threshold-row input[type=range] {
+  flex: 1;
+  min-width: 160px;
+  accent-color: var(--accent);
+}
+.threshold-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--accent);
+  min-width: 48px;
+  text-align: right;
+}
+.result-box {
+  margin-top: 14px;
+  padding: 12px 16px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  display: none;
+}
+.result-box.visible { display: block; }
+.result-box .label { color: var(--text-faint); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
+.result-box .val-pos { color: var(--green); }
+.result-box .val-neg { color: var(--red); }
+
+/* formula highlight */
+.formula-highlight { color: var(--accent); }
+
+/* section divider glow */
+.section::after {
+  content: '';
+  display: block;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-dim), transparent);
+  margin-top: 48px;
+}
 </style>
 </head>
 <body>
@@ -25,122 +84,405 @@
 
 <main class="container">
 
+  <!-- HERO -->
   <section class="hero">
     <div class="hero-eyebrow">01_foundations阶段 · 1958</div>
     <h1>逻辑回归</h1>
-    <p class="hero-subtitle">暂无简介</p>
-    <div class="hero-meta">
-      <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">1958</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Augustin-Louis Cauchy</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">二分类</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">框架</span><span class="hero-meta-value">PyTorch</span></div>
+    <p class="hero-subtitle">二分类问题的经典算法，通过 Sigmoid 函数将线性输出映射到概率空间，是机器学习中最早也被最广泛使用的模型之一。</p>
+    <div class="pill-row">
+      <span class="pill pill-accent">二分类</span>
+      <span class="pill pill-green">Sigmoid</span>
+      <span class="pill pill-orange">对数损失</span>
+      <span class="pill">梯度下降</span>
+    </div>
+    <div class="hero-meta" style="margin-top:24px;">
+      <div class="hero-meta-item"><span class="hero-meta-label">提出年份</span><span class="hero-meta-value">1958</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">提出者</span><span class="hero-meta-value">Sir David Cox</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">问题类型</span><span class="hero-meta-value">二分类</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">核心函数</span><span class="hero-meta-value">Sigmoid</span></div>
     </div>
   </section>
 
+  <!-- STATS -->
   <div class="stats-grid">
     <div class="stat-cell"><span class="stat-value">1958</span><span class="stat-label">提出年份</span></div>
-    <div class="stat-cell"><span class="stat-value">二分类</span><span class="stat-label">模型类型</span></div>
-    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
-    <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
+    <div class="stat-cell"><span class="stat-value">Cox</span><span class="stat-label">提出者</span></div>
+    <div class="stat-cell"><span class="stat-value">Sigmoid</span><span class="stat-label">激活函数</span></div>
+    <div class="stat-cell"><span class="stat-value">对数损失</span><span class="stat-label">优化目标</span></div>
   </div>
 
-  <section class="section">
-    <div class="section-label">网络架构</div>
-    <div class="section-title">结构示意</div>
-    <div class="diagram-container">
-      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
-        <!-- Generic architecture diagram -->
-        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
-        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
-        
-        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
-        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
-        
-        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
-        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
-        
-        <defs>
-          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-            <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
-          </marker>
-        </defs>
-      </svg>
-    </div>
-    <p class="diagram-caption">图: 逻辑回归 通用架构示意</p>
-  </section>
-
+  <!-- HISTORY -->
   <section class="section">
     <div class="section-label">历史背景</div>
     <div class="section-title">从问题到突破</div>
     <div class="section-body">
-      <p><strong>Augustin-Louis Cauchy</strong> 在 <strong>1958</strong> 年提出了 逻辑回归，这是机器学习发展史上的一个重要里程碑。</p>
-      <p>逻辑回归是二分类问题的经典算法，最早由Sir David Cox于1958年提出。它是线性回归的自然扩展，通过sigmoid函数将线性输出映射到概率空间。
-
-**当时的问题**：
-- 线性回归不适合分类问题，输出可能超出[0,1]范围
-- 需要一种能够输出概率的模型
-
-**核心突破**：
-- Sigmoid函数将任意实数映射到(0,1)区间
-- 对数似然损失函数易于优化</p>
+      <p><strong>Sir David Cox</strong> 于 <strong>1958</strong> 年提出逻辑回归，这是机器学习发展史上的一个重要里程碑。</p>
+      <p>逻辑回归是二分类问题的经典算法，它是线性回归的自然扩展，通过 Sigmoid 函数将线性输出映射到概率空间。</p>
+      <div class="comparison-grid" style="margin-top:20px;">
+        <div class="comparison-panel">
+          <h4>当时的问题</h4>
+          <p>线性回归不适合分类问题，输出可能超出 [0,1] 范围；需要一种能够输出概率的模型。</p>
+        </div>
+        <div class="comparison-panel">
+          <h4>核心突破</h4>
+          <p>Sigmoid 函数将任意实数映射到 (0,1) 区间；对数似然损失函数易于优化。</p>
+        </div>
+      </div>
     </div>
   </section>
 
+  <!-- SVG: SIGMOID CURVE -->
+  <section class="section">
+    <div class="section-label">数学原理</div>
+    <div class="section-title">Sigmoid 函数曲线</div>
+    <div class="section-body">
+      <p>Sigmoid 函数将任意实数映射到 (0, 1) 区间，是逻辑回归的核心激活函数。</p>
+    </div>
+    <div class="diagram-container">
+      <svg id="sigmoid-svg" viewBox="0 0 560 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;">
+        <defs>
+          <linearGradient id="curveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#7170ff;stop-opacity:0.3"/>
+            <stop offset="50%" style="stop-color:#7170ff;stop-opacity:1"/>
+            <stop offset="100%" style="stop-color:#7170ff;stop-opacity:0.3"/>
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="2" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L7,3 z" fill="var(--text-faint)"/>
+          </marker>
+        </defs>
+
+        <!-- Grid -->
+        <g opacity="0.15">
+          <line x1="60" y1="40" x2="60" y2="270" stroke="var(--text)" stroke-width="1"/>
+          <line x1="60" y1="270" x2="520" y2="270" stroke="var(--text)" stroke-width="1"/>
+          <line x1="60" y1="155" x2="520" y2="155" stroke="var(--text)" stroke-width="1" stroke-dasharray="4,4"/>
+          <line x1="60" y1="40" x2="520" y2="40" stroke="var(--text)" stroke-width="1" stroke-dasharray="4,4"/>
+          <line x1="60" y1="270" x2="520" y2="270" stroke="var(--text)" stroke-width="1"/>
+        </g>
+
+        <!-- Axes labels -->
+        <text x="520" y="292" text-anchor="middle" fill="var(--text-muted)" font-size="11" font-family="Inter">z (输入)</text>
+        <text x="20" y="155" text-anchor="middle" fill="var(--text-muted)" font-size="11" font-family="Inter" transform="rotate(-90,20,155)">g(z)</text>
+
+        <!-- Axis ticks -->
+        <text x="60" y="288" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">-4</text>
+        <text x="175" y="288" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">-2</text>
+        <text x="290" y="288" text-anchor="middle" fill="var(--text)" font-size="11" font-family="JetBrains Mono" font-weight="600">0</text>
+        <text x="405" y="288" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">2</text>
+        <text x="520" y="288" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">4</text>
+
+        <text x="50" y="44" text-anchor="end" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">1.0</text>
+        <text x="50" y="158" text-anchor="end" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">0.5</text>
+        <text x="50" y="274" text-anchor="end" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">0.0</text>
+
+        <!-- Sigmoid curve path -->
+        <path id="sigmoid-path" d="" fill="none" stroke="url(#curveGrad)" stroke-width="2.5" filter="url(#glow)"/>
+
+        <!-- Key point: (0, 0.5) - inflection point -->
+        <circle cx="290" cy="155" r="5" fill="var(--accent)" filter="url(#glow)"/>
+        <circle cx="290" cy="155" r="10" fill="none" stroke="var(--accent)" stroke-width="1.5" opacity="0.5"/>
+        <text x="290" y="140" text-anchor="middle" fill="var(--accent)" font-size="11" font-family="JetBrains Mono" font-weight="600">(0, 0.5)</text>
+        <text x="290" y="306" text-anchor="middle" fill="var(--accent)" font-size="10" font-family="JetBrains Mono">z = 0</text>
+
+        <!-- Key point: (1, ~0.73) -->
+        <circle cx="347" cy="110" r="4" fill="var(--green)"/>
+        <text x="355" y="100" text-anchor="start" fill="var(--green)" font-size="10" font-family="JetBrains Mono">≈ 0.73</text>
+        <line x1="347" y1="110" x2="347" y2="270" stroke="var(--green)" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
+        <text x="347" y="306" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">z = 1</text>
+
+        <!-- Point at z = -1 -->
+        <circle cx="233" cy="200" r="4" fill="var(--orange)"/>
+        <text x="220" y="195" text-anchor="end" fill="var(--orange)" font-size="10" font-family="JetBrains Mono">≈ 0.27</text>
+        <line x1="233" y1="200" x2="233" y2="270" stroke="var(--orange)" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
+        <text x="233" y="306" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">z = −1</text>
+
+        <!-- Threshold line at 0.5 -->
+        <line x1="60" y1="155" x2="520" y2="155" stroke="var(--accent)" stroke-width="1" stroke-dasharray="6,4" opacity="0.35"/>
+        <text x="525" y="159" fill="var(--accent)" font-size="9" font-family="JetBrains Mono" opacity="0.7">decision boundary</text>
+      </svg>
+    </div>
+    <p class="diagram-caption">图: Sigmoid 函数 g(z) = 1 / (1 + e^{-z})，关键点 (0, 0.5) 为拐点与决策边界</p>
+  </section>
+
+  <!-- FORMULAS -->
   <section class="section">
     <div class="section-label">数学原理</div>
     <div class="section-title">核心公式</div>
+
     <div class="formula-card">
-      <div class="formula-label">核心公式</div>
-      <div class="formula">f(x) = ...</div>
-      <div class="formula-note">根据具体模型填写</div>
+      <div class="formula-label">模型定义 · 假设函数</div>
+      <div class="formula">h_θ(x) = g(θᵀx), &nbsp; g(z) = <span class="formula-highlight">1 / (1 + e^{-z})</span></div>
+      <div class="formula-note">Sigmoid 函数将任意实数映射到 (0, 1)，输出可解释为概率</div>
+    </div>
+
+    <div class="formula-card">
+      <div class="formula-label">损失函数 · 对数损失 (Log Loss)</div>
+      <div class="formula">J(θ) = −<span class="formula-highlight">(1/m)</span> Σ [y<sup>(i)</sup>·log(h(x<sup>(i)</sup>)) + (1−y<sup>(i)</sup>)·log(1−h(x<sup>(i)</sup>))]</div>
+      <div class="formula-note">凸函数，全局最优可通过梯度下降求得</div>
+    </div>
+
+    <div class="formula-card">
+      <div class="formula-label">梯度更新</div>
+      <div class="formula">θ := θ − α · <span class="formula-highlight">(1/m)</span> Σ (h(x<sup>(i)</sup>) − y<sup>(i)</sup>) · x<sub>j</sub><sup>(i)</sup></div>
+      <div class="formula-note">形式与线性回归相同，但 h(x) 是经过 Sigmoid 的非线性输出</div>
     </div>
   </section>
 
+  <!-- CODE -->
   <section class="section">
     <div class="section-label">代码实现</div>
-    <div class="section-title">model.py 核心逻辑</div>
+    <div class="section-title">PyTorch 核心逻辑</div>
     <div class="code-block">
       <div class="code-header">
         <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
         <span class="code-lang">Python · model.py</span>
       </div>
-      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">逻辑回归</span>(nn.Module):
-    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+      <div class="code-body"><pre><span class="kw">import</span> torch
+<span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+<span class="kw">import</span> torch.nn.functional <span class="kw">as</span> F
+
+<span class="kw">class</span> <span class="cls">LogisticRegression</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, input_dim):
         super().__span class="fn">init__</span>()
-        <span class="cm"># 模型定义</span>
-        
+        self.linear = nn.<span class="fn">Linear</span>(input_dim, <span class="num">1</span>)
+
     <span class="kw">def</span> <span class="fn">forward</span>(self, x):
-        <span class="cm"># 前向传播</span>
-        <span class="kw">return</span> x</pre></div>
+        <span class="cm"># 线性层 + Sigmoid 激活</span>
+        z = self.linear(x)
+        <span class="kw">return</span> torch.<span class="fn">sigmoid</span>(z)
+
+<span class="cm"># 对数损失（Binary Cross Entropy）</span>
+criterion = nn.<span class="fn">BCELoss</span>()</pre></div>
     </div>
   </section>
 
+  <!-- INTERACTIVE DEMO -->
+  <section class="section">
+    <div class="section-label">交互演示</div>
+    <div class="section-title">阈值与分类边界</div>
+    <div class="section-body">
+      <p>拖动滑块调整决策阈值，观察分类边界如何变化。当 h_θ(x) ≥ threshold 时预测为正类，否则为负类。</p>
+    </div>
+    <div class="demo-container">
+      <div class="demo-title">Interactive Threshold Demo</div>
+
+      <div class="threshold-row">
+        <label for="threshold-slider">Threshold:</label>
+        <input type="range" id="threshold-slider" class="demo-slider" min="0.1" max="0.9" step="0.05" value="0.5">
+        <span class="threshold-val" id="threshold-display">0.50</span>
+      </div>
+
+      <div class="sigmoid-canvas-wrap">
+        <svg id="demo-svg" viewBox="0 0 500 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px;">
+          <defs>
+            <linearGradient id="demoCurveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:#7170ff;stop-opacity:0.2"/>
+              <stop offset="50%" style="stop-color:#7170ff;stop-opacity:1"/>
+              <stop offset="100%" style="stop-color:#7170ff;stop-opacity:0.2"/>
+            </linearGradient>
+            <filter id="demoGlow">
+              <feGaussianBlur stdDeviation="1.5" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <!-- Background -->
+          <rect width="500" height="260" fill="var(--bg)"/>
+          <!-- Grid -->
+          <g opacity="0.12">
+            <line x1="50" y1="30" x2="470" y2="30" stroke="var(--text)" stroke-width="1"/>
+            <line x1="50" y1="130" x2="470" y2="130" stroke="var(--text)" stroke-width="1" stroke-dasharray="4,4"/>
+            <line x1="50" y1="230" x2="470" y2="230" stroke="var(--text)" stroke-width="1"/>
+            <line x1="50" y1="30" x2="50" y2="230" stroke="var(--text)" stroke-width="1"/>
+            <line x1="50" y1="230" x2="470" y2="230" stroke="var(--text)" stroke-width="1"/>
+          </g>
+          <!-- Axis labels -->
+          <text x="260" y="255" text-anchor="middle" fill="var(--text-muted)" font-size="11" font-family="Inter">z (logit)</text>
+          <text x="20" y="130" text-anchor="middle" fill="var(--text-muted)" font-size="11" font-family="Inter" transform="rotate(-90,20,130)">g(z)</text>
+          <!-- Curve -->
+          <path id="demo-curve" d="" fill="none" stroke="url(#demoCurveGrad)" stroke-width="2.5" filter="url(#demoGlow)"/>
+          <!-- Threshold line (horizontal) -->
+          <line id="threshold-line" x1="50" y1="130" x2="470" y2="130" stroke="var(--orange)" stroke-width="1.5" stroke-dasharray="6,4" opacity="0.8"/>
+          <text id="threshold-label" x="475" y="134" fill="var(--orange)" font-size="10" font-family="JetBrains Mono">0.50</text>
+          <!-- Decision boundary vertical line -->
+          <line id="boundary-line" x1="260" y1="30" x2="260" y2="230" stroke="var(--red)" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
+          <text id="boundary-label" x="260" y="25" text-anchor="middle" fill="var(--red)" font-size="10" font-family="JetBrains Mono">z=0</text>
+          <!-- Classification regions -->
+          <rect id="pos-region" x="260" y="30" width="210" height="200" fill="var(--green-dim)" opacity="0.15"/>
+          <rect id="neg-region" x="50" y="30" width="210" height="200" fill="var(--red-dim)" opacity="0.15"/>
+          <text x="370" y="50" fill="var(--green)" font-size="11" font-family="Inter" font-weight="500">正类 ≥ threshold</text>
+          <text x="155" y="50" fill="var(--red)" font-size="11" font-family="Inter" font-weight="500">负类 &lt; threshold</text>
+        </svg>
+      </div>
+
+      <div id="demo-result" class="result-box">
+        <div class="label">Classification Result</div>
+        <div id="result-content"></div>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
+        <button class="demo-btn" onclick="runDemo()">Run Demo</button>
+        <button class="demo-btn" style="background:var(--bg-elevated);color:var(--text-secondary);" onclick="resetDemo()">Reset</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIMITATIONS & IMPACT -->
+  <section class="section">
+    <div class="section-label">评价</div>
+    <div class="section-title">局限性与影响</div>
+    <div class="section-body">
+      <div class="comparison-grid">
+        <div class="comparison-panel">
+          <h4>局限性</h4>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+            <li style="padding-left:16px;position:relative;font-size:14px;color:var(--text-muted);">→ 只能处理线性可分问题</li>
+            <li style="padding-left:16px;position:relative;font-size:14px;color:var(--text-muted);">→ 对异常值敏感</li>
+            <li style="padding-left:16px;position:relative;font-size:14px;color:var(--text-muted);">→ 需要特征缩放</li>
+          </ul>
+        </div>
+        <div class="comparison-panel">
+          <h4>历史影响</h4>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+            <li style="padding-left:16px;position:relative;font-size:14px;color:var(--text-muted);">→ 医学诊断、信用评分等领域的标准方法</li>
+            <li style="padding-left:16px;position:relative;font-size:14px;color:var(--text-muted);">→ 后续所有分类算法的基础</li>
+            <li style="padding-left:16px;position:relative;font-size:14px;color:var(--text-muted);">→ 神经网络中 sigmoid 单元的起源</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTES -->
   <section class="section">
     <div class="section-label">学习心得</div>
     <div class="section-title">关键洞察</div>
     <div class="notes-card">
       <h4>学到的知识</h4>
       <ul>
-        <li>逻辑回归 是机器学习发展史上的重要模型</li>
-        <li>理解其数学原理有助于掌握后续模型</li>
+        <li>Sigmoid 函数将线性输出映射到概率空间</li>
+        <li>对数损失函数适合二分类问题</li>
+        <li>梯度下降的更新公式与线性回归形式类似</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>踩坑记录</h4>
+      <ul>
+        <li>Sigmoid 函数需要 clip 防止溢出</li>
+        <li>需要特征缩放</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>思考题答案</h4>
+      <ul>
+        <li><strong>为什么逻辑回归使用 Sigmoid 而不是阶跃函数？</strong> — 阶跃函数不可微，无法使用梯度下降</li>
+        <li><strong>逻辑回归与线性回归的本质区别是什么？</strong> — 逻辑回归通过 Sigmoid 将输出限制在 [0,1] 用于分类；线性回归直接输出连续值用于回归</li>
       </ul>
     </div>
   </section>
 
+  <!-- FOOTER NAV -->
   <div class="nav-footer">
-    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
-    <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
+    <a href="../01_foundations/02_linear_regression/index.html" class="nav-footer-prev">
+      <span class="nav-footer-label">← 上一个</span>
+      <span class="nav-footer-title">线性回归</span>
+    </a>
+    <span class="nav-footer-center"><a href="../index.html">ML History</a> · 逻辑回归</span>
+    <a href="../01_foundations/04_perceptron/index.html" class="nav-footer-next" style="text-align:right;">
+      <span class="nav-footer-label">下一个 →</span>
+      <span class="nav-footer-title">感知机</span>
+    </a>
   </div>
 
 </main>
+
+<script>
+// ── Sigmoid helpers ──
+const SVG_W = 460, SVG_H = 200;
+const SVG_OFF_X = 50, SVG_OFF_Y = 230; // origin at bottom-left of graph area
+const Z_RANGE = 8; // -4 to 4
+const SCALE_X = SVG_W / Z_RANGE;
+const SCALE_Y = SVG_H; // 0 to 1 maps to 200px
+
+function sigmoid(z) {
+  return 1 / (1 + Math.exp(-z));
+}
+
+function buildSigmoidPath() {
+  let d = '';
+  for (let i = 0; i <= 460; i++) {
+    const z = -4 + (i / 460) * 8;
+    const y = sigmoid(z);
+    const px = 50 + i;
+    const py = 230 - y * 200;
+    d += (i === 0 ? 'M' : 'L') + px.toFixed(1) + ',' + py.toFixed(1);
+  }
+  return d;
+}
+
+// Static SVG curve
+document.getElementById('sigmoid-path').setAttribute('d', buildSigmoidPath());
+
+// Demo SVG curve
+document.getElementById('demo-curve').setAttribute('d', buildSigmoidPath());
+
+// ── Interactive demo ──
+const slider = document.getElementById('threshold-slider');
+const display = document.getElementById('threshold-display');
+const threshLine = document.getElementById('threshold-line');
+const threshLabel = document.getElementById('threshold-label');
+const resultBox = document.getElementById('demo-result');
+const resultContent = document.getElementById('result-content');
+
+function updateDemo() {
+  const t = parseFloat(slider.value);
+  display.textContent = t.toFixed(2);
+
+  // Map threshold to SVG y: y = 230 - t * 200
+  const ty = 230 - t * 200;
+  threshLine.setAttribute('y1', ty);
+  threshLine.setAttribute('y2', ty);
+  threshLabel.setAttribute('y', ty - 6);
+  threshLabel.textContent = t.toFixed(2);
+
+  // Decision boundary at z=0 → x=260
+  const bx = 260;
+  document.getElementById('boundary-line').setAttribute('x1', bx);
+  document.getElementById('boundary-line').setAttribute('x2', bx);
+  document.getElementById('boundary-label').setAttribute('x', bx);
+
+  // Region colors
+  document.getElementById('pos-region').setAttribute('x', bx);
+  document.getElementById('pos-region').setAttribute('width', 470 - bx);
+  document.getElementById('neg-region').setAttribute('width', bx - 50);
+}
+
+slider.addEventListener('input', updateDemo);
+updateDemo();
+
+function runDemo() {
+  const t = parseFloat(slider.value);
+  const testValues = [-3, -1, 0, 1, 3];
+  let html = '';
+  testValues.forEach(z => {
+    const prob = sigmoid(z);
+    const cls = prob >= t ? '正类' : '负类';
+    const clsClass = prob >= t ? 'val-pos' : 'val-neg';
+    html += `z = ${z > 0 ? '+' : ''}${z} → g(z) = ${prob.toFixed(4)} → <span class="${clsClass}">${cls}</span> (threshold = ${t.toFixed(2)})<br>`;
+  });
+  resultContent.innerHTML = html;
+  resultBox.classList.add('visible');
+}
+
+function resetDemo() {
+  slider.value = 0.5;
+  updateDemo();
+  resultBox.classList.remove('visible');
+}
+</script>
 
 </body>
 </html>
