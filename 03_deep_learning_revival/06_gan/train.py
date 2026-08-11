@@ -20,17 +20,13 @@ def demo():
     
     # 超参数
     latent_dim = 10
-    img_dim = 20
+    img_dim = 20  # 输出维度
     epochs = 50
     lr = 0.001
     
-    # 创建简单数据：学习生成环形分布
+    # 创建简单数据：随机数据
     np.random.seed(42)
-    theta = np.random.uniform(0, 2*np.pi, 200)
-    r = 0.8 + 0.2 * np.random.randn(200)
-    x = r * np.cos(theta)
-    y = r * np.sin(theta)
-    real_data = torch.FloatTensor(np.stack([x, y], axis=1))  # (200, 2)
+    real_data = torch.FloatTensor(np.random.randn(200, img_dim))  # (200, 20)
     
     # 构建模型
     gan = GAN(latent_dim, img_dim)
@@ -40,18 +36,20 @@ def demo():
     # 训练
     print(f"训练 {epochs} 个epoch...")
     for epoch in range(epochs):
+        batch_size = real_data.size(0)
+        
         # 训练判别器
         optimizer_d.zero_grad()
         
         # 真实样本
-        real_labels = torch.ones(real_data.size(0), 1)
+        real_labels = torch.ones(batch_size, 1)
         real_output = gan.discriminator(real_data)
         real_loss = torch.nn.BCELoss()(real_output, real_labels)
         
         # 生成样本
-        noise = torch.randn(real_data.size(0), latent_dim)
+        noise = torch.randn(batch_size, latent_dim)
         fake_data = gan.generator(noise)
-        fake_labels = torch.zeros(real_data.size(0), 1)
+        fake_labels = torch.zeros(batch_size, 1)
         fake_output = gan.discriminator(fake_data.detach())
         fake_loss = torch.nn.BCELoss()(fake_output, fake_labels)
         
@@ -61,9 +59,9 @@ def demo():
         
         # 训练生成器
         optimizer_g.zero_grad()
-        noise = torch.randn(real_data.size(0), latent_dim)
+        noise = torch.randn(batch_size, latent_dim)
         fake_data = gan.generator(noise)
-        fake_labels = torch.ones(real_data.size(0), 1)
+        fake_labels = torch.ones(batch_size, 1)
         fake_output = gan.discriminator(fake_data)
         g_loss = torch.nn.BCELoss()(fake_output, fake_labels)
         g_loss.backward()
