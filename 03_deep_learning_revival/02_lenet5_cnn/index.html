@@ -3,11 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LeNet-5 CNN — ML History</title>
+<title>LeLen-5 CNN — ML History</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
-/* Model-specific styles */
+  /* Interactive convolution demo */
+  .conv-demo { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
+  .conv-grid { display: grid; gap: 1px; background: var(--border); border-radius: var(--radius); overflow: hidden; }
+  .conv-cell { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-muted); background: var(--bg); cursor: default; transition: background 0.1s; }
+  .conv-cell.active { background: rgba(113,112,255,0.3); color: var(--accent); font-weight: 600; }
+  .conv-cell.highlight { background: rgba(113,112,255,0.15); color: var(--text-secondary); }
+  .kernel-grid { display: grid; gap: 1px; }
+  .kernel-cell { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 10px; background: var(--bg-elevated); color: var(--text-muted); border-radius: 2px; }
+  .conv-arrow { display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 20px; padding-top: 60px; }
+  .output-cell { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text); background: var(--bg-elevated); border-radius: var(--radius); }
+  .conv-info { display: flex; flex-direction: column; gap: 12px; min-width: 180px; }
+  .conv-info-row { display: flex; justify-content: space-between; font-size: 13px; }
+  .conv-info-label { color: var(--text-faint); }
+  .conv-info-val { color: var(--text); font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+  .step-label { font-size: 12px; color: var(--text-faint); margin-bottom: 8px; }
+  .btn-row { display: flex; gap: 8px; margin-top: 12px; }
+  .btn-outline { background: transparent; border: 1px solid var(--border-strong); color: var(--text-muted); padding: 6px 14px; border-radius: var(--radius); font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-outline.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+  /* Architecture diagram */
+  .arch-flow { display: flex; align-items: center; gap: 0; overflow-x: auto; padding: 8px 0; }
+  .arch-stage { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 110px; }
+  .arch-box { border-radius: var(--radius); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; transition: box-shadow 0.2s; }
+  .arch-box:hover { box-shadow: 0 0 20px var(--accent-glow); }
+  .arch-dim { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-faint); }
+  .arch-label { font-size: 11px; font-weight: 600; color: var(--text); text-align: center; line-height: 1.3; }
+  .arch-annotation { font-size: 10px; color: var(--text-faint); text-align: center; max-width: 120px; line-height: 1.4; }
+  .arch-arrow { color: var(--text-faint); font-size: 18px; padding: 0 4px; flex-shrink: 0; }
+
+  /* SVG diagram */
+  .svg-diagram { width: 100%; overflow-x: auto; }
+  .svg-diagram svg { min-width: 800px; }
+
+  /* Code block with layer annotation */
+  .layer-tag { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; margin-right: 6px; vertical-align: middle; }
+  .layer-conv { color: var(--accent); background: var(--accent-dim); border: 1px solid rgba(113,112,255,0.3); }
+  .layer-pool { color: var(--green); background: var(--green-dim); border: 1px solid rgba(16,185,129,0.3); }
+  .layer-fc { color: var(--orange); background: var(--orange-dim); border: 1px solid rgba(245,158,11,0.3); }
 </style>
 </head>
 <body>
@@ -25,10 +63,11 @@
 
 <main class="container">
 
+  <!-- HERO -->
   <section class="hero">
     <div class="hero-eyebrow">03_deep_learning_revival阶段 · 1998</div>
-    <h1>LeNet-5 CNN</h1>
-    <p class="hero-subtitle">暂无简介</p>
+    <h1>LeLen-5 CNN</h1>
+    <p class="hero-subtitle">最早成功的卷积神经网络之一，用于手写数字识别。开创了局部连接、权值共享和层次化特征提取的范式，奠定了现代CNN的研究基础。</p>
     <div class="hero-meta">
       <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">1998</span></div>
       <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Yann LeCun</span></div>
@@ -37,74 +76,185 @@
     </div>
   </section>
 
+  <!-- STATS -->
   <div class="stats-grid">
-    <div class="stat-cell"><span class="stat-value">1998</span><span class="stat-label">提出年份</span></div>
-    <div class="stat-cell"><span class="stat-value">卷积神经网络</span><span class="stat-label">模型类型</span></div>
-    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
-    <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
+    <div class="stat-cell"><span class="stat-value">7</span><span class="stat-label">网络层数</span></div>
+    <div class="stat-cell"><span class="stat-value">60K</span><span class="stat-label">参数量（约）</span></div>
+    <div class="stat-cell"><span class="stat-value">99.2%</span><span class="stat-label">MNIST 准确率</span></div>
+    <div class="stat-cell"><span class="stat-value">1×28×28</span><span class="stat-label">输入维度</span></div>
   </div>
 
+  <!-- ARCHITECTURE SVG -->
   <section class="section">
     <div class="section-label">网络架构</div>
-    <div class="section-title">结构示意</div>
+    <div class="section-title">完整结构示意</div>
     <div class="diagram-container">
-      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
-        <!-- Generic architecture diagram -->
-        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
-        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
-        
-        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
-        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
-        
-        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
-        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
-        
-        <defs>
-          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-            <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
-          </marker>
-        </defs>
-      </svg>
+      <div class="svg-diagram">
+        <svg viewBox="0 0 960 420" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,2.5 z" fill="#8a8f98"/></marker>
+            <linearGradient id="gConv" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#7170ff" stop-opacity="0.25"/>
+              <stop offset="100%" stop-color="#7170ff" stop-opacity="0.05"/>
+            </linearGradient>
+            <linearGradient id="gPool" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#10b981" stop-opacity="0.2"/>
+              <stop offset="100%" stop-color="#10b981" stop-opacity="0.05"/>
+            </linearGradient>
+            <linearGradient id="gFC" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.2"/>
+              <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.05"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Title -->
+          <text x="480" y="22" text-anchor="middle" fill="#62666d" font-size="11" font-family="Inter" font-weight="600" letter-spacing="0.06em" text-transform="uppercase">LeNet-5 网络数据流</text>
+
+          <!-- INPUT -->
+          <rect x="10" y="50" width="90" height="80" rx="10" fill="#191a1b" stroke="#8a8f98" stroke-width="1.5"/>
+          <text x="55" y="78" text-anchor="middle" fill="#f7f8f8" font-size="11" font-family="Inter" font-weight="500">Input</text>
+          <text x="55" y="98" text-anchor="middle" fill="#8a8f98" font-size="10" font-family="JetBrains Mono">28 × 28</text>
+          <text x="55" y="114" text-anchor="middle" fill="#62666d" font-size="9" font-family="JetBrains Mono">1 通道</text>
+
+          <!-- Arrow -->
+          <line x1="105" y1="90" x2="130" y2="90" stroke="#8a8f98" stroke-width="1.5" marker-end="url(#arr)"/>
+
+          <!-- Conv1 -->
+          <rect x="135" y="50" width="130" height="80" rx="10" fill="url(#gConv)" stroke="#7170ff" stroke-width="1.5"/>
+          <text x="200" y="72" text-anchor="middle" fill="#7170ff" font-size="11" font-family="Inter" font-weight="600">Conv1</text>
+          <text x="200" y="90" text-anchor="middle" fill="#d0d6e0" font-size="10" font-family="JetBrains Mono">6@5×5, pad=2</text>
+          <text x="200" y="106" text-anchor="middle" fill="#8a8f98" font-size="10" font-family="JetBrains Mono">→ 28×28</text>
+          <text x="200" y="122" text-anchor="middle" fill="#62666d" font-size="9" font-family="JetBrains Mono">6 个卷积核</text>
+
+          <!-- ReLU1 label -->
+          <text x="285" y="94" text-anchor="middle" fill="#62666d" font-size="9" font-family="JetBrains Mono">ReLU</text>
+
+          <!-- Arrow -->
+          <line x1="270" y1="90" x2="295" y2="90" stroke="#8a8f98" stroke-width="1.5" marker-end="url(#arr)"/>
+
+          <!-- Pool1 -->
+          <rect x="300" y="50" width="120" height="80" rx="10" fill="url(#gPool)" stroke="#10b981" stroke-width="1.5"/>
+          <text x="360" y="72" text-anchor="middle" fill="#10b981" font-size="11" font-family="Inter" font-weight="600">AvgPool1</text>
+          <text x="360" y="90" text-anchor="middle" fill="#d0d6e0" font-size="10" font-family="JetBrains Mono">2×2, stride=2</text>
+          <text x="360" y="106" text-anchor="middle" fill="#8a8f98" font-size="10" font-family="JetBrains Mono">→ 14×14</text>
+          <text x="360" y="122" text-anchor="middle" fill="#62666d" font-size="9" font-family="JetBrains Mono">降采样一半</text>
+
+          <!-- Arrow -->
+          <line x1="425" y1="90" x2="450" y2="90" stroke="#8a8f98" stroke-width="1.5" marker-end="url(#arr)"/>
+
+          <!-- Conv2 -->
+          <rect x="455" y="50" width="130" height="80" rx="10" fill="url(#gConv)" stroke="#7170ff" stroke-width="1.5"/>
+          <text x="520" y="72" text-anchor="middle" fill="#7170ff" font-size="11" font-family="Inter" font-weight="600">Conv2</text>
+          <text x="520" y="90" text-anchor="middle" fill="#d0d6e0" font-size="10" font-family="JetBrains Mono">16@5×5, pad=2</text>
+          <text x="520" y="106" text-anchor="middle" fill="#8a8f98" font-size="10" font-family="JetBrains Mono">→ 14×14</text>
+          <text x="520" y="122" text-anchor="middle" fill="#62666d" font-size="9" font-family="JetBrains Mono">16 个卷积核</text>
+
+          <!-- ReLU2 label -->
+          <text x="600" y="94" text-anchor="middle" fill="#62666d" font-size="9" font-family="JetBrains Mono">ReLU</text>
+
+          <!-- Arrow -->
+          <line x1="590" y1="90" x2="615" y2="90" stroke="#8a8f98" stroke-width="1.5" marker-end="url(#arr)"/>
+
+          <!-- Pool2 -->
+          <rect x="620" y="50" width="120" height="80" rx="10" fill="url(#gPool)" stroke="#10b981" stroke-width="1.5"/>
+          <text x="680" y="72" text-anchor="middle" fill="#10b981" font-size="11" font-family="Inter" font-weight="600">AvgPool2</text>
+          <text x="680" y="90" text-anchor="middle" fill="#d0d6e0" font-size="10" font-family="JetBrains Mono">2×2, stride=2</text>
+          <text x="680" y="106" text-anchor="middle" fill="#8a8f98" font-size="10" font-family="JetBrains Mono">→ 7×7</text>
+          <text x="680" y="122" text-anchor="middle" fill="#62666d" font-size="9" font-family="JetBrains Mono">16×49=784</text>
+
+          <!-- Arrow -->
+          <line x1="745" y1="90" x2="770" y2="90" stroke="#8a8f98" stroke-width="1.5" marker-end="url(#arr)"/>
+
+          <!-- Flatten -->
+          <rect x="775" y="55" width="80" height="30" rx="6" fill="#191a1b" stroke="#8a8f98" stroke-width="1"/>
+          <text x="815" y="74" text-anchor="middle" fill="#d0d6e0" font-size="10" font-family="JetBrains Mono" font-weight="500">Flatten</text>
+          <line x1="860" y1="90" x2="880" y2="90" stroke="#8a8f98" stroke-width="1.5" marker-end="url(#arr)"/>
+
+          <!-- FC1 -->
+          <rect x="885" y="50" width="70" height="80" rx="10" fill="url(#gFC)" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="920" y="70" text-anchor="middle" fill="#f59e0b" font-size="10" font-family="Inter" font-weight="600">FC1</text>
+          <text x="920" y="86" text-anchor="middle" fill="#d0d6e0" font-size="9" font-family="JetBrains Mono">784→120</text>
+          <text x="920" y="102" text-anchor="middle" fill="#8a8f98" font-size="9" font-family="JetBrains Mono">ReLU</text>
+          <text x="920" y="118" text-anchor="middle" fill="#62666d" font-size="9" font-family="JetBrains Mono">120 个神经元</text>
+
+          <!-- FC2 -->
+          <rect x="885" y="155" width="70" height="80" rx="10" fill="url(#gFC)" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="920" y="175" text-anchor="middle" fill="#f59e0b" font-size="10" font-family="Inter" font-weight="600">FC2</text>
+          <text x="920" y="191" text-anchor="middle" fill="#d0d6e0" font-size="9" font-family="JetBrains Mono">120→84</text>
+          <text x="920" y="207" text-anchor="middle" fill="#8a8f98" font-size="9" font-family="JetBrains Mono">ReLU</text>
+          <text x="920" y="223" text-anchor="middle" fill="#62666d" font-size="9" font-family="JetBrains Mono">84 个神经元</text>
+
+          <!-- FC3 -->
+          <rect x="885" y="260" width="70" height="80" rx="10" fill="url(#gFC)" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="920" y="280" text-anchor="middle" fill="#f59e0b" font-size="10" font-family="Inter" font-weight="600">FC3</text>
+          <text x="920" y="296" text-anchor="middle" fill="#d0d6e0" font-size="9" font-family="JetBrains Mono">84→10</text>
+          <text x="920" y="312" text-anchor="middle" fill="#8a8f98" font-size="9" font-family="JetBrains Mono">无激活</text>
+          <text x="920" y="328" text-anchor="middle" fill="#62666d" font-size="9" font-family="JetBrains Mono">10 个类别</text>
+
+          <!-- FC arrows -->
+          <path d="M920,130 L920,155" stroke="#f59e0b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+          <path d="M920,235 L920,260" stroke="#f59e0b" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+
+          <!-- Dimension annotations below each stage -->
+          <text x="55" y="155" text-anchor="middle" fill="#62666d" font-size="9" font-family="JetBrains Mono">(B,1,28,28)</text>
+          <text x="200" y="155" text-anchor="middle" fill="#62666d" font-size="9" font-family="JetBrains Mono">(B,6,28,28)</text>
+          <text x="360" y="155" text-anchor="middle" fill="#62666d" font-size="9" font-family="JetBrains Mono">(B,6,14,14)</text>
+          <text x="520" y="155" text-anchor="middle" fill="#62666d" font-size="9" font-family="JetBrains Mono">(B,16,14,14)</text>
+          <text x="680" y="155" text-anchor="middle" fill="#62666d" font-size="9" font-family="JetBrains Mono">(B,16,7,7)</text>
+          <text x="815" y="155" text-anchor="middle" fill="#62666d" font-size="9" font-family="JetBrains Mono">784</text>
+        </svg>
+      </div>
+      <p class="diagram-caption">图：LeLen-5 网络结构，从输入到输出的完整数据流。Conv = 卷积，AvgPool = 平均池化，FC = 全连接。</p>
     </div>
-    <p class="diagram-caption">图: LeNet-5 CNN 通用架构示意</p>
   </section>
 
+  <!-- HISTORY TIMELINE -->
   <section class="section">
     <div class="section-label">历史背景</div>
     <div class="section-title">从问题到突破</div>
     <div class="section-body">
-      <p><strong>Yann LeCun</strong> 在 <strong>1998</strong> 年提出了 LeNet-5 CNN，这是机器学习发展史上的一个重要里程碑。</p>
-      <p>1998年，Yann LeCun等在论文《Gradient-based learning applied to document recognition》中提出LeNet-5，
-这是最早成功的卷积神经网络之一，用于手写数字识别。
-
-**核心创新**：
-- 卷积层：局部连接 + 权值共享
-- 池化层：空间降采样，增加平移不变性
-- 层次化特征提取
-
-**当时背景**：
-- 深度学习尚未复兴
-- 训练...</p>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-year">1989</div>
+          <div class="timeline-title">Backpropagation in CNNs</div>
+          <div class="timeline-desc">Yann LeCun 在贝尔实验室首次将反向传播应用于卷积神经网络</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">1998</div>
+          <div class="timeline-title">LeLen-5 正式发表</div>
+          <div class="timeline-desc">论文《Gradient-based learning applied to document recognition》发表于 Proceedings of the IEEE</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">影响</div>
+          <div class="timeline-title">开创 CNN 研究方向</div>
+          <div class="timeline-desc">启发了后续 LeNet 系列、AlexNet、VGG、ResNet 等所有现代卷积网络</div>
+        </div>
+      </div>
     </div>
   </section>
 
+  <!-- FORMULA CARDS -->
   <section class="section">
     <div class="section-label">数学原理</div>
     <div class="section-title">核心公式</div>
     <div class="formula-card">
-      <div class="formula-label">核心公式</div>
-      <div class="formula">f(x) = ...</div>
-      <div class="formula-note">根据具体模型填写</div>
+      <div class="formula-label">卷积运算</div>
+      <div class="formula">(f * g)[i, j] = Σ<sub>m</sub> Σ<sub>n</sub> f[m, n] · g[i−m, j−n]</div>
+      <div class="formula-note">二维卷积：输入在卷积核的局部窗口内进行加权求和。对应代码 ManualConv2D.forward()</div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-label">平均池化</div>
+      <div class="formula">output[i, j] = (1/k²) Σ<sub>m,n</sub> input[i·s + m, j·s + n]</div>
+      <div class="formula-note">对 k×k 窗口内元素取均值进行降采样。对应代码 ManualAvgPool2D.forward()</div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-label">网络层尺寸变换</div>
+      <div class="formula">Out = ⌊(In + 2·pad − k) / stride⌋ + 1</div>
+      <div class="formula-note">LeLen-5 中 conv 均用 pad=2，pool 用 stride=2。输入 28→Conv→28→Pool→14→Conv→14→Pool→7</div>
     </div>
   </section>
 
+  <!-- CODE BLOCK -->
   <section class="section">
     <div class="section-label">代码实现</div>
     <div class="section-title">model.py 核心逻辑</div>
@@ -113,36 +263,233 @@
         <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
         <span class="code-lang">Python · model.py</span>
       </div>
-      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">LeNet-5 CNN</span>(nn.Module):
-    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">ManualConv2D</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, in_ch, out_ch, k, stride=1, pad=0):
         super().__span class="fn">init__</span>()
-        <span class="cm"># 模型定义</span>
-        
+        self.weight = nn.Parameter(torch.randn(out_ch, in_ch, k, k) * 0.01)
+        self.bias = nn.Parameter(torch.zeros(out_ch))
+
     <span class="kw">def</span> <span class="fn">forward</span>(self, x):
-        <span class="cm"># 前向传播</span>
-        <span class="kw">return</span> x</pre></div>
+        <span class="cm"># im2col + 矩阵乘法，等价于逐位置卷积</span>
+        cols = <span class="op">[]</span>
+        <span class="kw">for</span> i <span class="kw">in</span> range(out_h):
+            <span class="kw">for</span> j <span class="kw">in</span> range(out_w):
+                h_s, h_e = i*s, i*s+k
+                w_s, w_e = j*s, j*s+k
+                cols.append(x[:, :, h_s:h_e, w_s:w_e].reshape(B, C*k*k))
+        <span class="kw">return</span> (torch.matmul(cols, self.weight.reshape(out_ch,-1).t())
+                + self.bias).reshape(B, out_ch, out_h, out_w)
+
+<span class="cm"># ── LeLen-5 forward ──</span>
+x = self.conv1(x)   <span class="layer-tag layer-conv">Conv1: 1→6</span>  <span class="cm"># (B, 6, 28, 28)</span>
+x = torch.relu(x)
+x = self.pool(x)    <span class="layer-tag layer-pool">Pool1: 2×2</span> <span class="cm"># (B, 6, 14, 14)</span>
+x = self.conv2(x)   <span class="layer-tag layer-conv">Conv2: 6→16</span> <span class="cm"># (B, 16, 14, 14)</span>
+x = torch.relu(x)
+x = self.pool(x)    <span class="layer-tag layer-pool">Pool2: 2×2</span> <span class="cm"># (B, 16, 7, 7)</span>
+x = x.view(x.size(0), -1)  <span class="cm"># (B, 784)</span>
+x = torch.relu(self.fc1(x)) <span class="layer-tag layer-fc">FC1: 784→120</span>
+x = torch.relu(self.fc2(x)) <span class="layer-tag layer-fc">FC2: 120→84</span>
+x = self.fc3(x)     <span class="layer-tag layer-fc">FC3: 84→10</span></pre></div>
     </div>
   </section>
 
+  <!-- INTERACTIVE CONV DEMO -->
+  <section class="section">
+    <div class="section-label">交互演示</div>
+    <div class="section-title">卷积操作可视化</div>
+    <div class="section-body" style="margin-bottom:16px;">
+      <p>观察一个 <strong>3×3</strong> 卷积核如何在 <strong>5×5</strong> 输入上滑动，产生 <strong>3×3</strong> 输出。点击<strong>"下一步"</strong>逐步演示卷积过程。</p>
+    </div>
+    <div class="demo-container">
+      <div class="demo-title">卷积核滑动演示 &nbsp;<span style="color:var(--text-faint);font-weight:400;text-transform:none;letter-spacing:0">stride=1, pad=0</span></div>
+      <div class="conv-demo">
+        <!-- Input grid -->
+        <div>
+          <div class="step-label">输入 (5×5)</div>
+          <div id="inputGrid" class="conv-grid" style="grid-template-columns:repeat(5,32px)"></div>
+        </div>
+        <!-- Kernel -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div class="step-label">卷积核 (3×3)</div>
+          <div id="kernelGrid" class="kernel-grid" style="grid-template-columns:repeat(3,28px)"></div>
+          <div style="font-size:12px;color:var(--text-faint);margin-top:4px;">各权重均为 1</div>
+        </div>
+        <!-- Arrow -->
+        <div class="conv-arrow">→</div>
+        <!-- Output grid -->
+        <div>
+          <div class="step-label">输出 (3×3)</div>
+          <div id="outputGrid" class="conv-grid" style="grid-template-columns:repeat(3,40px)"></div>
+        </div>
+        <!-- Controls -->
+        <div class="conv-info">
+          <div class="step-label">当前步骤</div>
+          <div class="conv-info-row"><span class="conv-info-label">位置</span><span class="conv-info-val" id="posLabel">(0, 0)</span></div>
+          <div class="conv-info-row"><span class="conv-info-label">覆盖区域</span><span class="conv-info-val" id="coverLabel">3×3 = 9 个元素</span></div>
+          <div class="conv-info-row"><span class="conv-info-label">累加和</span><span class="conv-info-val" id="sumLabel">—</span></div>
+          <div class="conv-info-row"><span class="conv-info-label">输出值</span><span class="conv-info-val" id="outLabel">—</span></div>
+          <div class="btn-row">
+            <button class="btn-outline" id="btnPrev" onclick="prevStep()">← 上一步</button>
+            <button class="btn-outline active" id="btnNext" onclick="nextStep()">下一步 →</button>
+            <button class="btn-outline" id="btnReset" onclick="resetDemo()">重置</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTES -->
   <section class="section">
     <div class="section-label">学习心得</div>
     <div class="section-title">关键洞察</div>
     <div class="notes-card">
       <h4>学到的知识</h4>
       <ul>
-        <li>LeNet-5 CNN 是机器学习发展史上的重要模型</li>
-        <li>理解其数学原理有助于掌握后续模型</li>
+        <li>卷积层实现：手动遍历每个输出位置，对输入进行局部加权求和</li>
+        <li>池化层实现：对窗口内元素取平均值进行降采样</li>
+        <li>卷积的关键是权值共享，大大减少了参数量</li>
+        <li>池化层增加了模型的平移不变性</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>踩坑记录</h4>
+      <ul>
+        <li>手动卷积时要注意边界处理（padding 和 stride）</li>
+        <li>MNIST 原始图像是 28×28，LeLen-5 设计输入是 32×32，需要填充</li>
+        <li>训练时收敛较慢，可能需要调整学习率</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>思考题答案</h4>
+      <ul>
+        <li><strong>为什么卷积层需要权值共享？</strong> — 大幅减少参数量，保持空间局部性，增强泛化能力</li>
+        <li><strong>池化层的作用是什么？</strong> — 降低特征图空间维度，提供平移不变性，防止过拟合</li>
+        <li><strong>LeLen-5 与现代 ResNet 有什么本质区别？</strong> — 深度不同（7层 vs 152+层）、激活函数（sigmoid vs ReLU）、训练方法（SGD vs Adam+BN）、残差连接</li>
       </ul>
     </div>
   </section>
 
+  <!-- FOOTER NAV -->
   <div class="nav-footer">
-    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
+    <a href="../03_deep_learning_revival/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">deep_learning_revival</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
+    <a href="../03_deep_learning_revival/03_alexnet_cnn/index.html" class="nav-footer-next" style="text-align:right"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">AlexNet CNN</span></a>
   </div>
 
 </main>
+
+<script>
+// ── Convolution demo ──
+const INPUT = [
+  [1,0,3,2,1],
+  [0,4,1,3,0],
+  [2,1,5,2,1],
+  [3,0,2,4,0],
+  [1,2,1,3,2]
+];
+const KERNEL = [[1,1,1],[1,1,1],[1,1,1]];
+const OUT_H = 3, OUT_W = 3;
+let curStep = -1; // -1 = show nothing highlighted yet, 0..8 = step index
+
+function buildInput() {
+  const g = document.getElementById('inputGrid');
+  g.innerHTML = '';
+  for (let i = 0; i < 5; i++) {
+    for (let j = 0; j < 5; j++) {
+      const cell = document.createElement('div');
+      cell.className = 'conv-cell';
+      cell.textContent = INPUT[i][j];
+      cell.dataset.i = i; cell.dataset.j = j;
+      g.appendChild(cell);
+    }
+  }
+}
+
+function buildKernel() {
+  const g = document.getElementById('kernelGrid');
+  g.innerHTML = '';
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      const cell = document.createElement('div');
+      cell.className = 'kernel-cell';
+      cell.textContent = KERNEL[i][j];
+      g.appendChild(cell);
+    }
+  }
+}
+
+function buildOutput() {
+  const g = document.getElementById('outputGrid');
+  g.innerHTML = '';
+  for (let i = 0; i < OUT_H; i++) {
+    for (let j = 0; j < OUT_W; j++) {
+      const cell = document.createElement('div');
+      cell.className = 'output-cell';
+      cell.id = 'out-' + i + '-' + j;
+      cell.textContent = '?';
+      g.appendChild(cell);
+    }
+  }
+}
+
+function clearHighlight() {
+  document.querySelectorAll('.conv-cell').forEach(c => {
+    c.classList.remove('active', 'highlight');
+  });
+}
+
+function highlightCell(i, j) {
+  document.querySelectorAll('.conv-cell').forEach(c => {
+    if (parseInt(c.dataset.i) === i && parseInt(c.dataset.j) === j) {
+      c.classList.add('active');
+    }
+  });
+}
+
+function stepTo(idx) {
+  clearHighlight();
+  if (idx < 0) {
+    document.getElementById('posLabel').textContent = '(0, 0)';
+    document.getElementById('coverLabel').textContent = '3×3 = 9 个元素';
+    document.getElementById('sumLabel').textContent = '—';
+    document.getElementById('outLabel').textContent = '—';
+    for (let i = 0; i < OUT_H; i++)
+      for (let j = 0; j < OUT_W; j++)
+        document.getElementById('out-' + i + '-' + j).textContent = '?';
+    return;
+  }
+  const row = Math.floor(idx / OUT_W);
+  const col = idx % OUT_W;
+  // highlight the 3x3 window
+  for (let di = 0; di < 3; di++) {
+    for (let dj = 0; dj < 3; dj++) {
+      highlightCell(row + di, col + dj);
+    }
+  }
+  // compute sum
+  let sum = 0;
+  for (let di = 0; di < 3; di++)
+    for (let dj = 0; dj < 3; dj++)
+      sum += INPUT[row + di][col + dj] * KERNEL[di][dj];
+  document.getElementById('posLabel').textContent = `(${row}, ${col})`;
+  document.getElementById('sumLabel').textContent = sum;
+  document.getElementById('outLabel').textContent = sum;
+  document.getElementById('out-' + row + '-' + col).textContent = sum;
+}
+
+function nextStep() {
+  if (curStep < 8) { curStep++; stepTo(curStep); }
+}
+function prevStep() {
+  if (curStep > -1) { curStep--; stepTo(curStep); }
+}
+function resetDemo() { curStep = -1; stepTo(-1); }
+
+buildInput();
+buildKernel();
+buildOutput();
+</script>
 
 </body>
 </html>
