@@ -7,7 +7,31 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
-/* Model-specific styles */
+/* LSTM-specific styles */
+.gate-group { cursor: pointer; transition: all 0.2s; }
+.gate-group:hover .gate-box { stroke-width: 3; filter: brightness(1.2); }
+.gate-box { transition: all 0.2s; }
+.flow-line { stroke-dasharray: 6,3; opacity: 0.6; transition: all 0.4s; }
+.flow-line.active { stroke-dasharray: none; opacity: 1; stroke-width: 2.5; }
+.cell-state-line { stroke-dasharray: 10,5; }
+#flowInfo {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-top: 16px;
+  min-height: 80px;
+}
+.flow-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+.flow-desc strong { color: var(--text); }
+.highlight-f { color: #ef4444; }
+.highlight-i { color: #10b981; }
+.highlight-o { color: #3b82f6; }
+.highlight-c { color: #f59e0b; }
 </style>
 </head>
 <body>
@@ -28,82 +52,223 @@
   <section class="hero">
     <div class="hero-eyebrow">03_deep_learning_revival阶段 · 1997</div>
     <h1>LSTM</h1>
-    <p class="hero-subtitle">暂无简介</p>
+    <p class="hero-subtitle">长短期记忆网络，通过门控机制解决RNN梯度消失问题，开启序列建模新时代。</p>
     <div class="hero-meta">
       <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">1997</span></div>
       <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Hochreiter & Schmidhuber</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">长短期记忆</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">递归神经网络</span></div>
       <div class="hero-meta-item"><span class="hero-meta-label">框架</span><span class="hero-meta-value">PyTorch</span></div>
     </div>
   </section>
 
   <div class="stats-grid">
     <div class="stat-cell"><span class="stat-value">1997</span><span class="stat-label">提出年份</span></div>
-    <div class="stat-cell"><span class="stat-value">长短期记忆</span><span class="stat-label">模型类型</span></div>
+    <div class="stat-cell"><span class="stat-value">3</span><span class="stat-label">门控数量</span></div>
     <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
     <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
   </div>
 
+  <!-- Interactive LSTM Diagram -->
   <section class="section">
-    <div class="section-label">网络架构</div>
-    <div class="section-title">结构示意</div>
-    <div class="diagram-container">
-      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
-        <!-- Generic architecture diagram -->
-        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
-        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
-        
-        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
-        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
-        
-        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
-        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
-        
+    <div class="section-label">核心结构</div>
+    <div class="section-title">LSTM单元交互示意图</div>
+    <p class="section-body" style="margin-bottom:20px;">点击下方各门控模块，查看信息流如何被控制。红色为遗忘门，绿色为输入门，蓝色为输出门。</p>
+    
+    <div class="diagram-container" style="flex-direction:column;align-items:stretch;">
+      <svg id="lstmSvg" viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px;">
         <defs>
           <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
             <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
           </marker>
+          <marker id="arrow-red" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="#ef4444"/>
+          </marker>
+          <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="#10b981"/>
+          </marker>
+          <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="#3b82f6"/>
+          </marker>
+          <marker id="arrow-yellow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="#f59e0b"/>
+          </marker>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
         </defs>
+        
+        <!-- Cell state line (horizontal highway) -->
+        <line x1="80" y1="100" x2="620" y2="100" stroke="#f59e0b" stroke-width="3" class="cell-state-line" id="cellStateLine"/>
+        <text x="630" y="105" fill="#f59e0b" font-size="12" font-family="Inter" font-weight="600">C_t</text>
+        <text x="60" y="95" fill="var(--text-faint)" font-size="10" font-family="Inter">C_{t-1}</text>
+        
+        <!-- Forget gate (red) -->
+        <g class="gate-group" onclick="showGate('forget')">
+          <rect class="gate-box" x="100" y="130" width="90" height="50" rx="6" fill="rgba(239,68,68,0.15)" stroke="#ef4444" stroke-width="2"/>
+          <text x="145" y="155" text-anchor="middle" fill="#ef4444" font-size="14" font-family="Inter" font-weight="600">f_t</text>
+          <text x="145" y="170" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">σ(W·x+U·h+b)</text>
+        </g>
+        
+        <!-- Input gate (green) -->
+        <g class="gate-group" onclick="showGate('input')">
+          <rect class="gate-box" x="240" y="130" width="90" height="50" rx="6" fill="rgba(16,185,129,0.15)" stroke="#10b981" stroke-width="2"/>
+          <text x="285" y="155" text-anchor="middle" fill="#10b981" font-size="14" font-family="Inter" font-weight="600">i_t</text>
+          <text x="285" y="170" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">σ(W·x+U·h+b)</text>
+        </g>
+        
+        <!-- Candidate cell (yellow) -->
+        <g class="gate-group" onclick="showGate('candidate')">
+          <rect class="gate-box" x="380" y="130" width="100" height="50" rx="6" fill="rgba(245,158,11,0.15)" stroke="#f59e0b" stroke-width="2"/>
+          <text x="430" y="155" text-anchor="middle" fill="#f59e0b" font-size="13" font-family="Inter" font-weight="600">C̃_t</text>
+          <text x="430" y="170" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">tanh(W·x+U·h+b)</text>
+        </g>
+        
+        <!-- Output gate (blue) -->
+        <g class="gate-group" onclick="showGate('output')">
+          <rect class="gate-box" x="520" y="130" width="90" height="50" rx="6" fill="rgba(59,130,246,0.15)" stroke="#3b82f6" stroke-width="2"/>
+          <text x="565" y="155" text-anchor="middle" fill="#3b82f6" font-size="14" font-family="Inter" font-weight="600">o_t</text>
+          <text x="565" y="170" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">σ(W·x+U·h+b)</text>
+        </g>
+        
+        <!-- Hidden state output -->
+        <rect x="520" y="280" width="90" height="50" rx="6" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="1.5"/>
+        <text x="565" y="305" text-anchor="middle" fill="var(--text)" font-size="14" font-family="Inter" font-weight="600">h_t</text>
+        <text x="565" y="320" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">o_t · tanh(C_t)</text>
+        
+        <!-- Connection lines from inputs -->
+        <line x1="35" y1="200" x2="100" y2="155" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <text x="30" y="205" fill="var(--text-muted)" font-size="11" font-family="Inter">x_t</text>
+        
+        <line x1="35" y1="300" x2="100" y2="280" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <text x="30" y="305" fill="var(--text-muted)" font-size="11" font-family="Inter">h_{t-1}</text>
+        
+        <!-- Flow arrows to gates -->
+        <line x1="100" y1="200" x2="145" y2="180" stroke="var(--text-muted)" stroke-width="1" id="line-f1"/>
+        <line x1="100" y1="300" x2="145" y2="180" stroke="var(--text-muted)" stroke-width="1" id="line-f2"/>
+        
+        <line x1="190" y1="200" x2="285" y2="180" stroke="var(--text-muted)" stroke-width="1" id="line-i1"/>
+        <line x1="190" y1="300" x2="285" y2="180" stroke="var(--text-muted)" stroke-width="1" id="line-i2"/>
+        
+        <line x1="330" y1="200" x2="430" y2="180" stroke="var(--text-muted)" stroke-width="1" id="line-c1"/>
+        <line x1="330" y1="300" x2="430" y2="180" stroke="var(--text-muted)" stroke-width="1" id="line-c2"/>
+        
+        <line x1="610" y1="200" x2="565" y2="180" stroke="var(--text-muted)" stroke-width="1" id="line-o1"/>
+        <line x1="610" y1="300" x2="565" y2="180" stroke="var(--text-muted)" stroke-width="1" id="line-o2"/>
+        
+        <!-- Multiplication symbols and flow to cell state -->
+        <circle cx="220" cy="100" r="12" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="220" y="104" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter" font-weight="600">⊙</text>
+        
+        <circle cx="340" cy="100" r="12" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="340" y="104" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter" font-weight="600">⊕</text>
+        
+        <circle cx="480" cy="100" r="12" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="480" y="104" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter" font-weight="600">⊙</text>
+        
+        <!-- Arrows from gates to cell state -->
+        <line x1="145" y1="130" x2="220" y2="100" stroke="#ef4444" stroke-width="1.5" class="flow-line" id="flow-f"/>
+        <line x1="285" y1="130" x2="340" y2="100" stroke="#10b981" stroke-width="1.5" class="flow-line" id="flow-i"/>
+        <line x1="430" y1="155" x2="340" y2="100" stroke="#f59e0b" stroke-width="1.5" class="flow-line" id="flow-c"/>
+        <line x1="565" y1="130" x2="480" y2="100" stroke="#3b82f6" stroke-width="1.5" class="flow-line" id="flow-o"/>
+        
+        <!-- Arrows along cell state -->
+        <line x1="232" y1="100" x2="328" y2="100" stroke="#f59e0b" stroke-width="2" id="cs1"/>
+        <line x1="352" y1="100" x2="468" y2="100" stroke="#f59e0b" stroke-width="2" id="cs2"/>
+        
+        <!-- Arrow from cell state to output gate -->
+        <line x1="620" y1="100" x2="565" y2="180" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrow)"/>
+        
+        <!-- Arrow from cell state to tanh then to h_t -->
+        <path d="M 565 100 Q 565 240 565 280" stroke="var(--text-muted)" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+        <rect x="535" y="175" width="60" height="30" rx="4" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="565" y="194" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">tanh</text>
+        
+        <!-- Labels -->
+        <text x="220" y="85" text-anchor="middle" fill="#ef4444" font-size="9" font-family="Inter">遗忘</text>
+        <text x="340" y="85" text-anchor="middle" fill="#10b981" font-size="9" font-family="Inter">输入</text>
+        <text x="480" y="85" text-anchor="middle" fill="#3b82f6" font-size="9" font-family="Inter">输出</text>
+        
+        <!-- Title -->
+        <text x="350" y="380" text-anchor="middle" fill="var(--text-faint)" font-size="11" font-family="Inter">点击各门查看信息流 · 细胞状态 C_t 从左至右流动</text>
       </svg>
+      
+      <div id="flowInfo">
+        <p class="flow-desc">💡 <strong>提示：</strong>点击上方门控模块（f_t、i_t、C̃_t、o_t），查看各门如何控制信息流动。遗忘门决定丢弃什么，输入门决定更新什么，输出门决定输出什么。</p>
+      </div>
     </div>
-    <p class="diagram-caption">图: LSTM 通用架构示意</p>
   </section>
 
+  <!-- History Timeline -->
   <section class="section">
     <div class="section-label">历史背景</div>
     <div class="section-title">从问题到突破</div>
     <div class="section-body">
       <p><strong>Hochreiter & Schmidhuber</strong> 在 <strong>1997</strong> 年提出了 LSTM，这是机器学习发展史上的一个重要里程碑。</p>
-      <p>1997年，Hochreiter和Schmidhuber提出了LSTM（Long Short-Term Memory）网络，解决了传统RNN的梯度消失问题。LSTM通过引入门控机制，能够学习长期依赖关系。
-
-**当时的问题**：
-- 传统RNN难以学习长序列依赖
-- 梯度消失导致早期输入信息丢失
-- 训练深层RNN困难
-
-**核心突破**：
-- 遗忘门、输入门、输出门三个门控机制
-- 细胞状态作为...</p>
+      <p>传统RNN难以学习长序列依赖，梯度消失导致早期输入信息丢失，训练深层RNN困难。</p>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">1997</div>
+        <div class="timeline-title">LSTM提出</div>
+        <div class="timeline-desc">Hochreiter & Schmidhuber 发表论文 "Long Short-Term Memory"，引入门控机制</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">核心突破</div>
+        <div class="timeline-title">三个门控 + 细胞状态</div>
+        <div class="timeline-desc">遗忘门、输入门、输出门控制信息流动，细胞状态作为信息高速公路</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">影响</div>
+        <div class="timeline-title">开启序列建模新时代</div>
+        <div class="timeline-desc">应用于机器翻译、语音识别，启发Transformer发展</div>
+      </div>
     </div>
   </section>
 
+  <!-- Formula Cards -->
   <section class="section">
     <div class="section-label">数学原理</div>
     <div class="section-title">核心公式</div>
+    
     <div class="formula-card">
-      <div class="formula-label">核心公式</div>
-      <div class="formula">f(x) = ...</div>
-      <div class="formula-note">根据具体模型填写</div>
+      <div class="formula-label">遗忘门</div>
+      <div class="formula">f<sub>t</sub> = σ(W<sub>f</sub>x<sub>t</sub> + U<sub>f</sub>h<sub>t-1</sub> + b<sub>f</sub>)</div>
+      <div class="formula-note">决定丢弃多少历史信息，值域 (0, 1)</div>
+    </div>
+    
+    <div class="formula-card">
+      <div class="formula-label">输入门</div>
+      <div class="formula">i<sub>t</sub> = σ(W<sub>i</sub>x<sub>t</sub> + U<sub>i</sub>h<sub>t-1</sub> + b<sub>i</sub>)</div>
+      <div class="formula-note">决定更新多少新信息</div>
+    </div>
+    
+    <div class="formula-card">
+      <div class="formula-label">输出门</div>
+      <div class="formula">o<sub>t</sub> = σ(W<sub>o</sub>x<sub>t</sub> + U<sub>o</sub>h<sub>t-1</sub> + b<sub>o</sub>)</div>
+      <div class="formula-note">决定输出多少当前信息</div>
+    </div>
+    
+    <div class="formula-card">
+      <div class="formula-label">候选细胞状态</div>
+      <div class="formula">C̃<sub>t</sub> = tanh(W<sub>c</sub>x<sub>t</sub> + U<sub>c</sub>h<sub>t-1</sub> + b<sub>c</sub>)</div>
+      <div class="formula-note">生成候选更新值</div>
+    </div>
+    
+    <div class="formula-card">
+      <div class="formula-label">细胞状态更新</div>
+      <div class="formula">C<sub>t</sub> = f<sub>t</sub> ⊙ C<sub>t-1</sub> + i<sub>t</sub> ⊙ C̃<sub>t</sub></div>
+      <div class="formula-note">旧状态 × 遗忘门 + 新信息 × 输入门</div>
+    </div>
+    
+    <div class="formula-card">
+      <div class="formula-label">隐藏状态输出</div>
+      <div class="formula">h<sub>t</sub> = o<sub>t</sub> ⊙ tanh(C<sub>t</sub>)</div>
+      <div class="formula-note">细胞状态经过 tanh 后由输出门控制</div>
     </div>
   </section>
 
+  <!-- Code Block -->
   <section class="section">
     <div class="section-label">代码实现</div>
     <div class="section-title">model.py 核心逻辑</div>
@@ -112,36 +277,116 @@
         <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
         <span class="code-lang">Python · model.py</span>
       </div>
-      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">LSTM</span>(nn.Module):
-    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">LSTMCell</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, input_size, hidden_size):
         super().__span class="fn">init__</span>()
-        <span class="cm"># 模型定义</span>
+        <span class="cm"># 四个权重矩阵</span>
+        self.W_f = nn.Parameter(torch.randn(hidden_size, input_size) * <span class="num">0.01</span>)
+        self.W_i = nn.Parameter(torch.randn(hidden_size, input_size) * <span class="num">0.01</span>)
+        self.W_o = nn.Parameter(torch.randn(hidden_size, input_size) * <span class="num">0.01</span>)
+        self.W_c = nn.Parameter(torch.randn(hidden_size, input_size) * <span class="num">0.01</span>)
         
-    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
-        <span class="cm"># 前向传播</span>
-        <span class="kw">return</span> x</pre></div>
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x, h_prev, c_prev):
+        <span class="cm"># 三个门 + 候选状态</span>
+        f = torch.sigmoid(x @ self.W_f.T + h_prev @ self.U_f.T + self.b_f)
+        i = torch.sigmoid(x @ self.W_i.T + h_prev @ self.U_i.T + self.b_i)
+        o = torch.sigmoid(x @ self.W_o.T + h_prev @ self.U_o.T + self.b_o)
+        c_tilda = torch.tanh(x @ self.W_c.T + h_prev @ self.U_c.T + self.b_c)
+        
+        <span class="cm"># 细胞状态与隐藏状态更新</span>
+        c_t = f * c_prev + i * c_tilda
+        h_t = o * torch.tanh(c_t)
+        <span class="kw">return</span> h_t, c_t</pre></div>
     </div>
   </section>
 
+  <!-- Limitations & Impact -->
+  <section class="section">
+    <div class="section-label">局限与影响</div>
+    <div class="section-title">历史评价</div>
+    <div class="comparison-grid">
+      <div class="comparison-panel">
+        <h4>计算局限</h4>
+        <p>• 计算复杂度高<br>• 参数较多<br>• 后被GRU等简化版本部分取代</p>
+      </div>
+      <div class="comparison-panel">
+        <h4>历史影响</h4>
+        <p>• 开启序列建模新时代<br>• 应用于机器翻译、语音识别<br>• 启发了Transformer的发展</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Notes -->
   <section class="section">
     <div class="section-label">学习心得</div>
     <div class="section-title">关键洞察</div>
     <div class="notes-card">
       <h4>学到的知识</h4>
       <ul>
-        <li>LSTM 是机器学习发展史上的重要模型</li>
-        <li>理解其数学原理有助于掌握后续模型</li>
+        <li>LSTM通过门控机制控制信息流动</li>
+        <li>细胞状态是LSTM的核心创新</li>
+        <li>三个门分别控制遗忘、输入和输出</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>踩坑记录</h4>
+      <ul>
+        <li>初始化的隐藏状态需要匹配 batch size</li>
+        <li>多层LSTM需要正确处理层间连接</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>思考题答案</h4>
+      <ul>
+        <li><strong>为什么能解决梯度消失？</strong> 细胞状态提供了梯度流动的"高速公路"，门控机制避免了梯度的连乘消失</li>
+        <li><strong>GRU和LSTM的区别？</strong> GRU将遗忘门和输入门合并为更新门，参数更少，计算更快</li>
+        <li><strong>LSTM在现代NLP中的角色？</strong> Transformer出现前是主流，现在仍用于某些序列建模任务</li>
       </ul>
     </div>
   </section>
 
+  <!-- Footer Nav -->
   <div class="nav-footer">
-    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
-    <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
+    <a href="../03_deep_learning_revival/03_bptt/index.html" class="nav-footer-prev">
+      <span class="nav-footer-label">← 上一个</span>
+      <span class="nav-footer-title">BPTT反向传播</span>
+    </a>
+    <span class="nav-footer-center"><a href="../index.html">ML History</a> · <a href="../03_deep_learning_revival/index.html">深度学习复兴</a></span>
+    <a href="../03_deep_learning_revival/05_gru/index.html" class="nav-footer-next" style="text-align:right;">
+      <span class="nav-footer-label">下一个 →</span>
+      <span class="nav-footer-title">GRU门控循环单元</span>
+    </a>
   </div>
 
 </main>
+
+<script>
+const gateInfo = {
+  forget: `<p class="flow-desc"><strong class="highlight-f">遗忘门 f_t</strong> 决定丢弃多少历史信息。当 f_t ≈ 0 时，旧细胞状态被完全遗忘；当 f_t ≈ 1 时，旧信息完整保留。这是LSTM能够"选择性地遗忘"的关键。</p>`,
+  input: `<p class="flow-desc"><strong class="highlight-i">输入门 i_t</strong> 决定更新多少新信息。它与候选状态 C̃_t 相乘后加到细胞状态上，控制新信息的写入量。</p>`,
+  candidate: `<p class="flow-desc"><strong class="highlight-c">候选细胞 C̃_t</strong> 通过 tanh 生成候选更新值，范围在 (-1, 1)。它代表"可能写入的新信息"。</p>`,
+  output: `<p class="flow-desc"><strong class="highlight-o">输出门 o_t</strong> 决定输出多少当前信息。细胞状态先经过 tanh 压缩到 (-1, 1)，再与输出门相乘得到最终隐藏状态 h_t。</p>`
+};
+
+function showGate(gate) {
+  // Reset all flow lines
+  document.querySelectorAll('.flow-line').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.gate-box').forEach(el => el.style.strokeWidth = '2');
+  
+  // Highlight selected gate
+  const gateMap = { forget: 0, input: 1, candidate: 2, output: 3 };
+  const gates = document.querySelectorAll('.gate-box');
+  if (gates[gateMap[gate]]) gates[gateMap[gate]].style.strokeWidth = '3';
+  
+  // Activate corresponding flow line
+  const flowMap = { forget: 'flow-f', input: 'flow-i', candidate: 'flow-c', output: 'flow-o' };
+  const flowEl = document.getElementById(flowMap[gate]);
+  if (flowEl) flowEl.classList.add('active');
+  
+  // Show info
+  document.getElementById('flowInfo').innerHTML = gateInfo[gate];
+}
+</script>
 
 </body>
 </html>
