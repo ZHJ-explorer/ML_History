@@ -7,7 +7,40 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
-/* Model-specific styles */
+/* ── GAN-specific styles ── */
+.cycle-indicator {
+  display: flex; gap: 8px; align-items: center; margin-bottom: 16px;
+}
+.cycle-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--border-strong); transition: all 0.3s;
+}
+.cycle-dot.active-gen { background: var(--blue); box-shadow: 0 0 8px rgba(59,130,246,0.5); }
+.cycle-dot.active-disc { background: var(--orange); box-shadow: 0 0 8px rgba(245,158,11,0.5); }
+.demo-log {
+  max-height: 160px; overflow-y: auto; font-size: 12px;
+}
+.demo-log div { padding: 3px 0; border-bottom: 1px solid var(--border); }
+.demo-log .gen-step { color: var(--blue); }
+.demo-log .disc-step { color: var(--orange); }
+.demo-log .real-step { color: var(--green); }
+.demo-log .fake-step { color: var(--red); }
+.metric-bar {
+  height: 6px; border-radius: 3px; background: var(--border-strong); overflow: hidden; margin-top: 4px;
+}
+.metric-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+.pulse { animation: pulse 1.2s ease-in-out infinite; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.flow-line {
+  stroke-dasharray: 6 3;
+  animation: dash 1s linear infinite;
+}
+@keyframes dash {
+  to { stroke-dashoffset: -18; }
+}
 </style>
 </head>
 <body>
@@ -25,10 +58,11 @@
 
 <main class="container">
 
+  <!-- HERO -->
   <section class="hero">
     <div class="hero-eyebrow">03_deep_learning_revival阶段 · 2014</div>
     <h1>GAN</h1>
-    <p class="hero-subtitle">暂无简介</p>
+    <p class="hero-subtitle">生成对抗网络（Generative Adversarial Networks）由 Ian Goodfellow 于 2014 年提出，开创了对抗训练这一全新生成模型范式，能够生成逼真数据。</p>
     <div class="hero-meta">
       <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">2014</span></div>
       <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Ian Goodfellow</span></div>
@@ -37,110 +71,404 @@
     </div>
   </section>
 
+  <!-- STATS -->
   <div class="stats-grid">
     <div class="stat-cell"><span class="stat-value">2014</span><span class="stat-label">提出年份</span></div>
-    <div class="stat-cell"><span class="stat-value">生成对抗网络</span><span class="stat-label">模型类型</span></div>
-    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
+    <div class="stat-cell"><span class="stat-value">生成对抗</span><span class="stat-label">核心思想</span></div>
+    <div class="stat-cell"><span class="stat-value">G + D</span><span class="stat-label">双网络结构</span></div>
     <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
   </div>
 
+  <!-- DIAGRAM: GAN Architecture -->
   <section class="section">
     <div class="section-label">网络架构</div>
-    <div class="section-title">结构示意</div>
+    <div class="section-title">对抗结构示意</div>
     <div class="diagram-container">
-      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
-        <!-- Generic architecture diagram -->
-        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
-        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
-        
-        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
-        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
-        
-        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
-        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
-        
+      <svg viewBox="0 0 760 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:760px;">
         <defs>
-          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-            <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
+          <marker id="arr-blue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="#3b82f6"/>
           </marker>
+          <marker id="arr-orange" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="#f59e0b"/>
+          </marker>
+          <marker id="arr-red" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="#ef4444"/>
+          </marker>
+          <filter id="glow-blue"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="glow-orange"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
         </defs>
+
+        <!-- Generator Block -->
+        <rect x="20" y="80" width="140" height="180" rx="12" fill="var(--bg-elevated)" stroke="#3b82f6" stroke-width="2" filter="url(#glow-blue)"/>
+        <text x="90" y="115" text-anchor="middle" fill="#3b82f6" font-size="14" font-weight="600" font-family="Inter">生成器 G</text>
+        <text x="90" y="135" text-anchor="middle" fill="var(--text-faint)" font-size="11" font-family="JetBrains Mono">Generator</text>
+        <!-- Input noise -->
+        <rect x="40" y="155" width="100" height="36" rx="6" fill="var(--bg)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="90" y="177" text-anchor="middle" fill="var(--text-secondary)" font-size="11" font-family="Inter">噪声 z</text>
+        <text x="90" y="192" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">z ~ p_z</text>
+        <!-- Inner layers -->
+        <rect x="40" y="208" width="100" height="36" rx="6" fill="var(--bg)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="90" y="230" text-anchor="middle" fill="var(--text-secondary)" font-size="11" font-family="Inter">隐藏层</text>
+        <text x="90" y="245" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">Dense / Conv</text>
+        <!-- Output -->
+        <rect x="40" y="258" width="100" height="36" rx="6" fill="rgba(59,130,246,0.12)" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="90" y="280" text-anchor="middle" fill="#3b82f6" font-size="11" font-family="Inter">假样本 x̂</text>
+        <text x="90" y="295" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">G(z)</text>
+
+        <!-- Arrow: noise → generator -->
+        <line x1="90" y1="80" x2="90" y2="150" stroke="#3b82f6" stroke-width="2" marker-end="url(#arr-blue)" class="flow-line"/>
+        <!-- Arrow: inside generator -->
+        <line x1="90" y1="191" x2="90" y2="204" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr-blue)"/>
+        <line x1="90" y1="244" x2="90" y2="254" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr-blue)"/>
+        <!-- Arrow: generator → fake sample -->
+        <line x1="160" y1="276" x2="220" y2="276" stroke="#3b82f6" stroke-width="2" marker-end="url(#arr-blue)" class="flow-line"/>
+
+        <!-- Discriminator Block -->
+        <rect x="500" y="80" width="140" height="180" rx="12" fill="var(--bg-elevated)" stroke="#f59e0b" stroke-width="2" filter="url(#glow-orange)"/>
+        <text x="570" y="115" text-anchor="middle" fill="#f59e0b" font-size="14" font-weight="600" font-family="Inter">判别器 D</text>
+        <text x="570" y="135" text-anchor="middle" fill="var(--text-faint)" font-size="11" font-family="JetBrains Mono">Discriminator</text>
+        <!-- Input -->
+        <rect x="520" y="155" width="100" height="36" rx="6" fill="var(--bg)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="570" y="177" text-anchor="middle" fill="var(--text-secondary)" font-size="11" font-family="Inter">样本 x</text>
+        <text x="570" y="192" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">x ~ p_data</text>
+        <!-- Hidden -->
+        <rect x="520" y="208" width="100" height="36" rx="6" fill="var(--bg)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="570" y="230" text-anchor="middle" fill="var(--text-secondary)" font-size="11" font-family="Inter">隐藏层</text>
+        <text x="570" y="245" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">Dense / Conv</text>
+        <!-- Output -->
+        <rect x="520" y="258" width="100" height="36" rx="6" fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="1.5"/>
+        <text x="570" y="280" text-anchor="middle" fill="#f59e0b" font-size="11" font-family="Inter">真伪得分</text>
+        <text x="570" y="295" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">D(x) ∈ [0,1]</text>
+
+        <!-- Arrows inside discriminator -->
+        <line x1="570" y1="191" x2="570" y2="204" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr-orange)"/>
+        <line x1="570" y1="244" x2="570" y2="254" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr-orange)"/>
+
+        <!-- Real sample input (top right) -->
+        <rect x="640" y="100" width="100" height="52" rx="8" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1.5"/>
+        <text x="690" y="122" text-anchor="middle" fill="#10b981" font-size="12" font-family="Inter">真实样本</text>
+        <text x="690" y="138" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">x ~ p_data</text>
+        <line x1="640" y1="126" x2="580" y2="126" stroke="#10b981" stroke-width="2" marker-end="url(#arr-orange)" class="flow-line"/>
+
+        <!-- Center: adversarial loop -->
+        <!-- Arrow: fake → discriminator -->
+        <line x1="224" y1="276" x2="496" y2="276" stroke="#f59e0b" stroke-width="2" stroke-dasharray="8 4" marker-end="url(#arr-orange)"/>
+        <rect x="290" y="258" width="180" height="28" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)"/>
+        <text x="380" y="276" text-anchor="middle" fill="var(--text-secondary)" font-size="11" font-family="Inter">假样本 → 判别器</text>
+
+        <!-- Loss feedback arrows (bottom) -->
+        <line x1="570" y1="290" x2="570" y2="310" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr-red)"/>
+        <line x1="570" y1="310" x2="90" y2="310" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr-red)"/>
+        <line x1="90" y1="310" x2="90" y2="296" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr-red)"/>
+        <rect x="200" y="296" width="200" height="28" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)"/>
+        <text x="300" y="314" text-anchor="middle" fill="var(--text-secondary)" font-size="11" font-family="Inter">梯度反馈 ← 损失计算</text>
+
+        <!-- Legend -->
+        <text x="380" y="30" text-anchor="middle" fill="var(--text-faint)" font-size="12" font-family="Inter">对抗训练闭环</text>
+        <circle cx="310" cy="50" r="4" fill="#3b82f6"/>
+        <text x="318" y="54" fill="var(--text-muted)" font-size="11" font-family="Inter">生成器路径</text>
+        <circle cx="410" cy="50" r="4" fill="#f59e0b"/>
+        <text x="418" y="54" fill="var(--text-muted)" font-size="11" font-family="Inter">判别器路径</text>
+        <circle cx="510" cy="50" r="4" fill="#ef4444"/>
+        <text x="518" y="54" fill="var(--text-muted)" font-size="11" font-family="Inter">梯度反馈</text>
       </svg>
     </div>
-    <p class="diagram-caption">图: GAN 通用架构示意</p>
+    <p class="diagram-caption">图：GAN 对抗训练架构 — 噪声 z 经生成器 G 产生假样本 x̂，与真实样本一起送入判别器 D，D 输出真伪概率，梯度反馈更新 G 和 D</p>
   </section>
 
+  <!-- HISTORY -->
   <section class="section">
     <div class="section-label">历史背景</div>
     <div class="section-title">从问题到突破</div>
     <div class="section-body">
-      <p><strong>Ian Goodfellow</strong> 在 <strong>2014</strong> 年提出了 GAN，这是机器学习发展史上的一个重要里程碑。</p>
-      <p>2014年，Goodfellow等人提出了GAN（Generative Adversarial Networks），开创了生成模型的新范式。GAN通过生成器和判别器的对抗训练，能够生成逼真的数据。
-
-**当时的问题**：
-- 传统生成模型（如VAE）生成的样本模糊
-- 缺乏有效的生成模型训练方法
-
-**核心突破**：
-- 对抗训练框架
-- 无需显式概率密度估计</p>
+      <p><strong>Ian Goodfellow</strong> 在 <strong>2014</strong> 年提出了 GAN（Generative Adversarial Networks），开创了生成模型的新范式。GAN 通过生成器和判别器的对抗训练，能够生成逼真的数据。</p>
+      <p><strong>当时的问题：</strong></p>
+      <ul>
+        <li>传统生成模型（如 VAE）生成的样本模糊</li>
+        <li>缺乏有效的生成模型训练方法</li>
+      </ul>
+      <p><strong>核心突破：</strong></p>
+      <ul>
+        <li>对抗训练框架 — 无需显式概率密度估计</li>
+        <li>生成器与判别器博弈优化</li>
+      </ul>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">2014</div>
+        <div class="timeline-title">GAN 提出</div>
+        <div class="timeline-desc">Ian Goodfellow 发表《Generative Adversarial Networks》论文，开创对抗训练范式</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2015–2017</div>
+        <div class="timeline-title">DCGAN / WGAN / CGAN</div>
+        <div class="timeline-desc">深度卷积 GAN、Wasserstein GAN、条件 GAN 等改进相继提出，稳定性大幅提升</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2018</div>
+        <div class="timeline-title">StyleGAN</div>
+        <div class="timeline-desc">Karras 等提出 StyleGAN，生成质量达到前所未有的逼真水平</div>
+      </div>
     </div>
   </section>
 
+  <!-- FORMULA -->
   <section class="section">
     <div class="section-label">数学原理</div>
-    <div class="section-title">核心公式</div>
+    <div class="section-title">核心目标函数</div>
     <div class="formula-card">
-      <div class="formula-label">核心公式</div>
-      <div class="formula">f(x) = ...</div>
-      <div class="formula-note">根据具体模型填写</div>
+      <div class="formula-label">极小极大目标函数</div>
+      <div class="formula">min_G max_D V(D, G) = E_{x~p_data}[log D(x)] + E_{z~p_z}[log(1 - D(G(z)))]</div>
+      <div class="formula-note">D 最大化区分真假的能力；G 最小化被 D 识别为假的概率</div>
+    </div>
+    <div class="comparison-grid">
+      <div class="comparison-panel">
+        <h4>生成器 G</h4>
+        <p>接收随机噪声 z，学习生成逼真样本，目标是「骗过」判别器。梯度方向：让 D(G(z)) 趋近于 1。</p>
+      </div>
+      <div class="comparison-panel">
+        <h4>判别器 D</h4>
+        <p>接收真实样本 x 或假样本 G(z)，学习输出接近 1（真）或 0（假）。梯度方向：正确区分真假。</p>
+      </div>
     </div>
   </section>
 
+  <!-- CODE -->
   <section class="section">
     <div class="section-label">代码实现</div>
-    <div class="section-title">model.py 核心逻辑</div>
+    <div class="section-title">PyTorch 核心逻辑</div>
     <div class="code-block">
       <div class="code-header">
         <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
-        <span class="code-lang">Python · model.py</span>
+        <span class="code-lang">Python · gan_model.py</span>
       </div>
-      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">GAN</span>(nn.Module):
-    <span class="kw">def</span> <span class="fn">__init__</span>(self):
-        super().__span class="fn">init__</span>()
-        <span class="cm"># 模型定义</span>
-        
+      <div class="code-body"><pre><span class="kw">import</span> torch
+<span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+
+<span class="kw">class</span> <span class="cls">Generator</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, z_dim=<span class="num">100</span>, img_dim=<span class="num">784</span>):
+        super().<span class="fn">__init__</span>()
+        self.net = nn.<span class="fn">Sequential</span>(
+            nn.<span class="fn">Linear</span>(z_dim, <span class="num">256</span>),
+            nn.<span class="fn">LeakyReLU</span>(<span class="num">0.2</span>),
+            nn.<span class="fn">Linear</span>(<span class="num">256</span>, <span class="num">512</span>),
+            nn.<span class="fn">LeakyReLU</span>(<span class="num">0.2</span>),
+            nn.<span class="fn">Linear</span>(<span class="num">512</span>, img_dim),
+            nn.<span class="fn">Tanh</span>()
+        )
+    <span class="kw">def</span> <span class="fn">forward</span>(self, z):
+        <span class="kw">return</span> self.net(z)
+
+<span class="kw">class</span> <span class="cls">Discriminator</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, img_dim=<span class="num">784</span>):
+        super().<span class="fn">__init__</span>()
+        self.net = nn.<span class="fn">Sequential</span>(
+            nn.<span class="fn">Linear</span>(img_dim, <span class="num">512</span>),
+            nn.<span class="fn">LeakyReLU</span>(<span class="num">0.2</span>),
+            nn.<span class="fn">Linear</span>(<span class="num">512</span>, <span class="num">256</span>),
+            nn.<span class="fn">LeakyReLU</span>(<span class="num">0.2</span>),
+            nn.<span class="fn">Linear</span>(<span class="num">256</span>, <span class="num">1</span>),
+            nn.<span class="fn">Sigmoid</span>()
+        )
     <span class="kw">def</span> <span class="fn">forward</span>(self, x):
-        <span class="cm"># 前向传播</span>
-        <span class="kw">return</span> x</pre></div>
+        <span class="kw">return</span> self.net(x).<span class="fn">view</span>(-<span class="num">1</span>)</pre></div>
     </div>
   </section>
 
+  <!-- INTERACTIVE DEMO -->
+  <section class="section">
+    <div class="section-label">交互演示</div>
+    <div class="section-title">对抗训练过程模拟</div>
+    <div class="section-body" style="margin-bottom:16px;">
+      <p>点击下方按钮，模拟 GAN 多轮训练过程。观察生成器 G 和判别器 D 的交替优化，以及两者能力的动态变化。</p>
+    </div>
+    <div class="demo-container">
+      <div class="demo-title">对抗训练模拟器</div>
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+        <button class="demo-btn" onclick="runDemoStep()">单步训练</button>
+        <button class="demo-btn" onclick="runAutoDemo()" id="autoBtn">自动模拟</button>
+        <button class="demo-btn" onclick="resetDemo()" style="background:var(--bg-elevated);color:var(--text-muted);">重置</button>
+      </div>
+      <!-- Cycle indicator -->
+      <div class="cycle-indicator" id="cycleIndicator">
+        <span style="font-size:12px;color:var(--text-faint);margin-right:8px;">当前阶段：</span>
+        <div class="cycle-dot" id="dotGen"></div><span style="font-size:12px;color:#3b82f6;">生成器训练</span>
+        <span style="margin:0 12px;color:var(--text-faint);">|</span>
+        <div class="cycle-dot" id="dotDisc"></div><span style="font-size:12px;color:#f59e0b;">判别器训练</span>
+      </div>
+      <!-- Metrics -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-faint);">
+            <span>生成器损失 G_loss</span><span id="gLossVal" style="color:#3b82f6;">—</span>
+          </div>
+          <div class="metric-bar"><div class="metric-fill" id="gLossBar" style="width:50%;background:#3b82f6;"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-faint);">
+            <span>判别器准确率 D_acc</span><span id="dAccVal" style="color:#f59e0b;">—</span>
+          </div>
+          <div class="metric-bar"><div class="metric-fill" id="dAccBar" style="width:50%;background:#f59e0b;"></div></div>
+        </div>
+      </div>
+      <!-- Demo log -->
+      <div class="demo-output demo-log" id="demoLog">
+        <div style="color:var(--text-faint);">点击「单步训练」或「自动模拟」开始...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTES -->
   <section class="section">
     <div class="section-label">学习心得</div>
     <div class="section-title">关键洞察</div>
     <div class="notes-card">
       <h4>学到的知识</h4>
       <ul>
-        <li>GAN 是机器学习发展史上的重要模型</li>
-        <li>理解其数学原理有助于掌握后续模型</li>
+        <li>GAN 由生成器 G 和判别器 D 两个网络组成</li>
+        <li>对抗训练是核心思想 — G 生成假样本，D 区分真假</li>
+        <li>生成器学习生成逼真数据，判别器学习区分真假</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>踩坑记录</h4>
+      <ul>
+        <li>学习率需要仔细调整，太高容易不稳定</li>
+        <li>生成器和判别器的训练需要平衡，一方太强会导致另一方梯度消失</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>思考题</h4>
+      <ul>
+        <li><strong>为什么 GAN 训练不稳定？</strong> — 生成器和判别器同时优化导致非平稳博弈，梯度消失问题</li>
+        <li><strong>模式崩溃是什么？如何避免？</strong> — 生成器只生成少数几种样本；避免方法：使用最小二乘 GAN、WGAN 等变体</li>
+        <li><strong>GAN 和 VAE 各有什么优缺点？</strong> — GAN 生成质量高但训练不稳定；VAE 训练稳定但生成样本模糊</li>
       </ul>
     </div>
   </section>
 
+  <!-- FOOTER NAV -->
   <div class="nav-footer">
-    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
-    <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
+    <a href="05_word2vec/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">Word2Vec</span></a>
+    <span class="nav-footer-center"><a href="../index.html">ML History</a> · <a href="../03_deep_learning_revival/index.html">深度学习复兴</a></span>
+    <a href="../04_deep_learning_boom/01_transformer/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">Transformer</span></a>
   </div>
 
 </main>
+
+<script>
+// ── GAN Interactive Demo ──
+let epoch = 0;
+let gLoss = 0.7;   // generator loss starts high
+let dAcc = 0.52;   // discriminator accuracy starts near random
+let isAuto = false;
+let autoTimer = null;
+
+const logs = document.getElementById('demoLog');
+const gLossVal = document.getElementById('gLossVal');
+const gLossBar = document.getElementById('gLossBar');
+const dAccVal = document.getElementById('dAccVal');
+const dAccBar = document.getElementById('dAccBar');
+const dotGen = document.getElementById('dotGen');
+const dotDisc = document.getElementById('dotDisc');
+
+function rand(min, max) { return Math.random() * (max - min) + min; }
+
+function runDemoStep() {
+  epoch++;
+  const isGenStep = epoch % 2 === 1; // odd = gen training, even = disc training
+
+  // Update indicators
+  dotGen.className = 'cycle-dot' + (isGenStep ? ' active-gen' : '');
+  dotDisc.className = 'cycle-dot' + (isGenStep ? '' : ' active-disc');
+
+  let logHtml = '';
+  if (isGenStep) {
+    // Generator trains: loss decreases, but may fluctuate
+    const oldGLoss = gLoss;
+    gLoss = Math.max(0.05, gLoss - rand(0.02, 0.08) + rand(0, 0.03));
+    gLoss = Math.min(0.95, gLoss);
+    const change = ((gLoss - oldGLoss) * 100).toFixed(1);
+    const arrow = parseFloat(change) >= 0 ? '↑' : '↓';
+    gLossVal.textContent = gLoss.toFixed(3);
+    gLossBar.style.width = (gLoss * 100) + '%';
+    logHtml = `<div class="gen-step">Epoch ${epoch} | 生成器训练 | G_loss: ${oldGLoss.toFixed(3)} → ${gLoss.toFixed(3)} ${arrow}</div>`;
+  } else {
+    // Discriminator trains: accuracy improves
+    const oldDAcc = dAcc;
+    dAcc = Math.min(0.98, dAcc + rand(0.01, 0.05) - rand(0, 0.02));
+    dAcc = Math.max(0.50, dAcc);
+    dAccVal.textContent = (dAcc * 100).toFixed(1) + '%';
+    dAccBar.style.width = (dAcc * 100) + '%';
+    logHtml = `<div class="disc-step">Epoch ${epoch} | 判别器训练 | D_acc: ${(oldDAcc*100).toFixed(1)}% → ${(dAcc*100).toFixed(1)}%</div>`;
+  }
+
+  // Add context log entries
+  if (isGenStep) {
+    const actions = [
+      `采样噪声 z ~ N(0,1)，G(z) 生成假样本`,
+      `生成器计算 loss = -E[log D(G(z))]`,
+      `反向传播更新 G 的参数`,
+    ];
+    const action = actions[Math.floor(Math.random() * actions.length)];
+    logHtml += `<div style="color:var(--text-faint);padding-left:12px;">↳ ${action}</div>`;
+  } else {
+    const actions = [
+      `输入真实样本 x，D(x) 输出高概率`,
+      `输入假样本 G(z)，D(G(z)) 输出低概率`,
+      `判别器计算 binary cross-entropy loss`,
+      `反向传播更新 D 的参数`,
+    ];
+    const action = actions[Math.floor(Math.random() * actions.length)];
+    logHtml += `<div style="color:var(--text-faint);padding-left:12px;">↳ ${action}</div>`;
+  }
+
+  // Check for convergence
+  if (epoch >= 10 && gLoss < 0.15 && dAcc > 0.90) {
+    logHtml += `<div style="color:var(--green);font-weight:500;">✓ 收敛：生成器已能生成逼真样本，判别器难以区分</div>`;
+  } else if (gLoss > 0.8 && epoch > 3) {
+    logHtml += `<div style="color:var(--red);">⚠ 生成器训练困难，可能梯度消失</div>`;
+  }
+
+  logs.innerHTML = logHtml + logs.innerHTML;
+  if (logs.children.length > 20) logs.removeChild(logs.lastChild);
+}
+
+function runAutoDemo() {
+  const btn = document.getElementById('autoBtn');
+  if (isAuto) {
+    isAuto = false;
+    clearInterval(autoTimer);
+    btn.textContent = '自动模拟';
+    btn.style.background = '';
+    return;
+  }
+  isAuto = true;
+  btn.textContent = '停止';
+  btn.style.background = 'var(--red)';
+  runDemoStep();
+  autoTimer = setInterval(() => {
+    if (!isAuto) return;
+    runDemoStep();
+  }, 800);
+}
+
+function resetDemo() {
+  isAuto = false;
+  if (autoTimer) clearInterval(autoTimer);
+  epoch = 0;
+  gLoss = 0.7;
+  dAcc = 0.52;
+  gLossVal.textContent = '—';
+  gLossBar.style.width = '50%';
+  dAccVal.textContent = '—';
+  dAccBar.style.width = '50%';
+  dotGen.className = 'cycle-dot';
+  dotDisc.className = 'cycle-dot';
+  logs.innerHTML = '<div style="color:var(--text-faint);">已重置，点击「单步训练」或「自动模拟」开始...</div>';
+}
+</script>
 
 </body>
 </html>
