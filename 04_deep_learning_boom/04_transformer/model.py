@@ -6,9 +6,15 @@ import math
 
 
 class MultiHeadAttention(nn.Module):
-    """多头注意力机制。"""
-    
+    """多头注意力机制，允许模型同时关注不同位置的不同表示子空间。"""
+
     def __init__(self, d_model, num_heads):
+        """初始化多头注意力层。
+
+        Args:
+            d_model: 模型维度。
+            num_heads: 注意力头数。
+        """
         super().__init__()
         self.num_heads = num_heads
         self.d_model = d_model
@@ -20,6 +26,17 @@ class MultiHeadAttention(nn.Module):
         self.W_o = nn.Linear(d_model, d_model)
     
     def forward(self, q, k, v, mask=None):
+        """执行多头注意力计算。
+
+        Args:
+            q: 查询张量，形状为(batch_size, seq_len, d_model)。
+            k: 键张量，形状为(batch_size, seq_len, d_model)。
+            v: 值张量，形状为(batch_size, seq_len, d_model)。
+            mask: 可选的掩码张量。
+
+        Returns:
+            注意力输出，形状为(batch_size, seq_len, d_model)。
+        """
         batch_size = q.size(0)
         
         # 线性变换
@@ -48,9 +65,15 @@ class MultiHeadAttention(nn.Module):
 
 
 class PositionWiseFeedForward(nn.Module):
-    """位置前馈网络。"""
-    
+    """位置前馈网络，对每个位置独立应用相同的线性变换。"""
+
     def __init__(self, d_model, d_ff):
+        """初始化位置前馈网络。
+
+        Args:
+            d_model: 模型维度。
+            d_ff: 前馈网络隐藏层维度。
+        """
         super().__init__()
         self.fc1 = nn.Linear(d_model, d_ff)
         self.fc2 = nn.Linear(d_ff, d_model)
@@ -60,9 +83,17 @@ class PositionWiseFeedForward(nn.Module):
 
 
 class EncoderLayer(nn.Module):
-    """编码器层。"""
-    
+    """Transformer编码器层，包含多头自注意力和前馈网络。"""
+
     def __init__(self, d_model, num_heads, d_ff, dropout=0.1):
+        """初始化编码器层。
+
+        Args:
+            d_model: 模型维度。
+            num_heads: 注意力头数。
+            d_ff: 前馈网络隐藏层维度。
+            dropout: Dropout比率，默认为0.1。
+        """
         super().__init__()
         self.self_attention = MultiHeadAttention(d_model, num_heads)
         self.feed_forward = PositionWiseFeedForward(d_model, d_ff)
@@ -83,9 +114,19 @@ class EncoderLayer(nn.Module):
 
 
 class Transformer(nn.Module):
-    """Transformer模型。"""
-    
+    """Transformer编码器模型，用于序列建模任务。"""
+
     def __init__(self, vocab_size, d_model=512, num_heads=8, num_layers=6, d_ff=2048, max_seq_len=512):
+        """初始化Transformer模型。
+
+        Args:
+            vocab_size: 词表大小。
+            d_model: 模型维度，默认为512。
+            num_heads: 注意力头数，默认为8。
+            num_layers: 编码器层数，默认为6。
+            d_ff: 前馈网络隐藏层维度，默认为2048。
+            max_seq_len: 最大序列长度，默认为512。
+        """
         super().__init__()
         self.embedding = nn.Embedding(vocab_size, d_model)
         self.position_encoding = nn.Parameter(torch.randn(1, max_seq_len, d_model))
@@ -98,6 +139,14 @@ class Transformer(nn.Module):
         self.output_layer = nn.Linear(d_model, vocab_size)
     
     def forward(self, x):
+        """执行前向传播。
+
+        Args:
+            x: 输入 token ID 张量，形状为(batch_size, seq_len)。
+
+        Returns:
+            输出 logits，形状为(batch_size, seq_len, vocab_size)。
+        """
         batch_size, seq_len = x.size()
         
         # 嵌入
