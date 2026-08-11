@@ -7,7 +7,74 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
-/* Model-specific styles */
+/* ── Tree SVG Styles ── */
+.tree-svg { width: 100%; max-width: 800px; }
+.tree-node { cursor: pointer; transition: all 0.2s ease; }
+.tree-node:hover .node-box { stroke: var(--accent); filter: drop-shadow(0 0 6px var(--accent-glow)); }
+.node-box { transition: all 0.25s ease; }
+.node-label { font-family: 'Inter', sans-serif; font-size: 11px; fill: var(--text); }
+.node-feature { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill: var(--accent); }
+.node-value { font-family: 'JetBrains Mono', font-size: 9px; fill: var(--text-muted); }
+.tree-edge { stroke: var(--border-strong); stroke-width: 1.5; fill: none; transition: stroke 0.2s; }
+.tree-edge.active { stroke: var(--accent); stroke-width: 2; }
+.edge-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; fill: var(--text-faint); }
+
+/* ── Info Panel ── */
+.info-panel {
+  background: var(--bg); border: 1px solid var(--border-strong);
+  border-radius: var(--radius); padding: 16px; margin-top: 16px;
+  font-size: 13px; color: var(--text-muted); min-height: 80px;
+  transition: all 0.2s;
+}
+.info-panel h5 { color: var(--text); font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+.info-panel .metric { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid var(--border); }
+.info-panel .metric:last-child { border-bottom: none; }
+.info-panel .metric-label { color: var(--text-faint); }
+.info-panel .metric-value { color: var(--accent); font-family: 'JetBrains Mono', monospace; }
+
+/* ── Toggle Button ── */
+.toggle-btn {
+  background: transparent; border: 1px solid var(--border-strong);
+  color: var(--text-muted); padding: 6px 12px; border-radius: var(--radius);
+  font-size: 12px; cursor: pointer; transition: all 0.15s;
+}
+.toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
+.toggle-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+/* ── Demo Calculator ── */
+.demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.calc-input { display: flex; flex-direction: column; gap: 6px; }
+.calc-input label { font-size: 12px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; }
+.calc-input input, .calc-input select {
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 8px 12px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px;
+}
+.calc-input input:focus, .calc-input select:focus { outline: none; border-color: var(--accent); }
+.calc-result {
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px;
+  color: var(--text-secondary); line-height: 1.8;
+}
+.calc-result .result-row { display: flex; justify-content: space-between; padding: 2px 0; }
+.calc-result .result-label { color: var(--text-faint); }
+.calc-result .result-val { color: var(--accent); }
+.calc-result .result-val.green { color: var(--green); }
+.calc-result .result-val.orange { color: var(--orange); }
+
+/* ── Animation ── */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { animation: fadeIn 0.4s ease forwards; }
+.tree-node { opacity: 0; animation: fadeIn 0.3s ease forwards; }
+.tree-node:nth-child(1) { animation-delay: 0.1s; }
+.tree-node:nth-child(2) { animation-delay: 0.2s; }
+.tree-node:nth-child(3) { animation-delay: 0.3s; }
+.tree-node:nth-child(4) { animation-delay: 0.4s; }
+.tree-node:nth-child(5) { animation-delay: 0.5s; }
+.tree-node:nth-child(6) { animation-delay: 0.6s; }
+
+@media (max-width: 768px) {
+  .demo-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -25,121 +92,650 @@
 
 <main class="container">
 
+  <!-- HERO -->
   <section class="hero">
-    <div class="hero-eyebrow">02_statistical_learning阶段 · 1970</div>
+    <div class="hero-eyebrow">02_statistical_learning阶段 · 1970s</div>
     <h1>决策树</h1>
-    <p class="hero-subtitle">暂无简介</p>
+    <p class="hero-subtitle">从CL S概念学习到ID3/C4.5的信息增益革命——可解释机器学习的奠基之作，开启了"机器能否像人一样做判断"的思考。</p>
     <div class="hero-meta">
-      <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">1970</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">H.A. Hagan et al.</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">可解释分类</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">框架</span><span class="hero-meta-value">PyTorch</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">起源</span><span class="hero-meta-value">1960s Hunt</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">关键突破</span><span class="hero-meta-value">ID3 / C4.5</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">监督学习·分类</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">核心思想</span><span class="hero-meta-value">信息增益</span></div>
     </div>
   </section>
 
+  <!-- STATS GRID -->
   <div class="stats-grid">
-    <div class="stat-cell"><span class="stat-value">1970</span><span class="stat-label">提出年份</span></div>
-    <div class="stat-cell"><span class="stat-value">可解释分类</span><span class="stat-label">模型类型</span></div>
-    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
-    <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
+    <div class="stat-cell"><span class="stat-value">1963</span><span class="stat-label">CLS 起源</span></div>
+    <div class="stat-cell"><span class="stat-value">1986</span><span class="stat-label">ID3 发表</span></div>
+    <div class="stat-cell"><span class="stat-value">1993</span><span class="stat-label">C4.5 发布</span></div>
+    <div class="stat-cell"><span class="stat-value">熵</span><span class="stat-label">分裂标准</span></div>
   </div>
 
+  <!-- INTERACTIVE TREE DIAGRAM -->
   <section class="section">
-    <div class="section-label">网络架构</div>
-    <div class="section-title">结构示意</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div>
+        <div class="section-label">交互式可视化</div>
+        <div class="section-title">决策树结构</div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="toggle-btn active" id="btn-show-all" onclick="showAllNodes()">显示全部</button>
+        <button class="toggle-btn" id="btn-show-path" onclick="showOnlyPath()">仅显示路径</button>
+      </div>
+    </div>
     <div class="diagram-container">
-      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
-        <!-- Generic architecture diagram -->
-        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
-        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
-        
-        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
-        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
-        
-        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
-        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
-        
+      <svg id="treeSvg" class="tree-svg" viewBox="0 0 800 520" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-            <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
+          <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="var(--text-faint)"/>
           </marker>
+          <marker id="arrowhead-active" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="var(--accent)"/>
+          </marker>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
         </defs>
+
+        <!-- EDGES -->
+        <g id="edges">
+          <!-- Root -> Node A -->
+          <line id="e-r-a" class="tree-edge" x1="400" y1="65" x2="400" y2="130" marker-end="url(#arrowhead)"/>
+          <!-- Root -> Node B -->
+          <line id="e-r-b" class="tree-edge" x1="400" y1="65" x2="400" y2="130" marker-end="url(#arrowhead)" style="display:none;"/>
+          <!-- Node A -> Leaf 1 -->
+          <line id="e-a-l1" class="tree-edge" x1="250" y1="180" x2="150" y2="280" marker-end="url(#arrowhead)"/>
+          <!-- Node A -> Node B -->
+          <line id="e-a-b" class="tree-edge" x1="250" y1="180" x2="400" y2="280" marker-end="url(#arrowhead)"/>
+          <!-- Node B -> Leaf 2 -->
+          <line id="e-b-l2" class="tree-edge" x1="550" y1="180" x2="650" y2="280" marker-end="url(#arrowhead)"/>
+          <!-- Node B -> Leaf 3 -->
+          <line id="e-b-l3" class="tree-edge" x1="550" y1="180" x2="550" y2="280" marker-end="url(#arrowhead)"/>
+          <!-- Node B -> Leaf 4 -->
+          <line id="e-b-l4" class="tree-edge" x1="550" y1="180" x2="450" y2="280" marker-end="url(#arrowhead)"/>
+        </g>
+
+        <!-- EDGE LABELS -->
+        <g id="edge-labels">
+          <text x="410" y="100" class="edge-label" fill="var(--accent)">Yes · Income&gt;50k</text>
+          <text x="130" y="275" class="edge-label">Age≤30</text>
+          <text x="310" y="225" class="edge-label">Age&gt;30</text>
+          <text x="660" y="275" class="edge-label">College</text>
+          <text x="560" y="275" class="edge-label">No College</text>
+          <text x="440" y="275" class="edge-label">Married</text>
+        </g>
+
+        <!-- NODES -->
+        <g id="nodes">
+          <!-- ROOT NODE -->
+          <g class="tree-node" data-node="root" onclick="selectNode('root')">
+            <rect class="node-box" x="350" y="15" width="100" height="50" rx="8"
+              fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="1.5" filter="url(#glow)"/>
+            <text x="400" y="36" text-anchor="middle" class="node-label" font-weight="600">收入 > 50k?</text>
+            <text x="400" y="52" text-anchor="middle" class="node-feature">Gain: 0.246</text>
+            <text x="400" y="58" text-anchor="middle" class="node-value">根节点 · 42 samples</text>
+          </g>
+
+          <!-- NODE A (after root yes) -->
+          <g class="tree-node" data-node="node-a" onclick="selectNode('node-a')" style="animation-delay:0.15s">
+            <rect class="node-box" x="200" y="155" width="100" height="50" rx="8"
+              fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.5"/>
+            <text x="250" y="176" text-anchor="middle" class="node-label">年龄 ≤ 30?</text>
+            <text x="250" y="192" text-anchor="middle" class="node-feature">Gain: 0.151</text>
+          </g>
+
+          <!-- NODE B (after root no) -->
+          <g class="tree-node" data-node="node-b" onclick="selectNode('node-b')" style="animation-delay:0.25s">
+            <rect class="node-box" x="500" y="155" width="100" height="50" rx="8"
+              fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.5"/>
+            <text x="550" y="176" text-anchor="middle" class="node-label">受教育程度?</text>
+            <text x="550" y="192" text-anchor="middle" class="node-feature">Gain: 0.110</text>
+          </g>
+
+          <!-- LEAF 1: No -->
+          <g class="tree-node" data-node="leaf-1" onclick="selectNode('leaf-1')" style="animation-delay:0.35s">
+            <rect class="node-box" x="100" y="280" width="100" height="50" rx="8"
+              fill="var(--red-dim)" stroke="var(--red)" stroke-width="1.5"/>
+            <text x="150" y="301" text-anchor="middle" class="node-label" fill="var(--red)">✕ 否</text>
+            <text x="150" y="317" text-anchor="middle" class="node-value">18 samples</text>
+          </g>
+
+          <!-- LEAF 2: Yes -->
+          <g class="tree-node" data-node="leaf-2" onclick="selectNode('leaf-2')" style="animation-delay:0.4s">
+            <rect class="node-box" x="600" y="280" width="100" height="50" rx="8"
+              fill="var(--green-dim)" stroke="var(--green)" stroke-width="1.5"/>
+            <text x="650" y="301" text-anchor="middle" class="node-label" fill="var(--green)">✓ 是</text>
+            <text x="650" y="317" text-anchor="middle" class="node-value">12 samples</text>
+          </g>
+
+          <!-- LEAF 3: Unknown -->
+          <g class="tree-node" data-node="leaf-3" onclick="selectNode('leaf-3')" style="animation-delay:0.45s">
+            <rect class="node-box" x="500" y="280" width="100" height="50" rx="8"
+              fill="var(--orange-dim)" stroke="var(--orange)" stroke-width="1.5"/>
+            <text x="550" y="301" text-anchor="middle" class="node-label" fill="var(--orange)">? 未知</text>
+            <text x="550" y="317" text-anchor="middle" class="node-value">8 samples</text>
+          </g>
+
+          <!-- LEAF 4: Yes -->
+          <g class="tree-node" data-node="leaf-4" onclick="selectNode('leaf-4')" style="animation-delay:0.5s">
+            <rect class="node-box" x="400" y="280" width="100" height="50" rx="8"
+              fill="var(--green-dim)" stroke="var(--green)" stroke-width="1.5"/>
+            <text x="450" y="301" text-anchor="middle" class="node-label" fill="var(--green)">✓ 是</text>
+            <text x="450" y="317" text-anchor="middle" class="node-value">4 samples</text>
+          </g>
+
+          <!-- Additional level nodes for deeper tree -->
+          <!-- NODE C (child of node-a, no branch) -->
+          <g class="tree-node" data-node="node-c" onclick="selectNode('node-c')" style="animation-delay:0.55s">
+            <rect class="node-box" x="200" y="360" width="100" height="50" rx="8"
+              fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.5"/>
+            <text x="250" y="381" text-anchor="middle" class="node-label">婚姻状况?</text>
+            <text x="250" y="397" text-anchor="middle" class="node-feature">Gain: 0.089</text>
+          </g>
+
+          <!-- LEAF 5 -->
+          <g class="tree-node" data-node="leaf-5" onclick="selectNode('leaf-5')" style="animation-delay:0.6s">
+            <rect class="node-box" x="100" y="440" width="100" height="50" rx="8"
+              fill="var(--red-dim)" stroke="var(--red)" stroke-width="1.5"/>
+            <text x="150" y="461" text-anchor="middle" class="node-label" fill="var(--red)">✕ 否</text>
+            <text x="150" y="477" text-anchor="middle" class="node-value">10 samples</text>
+          </g>
+
+          <!-- LEAF 6 -->
+          <g class="tree-node" data-node="leaf-6" onclick="selectNode('leaf-6')" style="animation-delay:0.65s">
+            <rect class="node-box" x="300" y="440" width="100" height="50" rx="8"
+              fill="var(--green-dim)" stroke="var(--green)" stroke-width="1.5"/>
+            <text x="350" y="461" text-anchor="middle" class="node-label" fill="var(--green)">✓ 是</text>
+            <text x="350" y="477" text-anchor="middle" class="node-value">6 samples</text>
+          </g>
+        </g>
+
+        <!-- Extra edges for deeper levels -->
+        <g id="edges-deep">
+          <line class="tree-edge" x1="250" y1="205" x2="150" y2="280" marker-end="url(#arrowhead)"/>
+          <line class="tree-edge" x1="250" y1="205" x2="250" y2="360" marker-end="url(#arrowhead)"/>
+          <line class="tree-edge" x1="250" y1="410" x2="150" y2="440" marker-end="url(#arrowhead)"/>
+          <line class="tree-edge" x1="250" y1="410" x2="350" y2="440" marker-end="url(#arrowhead)"/>
+        </g>
+        <g id="edge-labels-deep">
+          <text x="130" y="245" class="edge-label">No</text>
+          <text x="260" y="285" class="edge-label">No</text>
+          <text x="130" y="435" class="edge-label">未婚</text>
+          <text x="300" y="435" class="edge-label">已婚</text>
+        </g>
       </svg>
     </div>
-    <p class="diagram-caption">图: 决策树 通用架构示意</p>
+    <p class="diagram-caption">图: 收入预测决策树示例 — 点击节点查看详细分裂信息</p>
+
+    <!-- Info panel below SVG -->
+    <div class="info-panel" id="infoPanel">
+      <h5>节点详情</h5>
+      <p style="color:var(--text-faint)">点击树中的任意节点，查看分裂条件、信息增益和样本分布。</p>
+    </div>
   </section>
 
+  <!-- HISTORY TIMELINE -->
   <section class="section">
     <div class="section-label">历史背景</div>
     <div class="section-title">从问题到突破</div>
     <div class="section-body">
-      <p><strong>H.A. Hagan et al.</strong> 在 <strong>1970</strong> 年提出了 决策树，这是机器学习发展史上的一个重要里程碑。</p>
-      <p>决策树是最经典的分类算法之一。1960年代，Hunt等人提出了概念学习系统（CLS），奠定了决策树的基础。1970年代，Quinlan开发的ID3算法引入了信息增益作为分裂标准。1993年，Quinlan进一步提出C4.5算法，改进了ID3的局限性。
-
-**当时的问题**：
-- 神经网络处于研究低谷期（感知机寒冬）
-- 需要可解释的机器学习方法
-- 处理连续值和缺失值的能力不足
-
-**核心突破**...</p>
+      <p><strong>Hunt等人</strong>在<strong>1960年代</strong>提出了概念学习系统（CLS），奠定了决策树的基础。当时神经网络处于研究低谷期（感知机寒冬），学界需要可解释的机器学习方法。</p>
+      <p><strong>1970年代</strong>，<strong>Quinlan</strong>开发了<strong>ID3算法</strong>，首次引入<strong>信息增益</strong>作为分裂标准，解决了特征选择的核心问题。1993年，Quinlan进一步提出<strong>C4.5算法</strong>，改进了ID3的局限性，支持连续值和缺失值处理。</p>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">1963</div>
+        <div class="timeline-title">CLS 概念学习系统</div>
+        <div class="timeline-desc">Hunt等人提出，奠定决策树理论基础</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">1986</div>
+        <div class="timeline-title">ID3 算法发表</div>
+        <div class="timeline-desc">Quinlan引入信息增益作为分裂标准</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">1993</div>
+        <div class="timeline-title">C4.5 发布</div>
+        <div class="timeline-desc">支持连续值、缺失值，引入增益率</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">1990s</div>
+        <div class="timeline-title">CART 与随机森林</div>
+        <div class="timeline-desc">Breiman提出CART，后发展为集成学习</div>
+      </div>
     </div>
   </section>
 
+  <!-- FORMULA CARDS -->
   <section class="section">
     <div class="section-label">数学原理</div>
     <div class="section-title">核心公式</div>
+
     <div class="formula-card">
-      <div class="formula-label">核心公式</div>
-      <div class="formula">f(x) = ...</div>
-      <div class="formula-note">根据具体模型填写</div>
+      <div class="formula-label">信息熵 · Information Entropy</div>
+      <div class="formula">H(S) = − Σ<sub>i=1</sub><sup>c</sup> p<sub>i</sub> · log<sub>2</sub>(p<sub>i</sub>)</div>
+      <div class="formula-note">衡量数据集 S 的纯度；熵越低，纯度越高。当所有样本属于同一类时 H(S)=0。</div>
+    </div>
+
+    <div class="formula-card">
+      <div class="formula-label">信息增益 · Information Gain</div>
+      <div class="formula">Gain(S, A) = H(S) − Σ<sub>v∈Values(A)</sub> (|S<sub>v</sub>| / |S|) · H(S<sub>v</sub>)</div>
+      <div class="formula-note">选择信息增益最大的特征进行分裂；增益越大，分裂后纯度提升越明显。</div>
+    </div>
+
+    <div class="formula-card">
+      <div class="formula-label">增益率 · Gain Ratio (C4.5)</div>
+      <div class="formula">GainRatio(S, A) = Gain(S, A) / SplitInfo(S, A)</div>
+      <div class="formula-note">SplitInfo 惩罚取值较多的特征，解决 ID3 偏向多值特征的缺陷。</div>
     </div>
   </section>
 
+  <!-- CODE BLOCK -->
   <section class="section">
     <div class="section-label">代码实现</div>
-    <div class="section-title">model.py 核心逻辑</div>
+    <div class="section-title">Python 核心逻辑</div>
     <div class="code-block">
       <div class="code-header">
         <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
-        <span class="code-lang">Python · model.py</span>
+        <span class="code-lang">Python · decision_tree.py</span>
       </div>
-      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">决策树</span>(nn.Module):
-    <span class="kw">def</span> <span class="fn">__init__</span>(self):
-        super().__span class="fn">init__</span>()
-        <span class="cm"># 模型定义</span>
-        
-    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
-        <span class="cm"># 前向传播</span>
-        <span class="kw">return</span> x</pre></div>
+      <div class="code-body"><pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> math <span class="kw">import</span> log2
+
+<span class="kw">class</span> <span class="cls">DecisionTree</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, max_depth<span class="op">=</span><span class="num">None</span>, min_samples<span class="op">=</span><span class="num">2</span>):
+        self.max_depth <span class="op">=</span> max_depth
+        self.min_samples <span class="op">=</span> min_samples
+        self.tree <span class="op">=</span> <span class="kw">None</span>
+
+    <span class="kw">def</span> <span class="fn">entropy</span>(self, y):
+        <span class="str">"""计算信息熵"""</span>
+        if len(y) <span class="op">==</span> <span class="num">0</span>: <span class="kw">return</span> <span class="num">0</span>
+        counts <span class="op">=</span> np.bincount(y)
+        probs <span class="op">=</span> counts <span class="op">/</span> len(y)
+        <span class="kw">return</span> <span class="op">-</span>np.<span class="fn">sum</span>(probs <span class="op">*</span> np.<span class="fn">log2</span>(probs <span class="op">+</span> <span class="num">1e-12</span>))
+
+    <span class="kw">def</span> <span class="fn">information_gain</span>(self, y, y_left, y_right):
+        <span class="str">"""计算信息增益"""</span>
+        n, n_l, n_r <span class="op">=</span> len(y), len(y_left), len(y_right)
+        if n_l <span class="op">==</span> <span class="num">0</span> <span class="kw">or</span> n_r <span class="op">==</span> <span class="num">0</span>: <span class="kw">return</span> <span class="num">0</span>
+        parent_entropy <span class="op">=</span> self.<span class="fn">entropy</span>(y)
+        child_entropy <span class="op">=</span> (n_l <span class="op">/</span> n) <span class="op">*</span> self.<span class="fn">entropy</span>(y_left) <span class="op">+</span> (n_r <span class="op">/</span> n) <span class="op">*</span> self.<span class="fn">entropy</span>(y_right)
+        <span class="kw">return</span> parent_entropy <span class="op">-</span> child_entropy
+
+    <span class="kw">def</span> <span class="fn">fit</span>(self, X, y):
+        <span class="str">"""递归构建决策树"""</span>
+        self.tree <span class="op">=</span> self.<span class="fn">_build_tree</span>(X, y, depth<span class="op">=</span><span class="num">0</span>)
+
+    <span class="kw">def</span> <span class="fn">_build_tree</span>(self, X, y, depth):
+        n_samples, n_features <span class="op">=</span> X.shape
+        <span class="cm"># 停止条件：达到最大深度或节点纯度足够</span>
+        if depth <span class="op">>=</span> self.max_depth <span class="kw">or</span> np.<span class="fn">all</span>(y <span class="op">==</span> y[<span class="num">0</span>]) <span class="kw">or</span> n_samples <span class="op">&lt;</span> self.min_samples:
+            <span class="kw">return</span> {<span class="str">"leaf"</span>: <span class="kw">True</span>, <span class="str">"prediction"</span>: np.bincount(y).<span class="fn">argmax</span>()}
+
+        <span class="cm"># 寻找最优分裂特征和阈值</span>
+        best_gain, best_feature, best_threshold <span class="op">=</span> <span class="num">0</span>, <span class="kw">None</span>, <span class="kw">None</span>
+        <span class="kw">for</span> feature <span class="kw">in</span> range(n_features):
+            thresholds <span class="op">=</span> np.<span class="fn">unique</span>(X[:, feature])
+            <span class="kw">for</span> threshold <span class="kw">in</span> thresholds:
+                left_mask <span class="op">=</span> X[:, feature] <span class="op">&lt;=</span> threshold
+                gain <span class="op">=</span> self.<span class="fn">information_gain</span>(y, y[left_mask], y[<span class="op">~</span>left_mask])
+                <span class="kw">if</span> gain <span class="op">></span> best_gain:
+                    best_gain, best_feature, best_threshold <span class="op">=</span> gain, feature, threshold
+
+        <span class="kw">if</span> best_feature <span class="kw">is</span> <span class="kw">None</span>:
+            <span class="kw">return</span> {<span class="str">"leaf"</span>: <span class="kw">True</span>, <span class="str">"prediction"</span>: np.bincount(y).<span class="fn">argmax</span>()}
+
+        left_mask <span class="op">=</span> X[:, best_feature] <span class="op">&lt;=</span> best_threshold
+        <span class="kw">return</span> {
+            <span class="str">"leaf"</span>: <span class="kw">False</span>,
+            <span class="str">"feature"</span>: best_feature,
+            <span class="str">"threshold"</span>: best_threshold,
+            <span class="str">"gain"</span>: best_gain,
+            <span class="str">"left"</span>: self.<span class="fn">_build_tree</span>(X[left_mask], y[left_mask], depth <span class="op">+</span> <span class="num">1</span>),
+            <span class="str">"right"</span>: self.<span class="fn">_build_tree</span>(X[<span class="op">~</span>left_mask], y[<span class="op">~</span>left_mask], depth <span class="op">+</span> <span class="num">1</span>),
+        }
+    </pre></div>
     </div>
   </section>
 
+  <!-- INTERACTIVE DEMO: INFO GAIN CALCULATOR -->
+  <section class="section">
+    <div class="section-label">交互演示</div>
+    <div class="section-title">信息增益计算器</div>
+    <div class="section-body" style="margin-bottom:20px;">
+      <p>输入正负样本数量，计算不同分裂方式下的信息增益，直观理解 ID3 如何选择最优特征。</p>
+    </div>
+    <div class="demo-container">
+      <div class="demo-title">计算信息增益</div>
+      <div class="demo-grid">
+        <div class="calc-input">
+          <label>父节点正样本数 (y=1)</label>
+          <input type="number" id="posCount" value="9" min="0" oninput="calcIG()">
+          <label>父节点负样本数 (y=0)</label>
+          <input type="number" id="negCount" value="5" min="0" oninput="calcIG()">
+          <label style="margin-top:8px;">分裂方案</label>
+          <select id="splitScheme" onchange="calcIG()">
+            <option value="0">方案A: 左右各半（均匀分裂）</option>
+            <option value="1" selected>方案B: 左纯右混（推荐）</option>
+            <option value="2">方案C: 极端不均分裂</option>
+          </select>
+        </div>
+        <div class="calc-result" id="calcResult"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON -->
+  <section class="section">
+    <div class="section-label">算法对比</div>
+    <div class="section-title">ID3 vs C4.5 vs CART</div>
+    <div class="comparison-grid">
+      <div class="comparison-panel">
+        <h4>ID3 (1986)</h4>
+        <p>使用<strong>信息增益</strong>作为分裂标准；只能处理<strong>离散特征</strong>；偏向选择取值较多的特征；不支持缺失值。</p>
+      </div>
+      <div class="comparison-panel">
+        <h4>C4.5 (1993)</h4>
+        <p>引入<strong>增益率</strong>解决多值偏向问题；支持<strong>连续特征</strong>和<strong>缺失值</strong>；使用<strong>剪枝</strong>防止过拟合。</p>
+      </div>
+      <div class="comparison-panel">
+        <h4>CART (1984)</h4>
+        <p>使用<strong>基尼不纯度</strong>作为分裂标准；构建<strong>二叉树</strong>；同时支持分类和回归任务。</p>
+      </div>
+      <div class="comparison-panel">
+        <h4>现代应用</h4>
+        <p>决策树是<strong>随机森林</strong>和<strong>梯度提升树</strong>（XGBoost/LightGBM）的基础组件，仍是可解释性场景的首选。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTES -->
   <section class="section">
     <div class="section-label">学习心得</div>
     <div class="section-title">关键洞察</div>
     <div class="notes-card">
       <h4>学到的知识</h4>
       <ul>
-        <li>决策树 是机器学习发展史上的重要模型</li>
-        <li>理解其数学原理有助于掌握后续模型</li>
+        <li>信息熵衡量数据集的纯度——熵越低，类别越纯</li>
+        <li>信息增益选择最优分裂特征——增益越大，纯度提升越明显</li>
+        <li>最大深度控制树的复杂度——防止过拟合的核心手段</li>
+        <li>增益率通过分裂信息归一化，解决了 ID3 偏向多值特征的问题</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>踩坑记录</h4>
+      <ul>
+        <li>ID3 只支持离散特征，实际数据需要扩展到 C4.5 处理连续值</li>
+        <li>未剪枝的决策树极易过拟合——必须设置 max_depth 或使用剪枝技术</li>
+        <li>信息增益对取值多的特征有偏向性，应优先使用增益率或基尼不纯度</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>思考题答案</h4>
+      <ul>
+        <li><strong>信息增益 vs 增益率：</strong>信息增益偏向取值多的特征；增益率通过分裂信息归一化解决此问题</li>
+        <li><strong>如何防止过拟合：</strong>设置最大深度、预剪枝（检查增益是否足够大）、后剪枝（构建后剪掉不必要分支）</li>
+        <li><strong>决策树 vs 神经网络：</strong>决策树可解释性强但易过拟合；神经网络表达能力强但需更多数据和调参</li>
       </ul>
     </div>
   </section>
 
+  <!-- FOOTER NAV -->
   <div class="nav-footer">
     <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
+    <a href="../02_statistical_learning/02_linear_regression/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">线性回归</span></a>
   </div>
 
 </main>
+
+<script>
+// ── Node info data ──
+const nodeData = {
+  'root': {
+    title: '根节点：收入 > 50k?',
+    feature: '收入',
+    gain: '0.246',
+    samples: '42',
+    entropy: '0.940',
+    desc: '信息增益最大(0.246)，说明"收入"是区分数据集的最优特征。根节点包含全部42个样本，熵为0.940（接近纯随机）。'
+  },
+  'node-a': {
+    title: '内部节点：年龄 ≤ 30?',
+    feature: '年龄',
+    gain: '0.151',
+    samples: '28',
+    entropy: '0.910',
+    desc: '在收入>50k的样本子集中，"年龄"是次优分裂特征。增益0.151表示该特征能显著降低不确定性。'
+  },
+  'node-b': {
+    title: '内部节点：受教育程度?',
+    feature: '受教育程度',
+    gain: '0.110',
+    samples: '14',
+    entropy: '0.863',
+    desc: '在收入≤50k的样本子集中，按受教育程度进一步分裂。增益率对此特征进行了归一化处理。'
+  },
+  'node-c': {
+    title: '内部节点：婚姻状况?',
+    feature: '婚姻状况',
+    gain: '0.089',
+    samples: '15',
+    entropy: '0.881',
+    desc: '在年龄≤30且收入>50k的子集中，"婚姻状况"作为第三层分裂特征。'
+  },
+  'leaf-1': {
+    title: '叶节点：否',
+    feature: '类别',
+    gain: '—',
+    samples: '18',
+    entropy: '0.000',
+    desc: '纯叶节点——全部18个样本均为负类(收入≤50k)。熵为0表示完全纯净，无需进一步分裂。',
+    isLeaf: true, color: 'red'
+  },
+  'leaf-2': {
+    title: '叶节点：是',
+    feature: '类别',
+    gain: '—',
+    samples: '12',
+    entropy: '0.000',
+    desc: '纯叶节点——全部12个样本均为正类(收入>50k)。高收入群体主要集中在受教育程度较高的分支。',
+    isLeaf: true, color: 'green'
+  },
+  'leaf-3': {
+    title: '叶节点：未知',
+    feature: '类别',
+    gain: '—',
+    samples: '8',
+    entropy: '0.544',
+    desc: '混合叶节点——8个样本中既有正类也有负类，信息熵为0.544。说明该分支的特征组合区分度不足。',
+    isLeaf: true, color: 'orange'
+  },
+  'leaf-4': {
+    title: '叶节点：是',
+    feature: '类别',
+    gain: '—',
+    samples: '4',
+    entropy: '0.000',
+    desc: '纯叶节点——4个已婚样本全部为正类。婚姻状况是区分该子集的有效特征。',
+    isLeaf: true, color: 'green'
+  },
+  'leaf-5': {
+    title: '叶节点：否',
+    feature: '类别',
+    gain: '—',
+    samples: '10',
+    entropy: '0.000',
+    desc: '纯叶节点——10个未婚且年轻的样本全部为负类。年轻人未婚群体收入普遍较低。',
+    isLeaf: true, color: 'red'
+  },
+  'leaf-6': {
+    title: '叶节点：是',
+    feature: '类别',
+    gain: '—',
+    samples: '6',
+    entropy: '0.000',
+    desc: '纯叶节点——6个已婚且年轻的样本全部为正类。婚姻状况对该子集有很强的预测力。',
+    isLeaf: true, color: 'green'
+  }
+};
+
+// ── Node connections for path highlighting ──
+const nodePaths = {
+  'root': ['root'],
+  'node-a': ['root', 'node-a'],
+  'node-b': ['root', 'node-b'],
+  'node-c': ['root', 'node-a', 'node-c'],
+  'leaf-1': ['root', 'node-a', 'leaf-1'],
+  'leaf-2': ['root', 'node-b', 'leaf-2'],
+  'leaf-3': ['root', 'node-b', 'leaf-3'],
+  'leaf-4': ['root', 'node-b', 'leaf-4'],
+  'leaf-5': ['root', 'node-a', 'node-c', 'leaf-5'],
+  'leaf-6': ['root', 'node-a', 'node-c', 'leaf-6']
+};
+
+let currentNode = null;
+let showAllMode = true;
+
+function selectNode(nodeId) {
+  currentNode = nodeId;
+  const data = nodeData[nodeId];
+  if (!data) return;
+
+  // Update info panel
+  const panel = document.getElementById('infoPanel');
+  panel.innerHTML = `
+    <h5>${data.title}</h5>
+    <div class="metric"><span class="metric-label">特征</span><span class="metric-value">${data.feature}</span></div>
+    <div class="metric"><span class="metric-label">信息增益</span><span class="metric-value">${data.gain}</span></div>
+    <div class="metric"><span class="metric-label">样本数</span><span class="metric-value">${data.samples}</span></div>
+    <div class="metric"><span class="metric-label">熵</span><span class="metric-value">${data.entropy}</span></div>
+    <p style="margin-top:10px;color:var(--text-muted);font-size:12px;line-height:1.6;">${data.desc}</p>
+  `;
+  panel.classList.add('fade-in');
+  setTimeout(() => panel.classList.remove('fade-in'), 400);
+
+  // Highlight edges along path
+  highlightPath(nodeId);
+}
+
+function highlightPath(nodeId) {
+  const path = nodePaths[nodeId] || [];
+  // Reset all edges
+  document.querySelectorAll('.tree-edge').forEach(e => {
+    e.classList.remove('active');
+    e.setAttribute('marker-end', 'url(#arrowhead)');
+  });
+  // Highlight path edges
+  for (let i = 0; i < path.length - 1; i++) {
+    const from = path[i].replace('-', '_');
+    const to = path[i + 1].replace('-', '_');
+    const edgeId = `e_${from}_${to}`;
+    const edge = document.getElementById(edgeId);
+    if (edge) {
+      edge.classList.add('active');
+      edge.setAttribute('marker-end', 'url(#arrowhead-active)');
+    }
+  }
+}
+
+function showAllNodes() {
+  showAllMode = true;
+  document.getElementById('btn-show-all').classList.add('active');
+  document.getElementById('btn-show-path').classList.remove('active');
+  document.querySelectorAll('.tree-node').forEach(n => n.style.opacity = '1');
+  document.querySelectorAll('.tree-edge').forEach(e => e.style.opacity = '1');
+  document.querySelectorAll('.edge-label').forEach(e => e.style.opacity = '1');
+  document.getElementById('infoPanel').innerHTML = '<h5>节点详情</h5><p style="color:var(--text-faint)">点击树中的任意节点，查看分裂条件、信息增益和样本分布。</p>';
+  currentNode = null;
+}
+
+function showOnlyPath() {
+  showAllMode = false;
+  document.getElementById('btn-show-path').classList.add('active');
+  document.getElementById('btn-show-all').classList.remove('active');
+  // Dim all nodes first
+  document.querySelectorAll('.tree-node').forEach(n => n.style.opacity = '0.3');
+  document.querySelectorAll('.tree-edge').forEach(e => e.style.opacity = '0.2');
+  document.querySelectorAll('.edge-label').forEach(e => e.style.opacity = '0.2');
+  if (currentNode) {
+    highlightPath(currentNode);
+    const path = nodePaths[currentNode] || [];
+    path.forEach(nodeId => {
+      const el = document.querySelector(`.tree-node[data-node="${nodeId}"]`);
+      if (el) el.style.opacity = '1';
+    });
+    document.querySelectorAll('.tree-edge.active').forEach(e => e.style.opacity = '1');
+  }
+}
+
+// ── Info Gain Calculator ──
+function calcEntropy(pos, neg) {
+  const total = pos + neg;
+  if (total === 0) return 0;
+  const p1 = pos / total;
+  const p0 = neg / total;
+  let entropy = 0;
+  if (p1 > 0) entropy -= p1 * Math.log2(p1);
+  if (p0 > 0) entropy -= p0 * Math.log2(p0);
+  return entropy;
+}
+
+function calcIG() {
+  const pos = parseInt(document.getElementById('posCount').value) || 0;
+  const neg = parseInt(document.getElementById('negCount').value) || 0;
+  const scheme = parseInt(document.getElementById('splitScheme').value);
+
+  const parentEntropy = calcEntropy(pos, neg);
+  let leftPos, leftNeg, rightPos, rightNeg;
+
+  switch(scheme) {
+    case 0: // Even split
+      leftPos = Math.floor(pos / 2);
+      leftNeg = Math.floor(neg / 2);
+      rightPos = pos - leftPos;
+      rightNeg = neg - leftNeg;
+      break;
+    case 1: // Pure left, mixed right
+      leftPos = pos;
+      leftNeg = 0;
+      rightPos = 0;
+      rightNeg = neg;
+      break;
+    case 2: // Extreme uneven
+      leftPos = 1;
+      leftNeg = Math.max(0, neg - 1);
+      rightPos = Math.max(0, pos - 1);
+      rightNeg = 1;
+      break;
+  }
+
+  const leftEntropy = calcEntropy(leftPos, leftNeg);
+  const rightEntropy = calcEntropy(rightPos, rightNeg);
+  const total = pos + neg;
+  const weightedChildEntropy = (total > 0) ? ((leftPos + leftNeg) / total * leftEntropy + (rightPos + rightNeg) / total * rightEntropy) : 0;
+  const infoGain = Math.max(0, parentEntropy - weightedChildEntropy);
+
+  const resultDiv = document.getElementById('calcResult');
+  resultDiv.innerHTML = `
+    <div style="color:var(--text-faint);margin-bottom:8px;">父节点熵</div>
+    <div class="result-row"><span class="result-label">H(S)</span><span class="result-val">${parentEntropy.toFixed(4)}</span></div>
+    <div style="color:var(--text-faint);margin:8px 0 4px;">分裂后</div>
+    <div class="result-row"><span class="result-label">左节点 (n=${leftPos + leftNeg})</span><span class="result-val">${leftEntropy.toFixed(4)}</span></div>
+    <div class="result-row"><span class="result-label">右节点 (n=${rightPos + rightNeg})</span><span class="result-val">${rightEntropy.toFixed(4)}</span></div>
+    <div style="color:var(--text-faint);margin:8px 0 4px;">结果</div>
+    <div class="result-row"><span class="result-label">加权熵</span><span class="result-val">${weightedChildEntropy.toFixed(4)}</span></div>
+    <div class="result-row" style="border-top:1px solid var(--border-strong);padding-top:6px;margin-top:4px;"><span class="result-label" style="color:var(--text-secondary);">信息增益</span><span class="result-val green">${infoGain.toFixed(4)}</span></div>
+  `;
+}
+
+// Initial calculation
+calcIG();
+</script>
 
 </body>
 </html>
