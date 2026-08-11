@@ -3,18 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>循环神经网络 — ML History</title>
+<title>循环神经网络 (RNN) — ML History</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
 /* Model-specific styles */
+.rnn-diagram { min-height: 320px; }
+.signal-line { stroke-dasharray: 8,4; opacity: 0; transition: opacity 0.4s; }
+.signal-line.active { opacity: 1; }
+.node-group { cursor: default; }
+.node-group:hover rect { stroke-opacity: 1; }
+.state-flow { animation: flowDash 1s linear infinite; }
+@keyframes flowDash {
+  to { stroke-dashoffset: -24; }
+}
+.demo-step { opacity: 0.3; transition: opacity 0.3s; }
+.demo-step.active { opacity: 1; }
+.demo-step.completed { opacity: 0.7; }
+.fade-in { animation: fadeIn 0.5s ease forwards; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 </style>
 </head>
 <body>
 
 <nav class="nav">
   <div class="nav-inner">
-    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
+    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">R</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
       <a href="../03_deep_learning_revival/index.html">03_deep_learning_revival阶段</a>
@@ -25,124 +39,353 @@
 
 <main class="container">
 
+  <!-- HERO -->
   <section class="hero">
     <div class="hero-eyebrow">03_deep_learning_revival阶段 · 1986</div>
     <h1>循环神经网络</h1>
-    <p class="hero-subtitle">暂无简介</p>
+    <p class="hero-subtitle">引入隐藏状态的序列建模网络，通过权重共享处理任意长度序列，是深度学习复兴初期的重要突破。</p>
     <div class="hero-meta">
-      <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">1986</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Elman</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">序列模型</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">框架</span><span class="hero-meta-value">PyTorch</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">提出年份</span><span class="hero-meta-value">1986</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">提出者</span><span class="hero-meta-value">Elman</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">模型类型</span><span class="hero-meta-value">序列模型</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">核心问题</span><span class="hero-meta-value">梯度消失</span></div>
     </div>
   </section>
 
+  <!-- STATS -->
   <div class="stats-grid">
     <div class="stat-cell"><span class="stat-value">1986</span><span class="stat-label">提出年份</span></div>
-    <div class="stat-cell"><span class="stat-value">序列模型</span><span class="stat-label">模型类型</span></div>
-    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
+    <div class="stat-cell"><span class="stat-value">h_t = tanh(W·x + U·h + b)</span><span class="stat-label">核心公式</span></div>
+    <div class="stat-cell"><span class="stat-value">序列</span><span class="stat-label">输入类型</span></div>
     <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
   </div>
 
+  <!-- ARCHITECTURE DIAGRAM -->
   <section class="section">
     <div class="section-label">网络架构</div>
-    <div class="section-title">结构示意</div>
-    <div class="diagram-container">
-      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
-        <!-- Generic architecture diagram -->
-        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
-        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
-        
-        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
-        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
-        
-        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
-        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
-        
+    <div class="section-title">时间展开结构</div>
+    <div class="section-body" style="margin-bottom:16px;">
+      RNN 在时间维度上展开为重复的网络层，每个时间步共享同一组权重。隐藏状态 <strong>h</strong> 在时间步之间传递，保留历史信息。
+    </div>
+    <div class="diagram-container rnn-diagram">
+      <svg id="rnnSvg" viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+          <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="var(--accent)"/>
+          </marker>
+          <marker id="arrow-muted" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
             <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
           </marker>
+          <linearGradient id="nodeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:var(--bg-elevated)"/>
+            <stop offset="100%" style="stop-color:var(--bg-surface)"/>
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
         </defs>
+
+        <!-- Title -->
+        <text x="350" y="22" text-anchor="middle" fill="var(--text-faint)" font-size="11" font-family="Inter" font-weight="500" letter-spacing="0.08em">RNN 时间展开图</text>
+
+        <!-- Time steps: t-1, t, t+1 -->
+        <!-- t-1 column -->
+        <g class="node-group" id="col-t1">
+          <rect x="40" y="50" width="64" height="36" rx="6" fill="url(#nodeGrad)" stroke="var(--accent)" stroke-width="1.5" stroke-opacity="0.6"/>
+          <text x="72" y="72" text-anchor="middle" fill="var(--text)" font-size="12" font-family="JetBrains Mono">x<tspan baseline-shift="sub" font-size="9">t-1</tspan></text>
+          <text x="72" y="100" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="Inter">输入</text>
+
+          <rect x="40" y="140" width="64" height="36" rx="6" fill="url(#nodeGrad)" stroke="var(--green)" stroke-width="1.5" stroke-opacity="0.5"/>
+          <text x="72" y="162" text-anchor="middle" fill="var(--text)" font-size="12" font-family="JetBrains Mono">h<tspan baseline-shift="sub" font-size="9">t-1</tspan></text>
+          <text x="72" y="190" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="Inter">隐藏状态</text>
+
+          <rect x="40" y="230" width="64" height="36" rx="6" fill="url(#nodeGrad)" stroke="var(--text-muted)" stroke-width="1.5" stroke-opacity="0.4"/>
+          <text x="72" y="252" text-anchor="middle" fill="var(--text)" font-size="12" font-family="JetBrains Mono">y<tspan baseline-shift="sub" font-size="9">t-1</tspan></text>
+          <text x="72" y="280" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="Inter">输出</text>
+        </g>
+
+        <!-- t column -->
+        <g class="node-group" id="col-t">
+          <rect x="220" y="50" width="64" height="36" rx="6" fill="url(#nodeGrad)" stroke="var(--accent)" stroke-width="1.5" stroke-opacity="0.6"/>
+          <text x="252" y="72" text-anchor="middle" fill="var(--text)" font-size="12" font-family="JetBrains Mono">x<tspan baseline-shift="sub" font-size="9">t</tspan></text>
+          <text x="252" y="100" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="Inter">输入</text>
+
+          <rect x="220" y="140" width="64" height="36" rx="6" fill="url(#nodeGrad)" stroke="var(--green)" stroke-width="1.5" stroke-opacity="0.5"/>
+          <text x="252" y="162" text-anchor="middle" fill="var(--text)" font-size="12" font-family="JetBrains Mono">h<tspan baseline-shift="sub" font-size="9">t</tspan></text>
+          <text x="252" y="190" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="Inter">隐藏状态</text>
+
+          <rect x="220" y="230" width="64" height="36" rx="6" fill="url(#nodeGrad)" stroke="var(--text-muted)" stroke-width="1.5" stroke-opacity="0.4"/>
+          <text x="252" y="252" text-anchor="middle" fill="var(--text)" font-size="12" font-family="JetBrains Mono">y<tspan baseline-shift="sub" font-size="9">t</tspan></text>
+          <text x="252" y="280" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="Inter">输出</text>
+        </g>
+
+        <!-- t+1 column -->
+        <g class="node-group" id="col-t2">
+          <rect x="400" y="50" width="64" height="36" rx="6" fill="url(#nodeGrad)" stroke="var(--accent)" stroke-width="1.5" stroke-opacity="0.6"/>
+          <text x="432" y="72" text-anchor="middle" fill="var(--text)" font-size="12" font-family="JetBrains Mono">x<tspan baseline-shift="sub" font-size="9">t+1</tspan></text>
+          <text x="432" y="100" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="Inter">输入</text>
+
+          <rect x="400" y="140" width="64" height="36" rx="6" fill="url(#nodeGrad)" stroke="var(--green)" stroke-width="1.5" stroke-opacity="0.5"/>
+          <text x="432" y="162" text-anchor="middle" fill="var(--text)" font-size="12" font-family="JetBrains Mono">h<tspan baseline-shift="sub" font-size="9">t+1</tspan></text>
+          <text x="432" y="190" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="Inter">隐藏状态</text>
+
+          <rect x="400" y="230" width="64" height="36" rx="6" fill="url(#nodeGrad)" stroke="var(--text-muted)" stroke-width="1.5" stroke-opacity="0.4"/>
+          <text x="432" y="252" text-anchor="middle" fill="var(--text)" font-size="12" font-family="JetBrains Mono">y<tspan baseline-shift="sub" font-size="9">t+1</tspan></text>
+          <text x="432" y="280" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="Inter">输出</text>
+        </g>
+
+        <!-- Arrows: input → hidden within each column -->
+        <line x1="72" y1="86" x2="72" y2="140" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrow-muted)"/>
+        <line x1="252" y1="86" x2="252" y2="140" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrow-muted)"/>
+        <line x1="432" y1="86" x2="432" y2="140" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrow-muted)"/>
+
+        <!-- Arrows: hidden → output within each column -->
+        <line x1="72" y1="176" x2="72" y2="230" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrow-muted)"/>
+        <line x1="252" y1="176" x2="252" y2="230" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrow-muted)"/>
+        <line x1="432" y1="176" x2="432" y2="230" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrow-muted)"/>
+
+        <!-- State transitions: h_t-1 → h_t → h_t+1 -->
+        <path d="M 104 158 Q 162 158 220 158" stroke="var(--green)" stroke-width="2" fill="none" marker-end="url(#arrow)" class="signal-line" id="state1"/>
+        <path d="M 284 158 Q 342 158 400 158" stroke="var(--green)" stroke-width="2" fill="none" marker-end="url(#arrow)" class="signal-line" id="state2"/>
+
+        <!-- Recurrence loop on h_t -->
+        <path d="M 284 158 Q 342 130 400 158" stroke="var(--green)" stroke-width="1.5" fill="none" stroke-dasharray="4,4" opacity="0.4" id="loop"/>
+
+        <!-- Weight labels -->
+        <text x="146" y="148" text-anchor="middle" fill="var(--green)" font-size="10" font-family="JetBrains Mono" opacity="0.7">W_hh</text>
+        <text x="326" y="148" text-anchor="middle" fill="var(--green)" font-size="10" font-family="JetBrains Mono" opacity="0.7">W_hh</text>
+
+        <!-- W_xh labels -->
+        <text x="100" y="118" text-anchor="middle" fill="var(--accent)" font-size="10" font-family="JetBrains Mono" opacity="0.7">W_xh</text>
+        <text x="280" y="118" text-anchor="middle" fill="var(--accent)" font-size="10" font-family="JetBrains Mono" opacity="0.7">W_xh</text>
+        <text x="460" y="118" text-anchor="middle" fill="var(--accent)" font-size="10" font-family="JetBrains Mono" opacity="0.7">W_xh</text>
+
+        <!-- W_hy labels -->
+        <text x="100" y="210" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono" opacity="0.5">W_hy</text>
+        <text x="280" y="210" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono" opacity="0.5">W_hy</text>
+        <text x="460" y="210" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono" opacity="0.5">W_hy</text>
+
+        <!-- Shared weight note -->
+        <rect x="540" y="120" width="145" height="60" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="612" y="140" text-anchor="middle" fill="var(--accent)" font-size="10" font-family="Inter" font-weight="500">权重共享</text>
+        <text x="612" y="156" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">W_xh 相同</text>
+        <text x="612" y="168" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">W_hh 相同</text>
+        <text x="612" y="180" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">W_hy 相同</text>
+
+        <!-- Legend -->
+        <rect x="540" y="30" width="10" height="10" rx="2" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+        <text x="556" y="40" fill="var(--text-muted)" font-size="10" font-family="Inter">输入 x_t</text>
+        <rect x="540" y="54" width="10" height="10" rx="2" fill="none" stroke="var(--green)" stroke-width="1.5"/>
+        <text x="556" y="64" fill="var(--text-muted)" font-size="10" font-family="Inter">隐藏状态 h_t</text>
+        <rect x="540" y="78" width="10" height="10" rx="2" fill="none" stroke="var(--text-muted)" stroke-width="1.5"/>
+        <text x="556" y="88" fill="var(--text-muted)" font-size="10" font-family="Inter">输出 y_t</text>
       </svg>
     </div>
-    <p class="diagram-caption">图: 循环神经网络 通用架构示意</p>
+    <p class="diagram-caption">图：RNN 时间展开结构，展示 h<tspan baseline-shift="sub">t-1</tspan> → h<tspan baseline-shift="sub">t</tspan> → h<tspan baseline-shift="sub">t+1</tspan> 的隐藏状态传递与权重共享机制</p>
   </section>
 
+  <!-- HISTORY TIMELINE -->
   <section class="section">
     <div class="section-label">历史背景</div>
     <div class="section-title">从问题到突破</div>
-    <div class="section-body">
-      <p><strong>Elman</strong> 在 <strong>1986</strong> 年提出了 循环神经网络，这是机器学习发展史上的一个重要里程碑。</p>
-      <p>1986年，Sejnowski等人首次提出循环神经网络的概念。
-1990年代，RNN被广泛应用于序列建模任务，但面临梯度消失问题。
-2014年，Bengio等人提出RNN变体（LSTM、GRU）来解决梯度消失问题。
-
-**核心问题**：
-- 传统神经网络无法处理变长序列
-- 缺乏记忆机制，无法捕捉时序依赖
-
-**RNN的突破**：
-- 引入隐藏状态，保留历史信息
-- 共享权重，处理任意长度序列</p>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">1986</div>
+        <div class="timeline-title">Elman 提出 Simple RNN</div>
+        <div class="timeline-desc">首次引入循环连接，通过隐藏状态保留时序信息</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">1990s</div>
+        <div class="timeline-title">广泛应用与梯度消失困境</div>
+        <div class="timeline-desc">RNN 被用于序列建模，但长序列上梯度指数级衰减</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2014</div>
+        <div class="timeline-title">LSTM / GRU 变体提出</div>
+        <div class="timeline-desc">Bengio 等人引入门控机制，有效缓解梯度消失问题</div>
+      </div>
     </div>
   </section>
 
+  <!-- FORMULAS -->
   <section class="section">
     <div class="section-label">数学原理</div>
     <div class="section-title">核心公式</div>
     <div class="formula-card">
-      <div class="formula-label">核心公式</div>
-      <div class="formula">f(x) = ...</div>
-      <div class="formula-note">根据具体模型填写</div>
+      <div class="formula-label">隐藏状态更新</div>
+      <div class="formula">h<tspan baseline-shift="sub" font-size="12">t</tspan> = tanh( W<tspan baseline-shift="sub" font-size="12">xh</tspan> · x<tspan baseline-shift="sub" font-size="12">t</tspan> + W<tspan baseline-shift="sub" font-size="12">hh</tspan> · h<tspan baseline-shift="sub" font-size="12">t-1</tspan> + b<tspan baseline-shift="sub" font-size="12">h</tspan> )</div>
+      <div class="formula-note">W<tspan baseline-shift="sub">xh</tspan>: 输入→隐藏权重 &nbsp;·&nbsp; W<tspan baseline-shift="sub">hh</tspan>: 隐藏→隐藏权重 &nbsp;·&nbsp; b<tspan baseline-shift="sub">h</tspan>: 偏置</div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-label">输出计算</div>
+      <div class="formula">y<tspan baseline-shift="sub" font-size="12">t</tspan> = W<tspan baseline-shift="sub" font-size="12">hy</tspan> · h<tspan baseline-shift="sub" font-size="12">t</tspan> + b<tspan baseline-shift="sub" font-size="12">y</tspan></div>
+      <div class="formula-note">W<tspan baseline-shift="sub">hy</tspan>: 隐藏→输出权重 &nbsp;·&nbsp; 每个时间步独立计算输出</div>
+    </div>
+    <div class="comparison-grid">
+      <div class="comparison-panel">
+        <h4>核心问题：梯度消失</h4>
+        <p>长序列反向传播时梯度指数衰减：<br><code style="font-family:JetBrains Mono;color:var(--orange);font-size:12px;">∂L/∂W_hh ∝ (W_hh)<sup>T</sup>·...·(W_hh)<sup>T</sup></code><br>早期输入信息难以传递到后期。</p>
+      </div>
+      <div class="comparison-panel">
+        <h4>解决方案</h4>
+        <p>• <strong>LSTM</strong>：引入输入/遗忘/输出门<br>• <strong>GRU</strong>：简化门控机制<br>• <strong>梯度裁剪</strong>：限制梯度范数</p>
+      </div>
     </div>
   </section>
 
+  <!-- CODE -->
   <section class="section">
     <div class="section-label">代码实现</div>
-    <div class="section-title">model.py 核心逻辑</div>
+    <div class="section-title">ManualRNNCell 核心逻辑</div>
     <div class="code-block">
       <div class="code-header">
         <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
         <span class="code-lang">Python · model.py</span>
       </div>
-      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">循环神经网络</span>(nn.Module):
-    <span class="kw">def</span> <span class="fn">__init__</span>(self):
-        super().__span class="fn">init__</span>()
-        <span class="cm"># 模型定义</span>
-        
-    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
-        <span class="cm"># 前向传播</span>
-        <span class="kw">return</span> x</pre></div>
+      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">ManualRNNCell</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, input_size, hidden_size):
+        super().__init__()
+        self.w_xh = nn.Parameter(torch.randn(input_size, hidden_size) * <span class="num">0.01</span>)
+        self.w_hh = nn.Parameter(torch.randn(hidden_size, hidden_size) * <span class="num">0.01</span>)
+        self.b_h  = nn.Parameter(torch.zeros(hidden_size))
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x_t, h_prev):
+        <span class="cm"># h_t = tanh(W_xh · x_t + W_hh · h_{t-1} + b_h)</span>
+        h_t = torch.tanh(
+            torch.matmul(x_t, self.w_xh) +
+            torch.matmul(h_prev, self.w_hh) +
+            self.b_h
+        )
+        <span class="kw">return</span> h_t</pre></div>
     </div>
   </section>
 
+  <!-- INTERACTIVE DEMO -->
+  <section class="section">
+    <div class="section-label">交互演示</div>
+    <div class="section-title">序列输入逐步处理</div>
+    <div class="section-body" style="margin-bottom:16px;">
+      点击「<strong>下一步</strong>」观察 RNN 如何逐步处理序列输入，观察隐藏状态 <code style="color:var(--green);font-family:JetBrains Mono;font-size:13px;">h</code> 在每个时间步的演变。
+    </div>
+    <div class="demo-container">
+      <div class="demo-title">RNN 逐步演示</div>
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">
+        <button class="demo-btn" id="btnNext" onclick="rnnStep()">下一步</button>
+        <button class="demo-btn" id="btnReset" onclick="rnnReset()" style="background:var(--bg-elevated);">重置</button>
+        <span style="font-size:13px;color:var(--text-muted);" id="stepLabel">步骤: 0 / 4</span>
+      </div>
+      <div id="demoGrid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px;">
+        <!-- Step boxes generated by JS -->
+      </div>
+      <div class="demo-output" id="demoOutput">点击「下一步」开始演示序列处理过程...</div>
+    </div>
+  </section>
+
+  <!-- NOTES -->
   <section class="section">
     <div class="section-label">学习心得</div>
     <div class="section-title">关键洞察</div>
     <div class="notes-card">
       <h4>学到的知识</h4>
       <ul>
-        <li>循环神经网络 是机器学习发展史上的重要模型</li>
-        <li>理解其数学原理有助于掌握后续模型</li>
+        <li>RNN 通过隐藏状态实现序列记忆，每个时间步共享相同权重</li>
+        <li>手动实现 RNN 单元有助于理解内部计算机制</li>
+        <li>梯度消失是 RNN 的主要瓶颈，长序列上效果不佳</li>
+        <li>LSTM/GRU 通过门控机制解决了梯度消失问题</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>踩坑记录</h4>
+      <ul>
+        <li>RNN 训练时容易出现梯度爆炸，需要梯度裁剪</li>
+        <li>序列长度影响训练效率，过长会导致内存不足</li>
+        <li>简单 RNN 在长序列上效果不佳，需要 LSTM/GRU</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>思考题答案</h4>
+      <ul>
+        <li><strong>RNN 和 MLP 的本质区别？</strong> RNN 有隐藏状态能记住历史信息，权重共享可处理任意长度输入；MLP 每个输入独立处理</li>
+        <li><strong>为什么 RNN 出现梯度消失？</strong> 反向传播跨越多个时间步，权重矩阵连乘导致梯度指数衰减，tanh 导数小于 1 加剧此问题</li>
+        <li><strong>LSTM 相比 RNN 做了什么改进？</strong> 引入输入/遗忘/输出门控，细胞状态独立传递长期信息，有效解决梯度消失</li>
       </ul>
     </div>
   </section>
 
+  <!-- FOOTER NAV -->
   <div class="nav-footer">
     <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
+    <a href="../03_deep_learning_revival/04_lstm/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">LSTM</span></a>
   </div>
 
 </main>
+
+<script>
+// ── RNN Interactive Demo ──
+const vocab = ['我', '爱', '学习', 'AI'];
+const hiddenSize = 3;
+let currentStep = 0;
+let hiddenState = [0, 0, 0];
+
+function rnnReset() {
+  currentStep = 0;
+  hiddenState = [0, 0, 0];
+  document.getElementById('stepLabel').textContent = '步骤: 0 / ' + vocab.length;
+  document.getElementById('demoOutput').textContent = '点击「下一步」开始演示序列处理过程...';
+  renderDemo();
+}
+
+function rnnStep() {
+  if (currentStep >= vocab.length) return;
+  const char = vocab[currentStep];
+  // Simulate hidden state update (simple numerical illustration)
+  const inputVec = char.split('').map((c, i) => c.charCodeAt(0) * 0.01);
+  while (inputVec.length < hiddenSize) inputVec.push(0);
+  
+  const newHidden = hiddenState.map((h, i) => {
+    let sum = h * 0.5; // W_hh effect (simplified)
+    sum += inputVec[i] * 0.3; // W_xh effect (simplified)
+    sum += 0.1; // bias
+    return Math.tanh(sum);
+  });
+  hiddenState = newHidden;
+  currentStep++;
+  
+  document.getElementById('stepLabel').textContent = '步骤: ' + currentStep + ' / ' + vocab.length;
+  document.getElementById('demoOutput').innerHTML = 
+    `<span style="color:var(--accent)">x<tspan baseline-shift="sub">${currentStep}</tspan></span> = "${char}" &nbsp;→&nbsp; ` +
+    `<span style="color:var(--green)">h<tspan baseline-shift="sub">${currentStep}</tspan></span> = [${hiddenState.map(v => v.toFixed(3)).join(', ')}] &nbsp;→&nbsp; ` +
+    `<span style="color:var(--text-muted)">y<tspan baseline-shift="sub">${currentStep}</tspan></span> = 分类输出`;
+  
+  renderDemo();
+  
+  if (currentStep >= vocab.length) {
+    document.getElementById('btnNext').disabled = true;
+    document.getElementById('btnNext').style.opacity = '0.4';
+  }
+}
+
+function renderDemo() {
+  const grid = document.getElementById('demoGrid');
+  grid.innerHTML = '';
+  for (let i = 0; i < vocab.length; i++) {
+    const div = document.createElement('div');
+    div.className = 'demo-step' + (i < currentStep ? ' completed' : '') + (i === currentStep - 1 ? ' active' : '');
+    div.style.cssText = 'background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center;';
+    div.innerHTML = `
+      <div style="font-size:11px;color:var(--text-faint);margin-bottom:4px;">t=<span>${i}</span></div>
+      <div style="font-size:16px;color:var(--text);margin-bottom:6px;">${vocab[i]}</div>
+      <div style="font-size:10px;color:var(--green);font-family:JetBrains Mono;">h=[${i < currentStep ? hiddenState.slice(0,i===currentStep-1?currentStep:0).map(v=>v.toFixed(2)).join(',') : '--'}]</div>
+    `;
+    grid.appendChild(div);
+  }
+}
+
+// Initialize
+renderDemo();
+</script>
 
 </body>
 </html>
