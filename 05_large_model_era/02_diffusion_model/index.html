@@ -7,7 +7,78 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
-/* Model-specific styles */
+/* ── Diffusion-specific styles ── */
+.diffusion-svg { max-width: 100%; height: auto; }
+.diffusion-svg rect, .diffusion-svg circle, .diffusion-svg path { transition: all 0.3s; }
+
+/* Forward/noise particles */
+.noise-particle { animation: drift 2s ease-in-out infinite; }
+@keyframes drift {
+  0%, 100% { opacity: 0.4; transform: translate(0, 0); }
+  50% { opacity: 0.9; transform: translate(var(--dx), var(--dy)); }
+}
+
+/* Denoise arrow pulse */
+.denoise-pulse { animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* Step highlight */
+.step-highlight { filter: drop-shadow(0 0 6px var(--accent-glow)); }
+
+/* Interactive demo canvas area */
+.demo-canvas-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-top: 16px;
+}
+.demo-canvas-wrap svg { width: 100%; height: auto; }
+
+/* Slider track styling */
+.t-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 2px; background: var(--border-strong); outline: none; }
+.t-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); cursor: pointer; box-shadow: 0 0 8px var(--accent-glow); }
+.t-slider::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--accent); cursor: pointer; border: none; box-shadow: 0 0 8px var(--accent-glow); }
+
+/* Noise level indicator */
+.noise-indicator { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+.noise-bar-bg { flex: 1; height: 8px; background: var(--border-strong); border-radius: 4px; overflow: hidden; }
+.noise-bar-fill { height: 100%; border-radius: 4px; transition: width 0.15s, background 0.15s; }
+.noise-label { font-size: 12px; font-family: 'JetBrains Mono', monospace; color: var(--text-muted); min-width: 60px; text-align: right; }
+
+/* Grid of noisy samples */
+.sample-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 16px; }
+.sample-cell { aspect-ratio: 1; border-radius: 4px; transition: background 0.2s; }
+
+/* Step timeline dots */
+.step-timeline { display: flex; align-items: center; justify-content: space-between; margin: 20px 0; padding: 0 4px; }
+.step-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--border-strong); border: 2px solid transparent; transition: all 0.2s; cursor: pointer; }
+.step-dot.active { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 8px var(--accent-glow); }
+.step-dot.passed { background: var(--accent-dim); border-color: var(--accent); }
+.step-line { flex: 1; height: 2px; background: var(--border-strong); margin: 0 2px; }
+.step-line.passed { background: var(--accent); }
+
+/* Animated diffusion flow */
+.flow-line { stroke-dasharray: 8 4; animation: flowDash 1s linear infinite; }
+@keyframes flowDash { to { stroke-dashoffset: -12; } }
+
+/* Formula highlight variants */
+.fwd-formula { color: var(--red); }
+.rev-formula { color: var(--green); }
+
+/* Demo play button */
+.play-btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: var(--radius); background: var(--accent); color: white; font-size: 13px; font-weight: 500; border: none; cursor: pointer; transition: all 0.15s; }
+.play-btn:hover { background: #828fff; box-shadow: 0 0 12px var(--accent-glow); }
+.play-btn.paused { background: var(--bg-elevated); border: 1px solid var(--border-strong); }
+
+/* Controls row */
+.controls-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 16px; }
+.control-group { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 200px; }
+.control-label { font-size: 11px; font-weight: 600; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.06em; }
+.control-value { font-size: 13px; font-family: 'JetBrains Mono', monospace; color: var(--accent); }
 </style>
 </head>
 <body>
@@ -17,7 +88,7 @@
     <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="../05_large_model_era/index.html">05_large_model_era阶段</a>
+      <a href="../05_large_model_era/index.html">大模型时代</a>
       <span class="nav-badge">2020</span>
     </div>
   </div>
@@ -25,76 +96,276 @@
 
 <main class="container">
 
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- HERO -->
+  <!-- ═══════════════════════════════════════════════════ -->
   <section class="hero">
-    <div class="hero-eyebrow">05_large_model_era阶段 · 2020</div>
+    <div class="hero-eyebrow">大模型时代 · 2020</div>
     <h1>扩散模型</h1>
-    <p class="hero-subtitle">暂无简介</p>
+    <p class="hero-subtitle">
+      去噪扩散概率模型（DDPM）通过逐步添加噪声将数据分布推向高斯噪声，再通过训练神经网络学习逆向去噪过程，从而从纯噪声中生成高质量图像。
+    </p>
     <div class="hero-meta">
       <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">2020</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Sohl-Dickstein et al.</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Ho et al.</span></div>
       <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">生成模型</span></div>
       <div class="hero-meta-item"><span class="hero-meta-label">框架</span><span class="hero-meta-value">PyTorch</span></div>
     </div>
   </section>
 
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- STATS GRID -->
+  <!-- ═══════════════════════════════════════════════════ -->
   <div class="stats-grid">
     <div class="stat-cell"><span class="stat-value">2020</span><span class="stat-label">提出年份</span></div>
-    <div class="stat-cell"><span class="stat-value">生成模型</span><span class="stat-label">模型类型</span></div>
-    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
+    <div class="stat-cell"><span class="stat-value">DDPM</span><span class="stat-label">核心论文</span></div>
+    <div class="stat-cell"><span class="stat-value">1000</span><span class="stat-label">典型步数 T</span></div>
     <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
   </div>
 
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- ARCHITECTURE DIAGRAM (SVG) -->
+  <!-- ═══════════════════════════════════════════════════ -->
   <section class="section">
     <div class="section-label">网络架构</div>
-    <div class="section-title">结构示意</div>
+    <div class="section-title">前向加噪与反向去噪</div>
     <div class="diagram-container">
-      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
-        <!-- Generic architecture diagram -->
-        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
-        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
-        
-        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
-        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
-        
-        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
-        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
-        
+      <svg viewBox="0 0 900 400" xmlns="http://www.w3.org/2000/svg" class="interactive-svg diffusion-svg">
         <defs>
-          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+          <marker id="arrowGray" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
             <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
           </marker>
+          <marker id="arrowAccent" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="var(--accent)"/>
+          </marker>
+          <linearGradient id="fwdGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#ef4444;stop-opacity:0.9"/>
+            <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:0.9"/>
+          </linearGradient>
+          <linearGradient id="revGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.9"/>
+            <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.9"/>
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
         </defs>
+
+        <!-- ═══ SECTION LABELS ═══ -->
+        <text x="100" y="28" text-anchor="middle" fill="var(--red)" font-size="11" font-family="Inter" font-weight="600" letter-spacing="0.08em">① 前向扩散 q(x_t|x_{t-1})</text>
+        <text x="700" y="28" text-anchor="middle" fill="var(--green)" font-size="11" font-family="Inter" font-weight="600" letter-spacing="0.08em">② 反向去噪 p_θ(x_{t-1}|x_t)</text>
+
+        <!-- ═══ FORWARD PATH: data → noise ═══ -->
+        <!-- Step 0: Clean data -->
+        <rect x="30" y="60" width="120" height="120" rx="12" fill="var(--bg-elevated)" stroke="var(--green)" stroke-width="1.5"/>
+        <text x="90" y="95" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter" font-weight="500">原始数据</text>
+        <text x="90" y="112" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">x₀</text>
+        <!-- mini image grid -->
+        <g transform="translate(50,125)">
+          <rect x="0" y="0" width="16" height="16" rx="2" fill="#10b981" opacity="0.8"/>
+          <rect x="20" y="0" width="16" height="16" rx="2" fill="#06b6d4" opacity="0.7"/>
+          <rect x="40" y="0" width="16" height="16" rx="2" fill="#3b82f6" opacity="0.85"/>
+          <rect x="0" y="20" width="16" height="16" rx="2" fill="#8b5cf6" opacity="0.75"/>
+          <rect x="20" y="20" width="16" height="16" rx="2" fill="#10b981" opacity="0.9"/>
+          <rect x="40" y="20" width="16" height="16" rx="2" fill="#06b6d4" opacity="0.6"/>
+          <rect x="0" y="40" width="16" height="16" rx="2" fill="#3b82f6" opacity="0.8"/>
+          <rect x="20" y="40" width="16" height="16" rx="2" fill="#8b5cf6" opacity="0.7"/>
+          <rect x="40" y="40" width="16" height="16" rx="2" fill="#10b981" opacity="0.85"/>
+        </g>
+        <text x="90" y="195" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">t = 0</text>
+
+        <!-- Arrow 0→1 -->
+        <line x1="155" y1="120" x2="195" y2="120" stroke="var(--red)" stroke-width="2" marker-end="url(#arrowGray)" class="flow-line"/>
+        <text x="175" y="112" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">+ε</text>
+
+        <!-- Step 1: Slightly noisy -->
+        <rect x="210" y="60" width="120" height="120" rx="12" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <g transform="translate(230,125)">
+          <rect x="0" y="0" width="16" height="16" rx="2" fill="#10b981" opacity="0.55"/>
+          <rect x="20" y="0" width="16" height="16" rx="2" fill="#06b6d4" opacity="0.45"/>
+          <rect x="40" y="0" width="16" height="16" rx="2" fill="#3b82f6" opacity="0.5"/>
+          <rect x="0" y="20" width="16" height="16" rx="2" fill="#8b5cf6" opacity="0.4"/>
+          <rect x="20" y="20" width="16" height="16" rx="2" fill="#10b981" opacity="0.6"/>
+          <rect x="40" y="20" width="16" height="16" rx="2" fill="#06b6d4" opacity="0.35"/>
+          <rect x="0" y="40" width="16" height="16" rx="2" fill="#3b82f6" opacity="0.45"/>
+          <rect x="20" y="40" width="16" height="16" rx="2" fill="#8b5cf6" opacity="0.5"/>
+          <rect x="40" y="40" width="16" height="16" rx="2" fill="#10b981" opacity="0.55"/>
+        </g>
+        <text x="270" y="95" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter" font-weight="500">轻微噪声</text>
+        <text x="270" y="112" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">x₁</text>
+        <text x="270" y="195" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">t = 1</text>
+
+        <!-- Arrow 1→2 -->
+        <line x1="335" y1="120" x2="375" y2="120" stroke="var(--red)" stroke-width="2" marker-end="url(#arrowGray)" class="flow-line"/>
+        <text x="355" y="112" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">+ε</text>
+
+        <!-- Step 2: More noisy (middle) -->
+        <rect x="390" y="60" width="120" height="120" rx="12" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <g transform="translate(410,125)">
+          <rect x="0" y="0" width="16" height="16" rx="2" fill="#555" opacity="0.5"/>
+          <rect x="20" y="0" width="16" height="16" rx="2" fill="#666" opacity="0.4"/>
+          <rect x="40" y="0" width="16" height="16" rx="2" fill="#444" opacity="0.55"/>
+          <rect x="0" y="20" width="16" height="16" rx="2" fill="#666" opacity="0.45"/>
+          <rect x="20" y="20" width="16" height="16" rx="2" fill="#555" opacity="0.5"/>
+          <rect x="40" y="20" width="16" height="16" rx="2" fill="#444" opacity="0.4"/>
+          <rect x="0" y="40" width="16" height="16" rx="2" fill="#666" opacity="0.5"/>
+          <rect x="20" y="40" width="16" height="16" rx="2" fill="#555" opacity="0.45"/>
+          <rect x="40" y="40" width="16" height="16" rx="2" fill="#444" opacity="0.55"/>
+        </g>
+        <text x="450" y="95" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter" font-weight="500">中度噪声</text>
+        <text x="450" y="112" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">x_t</text>
+        <text x="450" y="195" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">t = T/2</text>
+
+        <!-- Arrow 2→3 -->
+        <line x1="515" y1="120" x2="555" y2="120" stroke="var(--red)" stroke-width="2" marker-end="url(#arrowGray)" class="flow-line"/>
+        <text x="535" y="112" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">+ε</text>
+
+        <!-- Step 3: Near noise -->
+        <rect x="570" y="60" width="120" height="120" rx="12" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <g transform="translate(590,125)">
+          <rect x="0" y="0" width="16" height="16" rx="2" fill="#777" opacity="0.4"/>
+          <rect x="20" y="0" width="16" height="16" rx="2" fill="#555" opacity="0.5"/>
+          <rect x="40" y="0" width="16" height="16" rx="2" fill="#666" opacity="0.35"/>
+          <rect x="0" y="20" width="16" height="16" rx="2" fill="#555" opacity="0.45"/>
+          <rect x="20" y="20" width="16" height="16" rx="2" fill="#777" opacity="0.4"/>
+          <rect x="40" y="20" width="16" height="16" rx="2" fill="#666" opacity="0.5"/>
+          <rect x="0" y="40" width="16" height="16" rx="2" fill="#666" opacity="0.4"/>
+          <rect x="20" y="40" width="16" height="16" rx="2" fill="#555" opacity="0.55"/>
+          <rect x="40" y="40" width="16" height="16" rx="2" fill="#777" opacity="0.35"/>
+        </g>
+        <text x="630" y="95" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter" font-weight="500">接近纯噪声</text>
+        <text x="630" y="112" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">x_{T-1}</text>
+        <text x="630" y="195" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">t ≈ T</text>
+
+        <!-- Arrow to pure noise -->
+        <line x1="695" y1="120" x2="735" y2="120" stroke="var(--red)" stroke-width="2" marker-end="url(#arrowGray)" class="flow-line"/>
+
+        <!-- Step T: Pure noise -->
+        <rect x="740" y="60" width="130" height="120" rx="12" fill="var(--bg-elevated)" stroke="var(--red)" stroke-width="1.5" opacity="0.9"/>
+        <g transform="translate(758,125)">
+          <rect x="0" y="0" width="16" height="16" rx="2" fill="#888" opacity="0.3"/>
+          <rect x="20" y="0" width="16" height="16" rx="2" fill="#999" opacity="0.4"/>
+          <rect x="40" y="0" width="16" height="16" rx="2" fill="#777" opacity="0.35"/>
+          <rect x="0" y="20" width="16" height="16" rx="2" fill="#999" opacity="0.45"/>
+          <rect x="20" y="20" width="16" height="16" rx="2" fill="#777" opacity="0.3"/>
+          <rect x="40" y="20" width="16" height="16" rx="2" fill="#888" opacity="0.5"/>
+          <rect x="0" y="40" width="16" height="16" rx="2" fill="#777" opacity="0.4"/>
+          <rect x="20" y="40" width="16" height="16" rx="2" fill="#888" opacity="0.35"/>
+          <rect x="40" y="40" width="16" height="16" rx="2" fill="#999" opacity="0.45"/>
+        </g>
+        <text x="805" y="95" text-anchor="middle" fill="var(--red)" font-size="12" font-family="Inter" font-weight="500">纯噪声</text>
+        <text x="805" y="112" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">x_T ~ N(0,I)</text>
+        <text x="805" y="195" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">t = T</text>
+
+        <!-- ═══ REVERSE PATH: noise → data (below) ═══ -->
+        <!-- Reverse arrows going right to left -->
+        <path d="M 805 270 L 805 320 L 90 320 L 90 270" fill="none" stroke="var(--green)" stroke-width="1.5" stroke-dasharray="6 3" opacity="0.4"/>
+        
+        <!-- Reverse step labels -->
+        <text x="90" y="260" text-anchor="middle" fill="var(--green)" font-size="11" font-family="Inter" font-weight="500">x₀ 重构</text>
+        <text x="270" y="260" text-anchor="middle" fill="var(--text-muted)" font-size="11" font-family="Inter" font-weight="500">x₁ 去噪</text>
+        <text x="450" y="260" text-anchor="middle" fill="var(--text-muted)" font-size="11" font-family="Inter" font-weight="500">x_t 预测</text>
+        <text x="630" y="260" text-anchor="middle" fill="var(--text-muted)" font-size="11" font-family="Inter" font-weight="500">x_{T-1}</text>
+        <text x="805" y="260" text-anchor="middle" fill="var(--text-faint)" font-size="11" font-family="Inter">x_T 噪声</text>
+
+        <!-- Denoising network icon -->
+        <rect x="380" y="340" width="140" height="44" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="1.5" filter="url(#glow)"/>
+        <text x="450" y="360" text-anchor="middle" fill="var(--accent)" font-size="11" font-family="Inter" font-weight="600">神经网络 ε_θ</text>
+        <text x="450" y="376" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">U-Net / ResNet + 时间嵌入</text>
+
+        <!-- Connection from reverse path to network -->
+        <line x1="450" y1="320" x2="450" y2="340" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#arrowAccent)" class="denoise-pulse"/>
+
+        <!-- Bottom annotation -->
+        <text x="450" y="405" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">θ: 网络参数  |  训练目标: 最小化 ||ε - ε_θ(x_t, t)||²</text>
       </svg>
     </div>
-    <p class="diagram-caption">图: 扩散模型 通用架构示意</p>
+    <p class="diagram-caption">图: 扩散模型核心思想 — 前向过程逐步加噪（红），反向过程用神经网络逐步去噪（绿）</p>
   </section>
 
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- HISTORY TIMELINE -->
+  <!-- ═══════════════════════════════════════════════════ -->
   <section class="section">
     <div class="section-label">历史背景</div>
     <div class="section-title">从问题到突破</div>
     <div class="section-body">
-      <p><strong>Sohl-Dickstein et al.</strong> 在 <strong>2020</strong> 年提出了 扩散模型，这是机器学习发展史上的一个重要里程碑。</p>
-      <p></p>
+      <p><strong>Jonathan Ho et al.</strong> 在 <strong>2020</strong> 年提出了去噪扩散概率模型（DDPM），将 Sohl-Dickstein 等人2015年的思想重新包装为可与VAE/GAN竞争的高效生成模型。</p>
+      <p>核心洞察：与其直接学习复杂的数据分布 p(x)，不如学习一个逐步去噪的过程。前向过程是固定的马尔可夫链，逐步添加高斯噪声；反向过程是用神经网络学习的马尔可夫链，逐步去除噪声。</p>
+      <p>DDPM 在 ImageNet 上实现了当时生成模型的最佳 FID 分数，开启了扩散模型在图像生成领域的统治时代，后续催生了 Stable Diffusion、DALL-E 2、Midjourney 等革命性作品。</p>
+    </div>
+    
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">2015</div>
+        <div class="timeline-title">Sohl-Dickstein 提出扩散思路</div>
+        <div class="timeline-desc">非归一化似然估计模型，思想先驱但训练困难</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2020</div>
+        <div class="timeline-title">DDPM 提出</div>
+        <div class="timeline-desc">Ho et al. 简化并高效化扩散模型，在 ImageNet 上取得SOTA</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2021</div>
+        <div class="timeline-title">Score-Based 统一视角</div>
+        <div class="timeline-desc">Song et al. 提出分数匹配，与扩散模型建立理论联系</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2022+</div>
+        <div class="timeline-title">Stable Diffusion 等</div>
+        <div class="timeline-desc">在潜空间运行扩散，文本到图像生成爆发</div>
+      </div>
     </div>
   </section>
 
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- FORMULA CARDS -->
+  <!-- ═══════════════════════════════════════════════════ -->
   <section class="section">
     <div class="section-label">数学原理</div>
     <div class="section-title">核心公式</div>
+    
     <div class="formula-card">
-      <div class="formula-label">核心公式</div>
-      <div class="formula">f(x) = ...</div>
-      <div class="formula-note">根据具体模型填写</div>
+      <div class="formula-label">前向扩散过程（固定马尔可夫链）</div>
+      <div class="formula">
+        <span class="fwd-formula">q(x_t | x_{t-1}) = N(x_t; √(1-β_t) · x_{t-1}, β_t · I)</span><br>
+        <span class="fwd-formula">q(x_t|x_0) = N(x_t; √ᾱ_t · x_0, (1-ᾱ_t) · I)</span>
+      </div>
+      <div class="formula-note">β_t 为方差调度（线性/余弦），ᾱ_t = ∏(1-β_i)，可直接从 x₀ 采样任意时刻 t 的噪声版本</div>
+    </div>
+    
+    <div class="formula-card">
+      <div class="formula-label">反向去噪过程（可学习）</div>
+      <div class="formula">
+        <span class="rev-formula">p_θ(x_{t-1} | x_t) = N(x_{t-1}; μ_θ(x_t, t), Σ_θ(x_t, t))</span>
+      </div>
+      <div class="formula-note">网络 ε_θ 预测添加的噪声，均值重建：μ_θ = (1/√α_t)(x_t - (1-α_t)/√(1-ᾱ_t) · ε_θ(x_t, t))</div>
+    </div>
+    
+    <div class="formula-card">
+      <div class="formula-label">训练目标（简化 ELBO）</div>
+      <div class="formula">
+        <span class="formula-highlight">L_simple = E_{x₀, ε, t}[ ||ε - ε_θ(x_t, t)||² ]</span>
+      </div>
+      <div class="formula-note">在随机时间步 t 和随机噪声 ε 上取期望，训练网络预测真实添加的噪声</div>
+    </div>
+
+    <div class="formula-card">
+      <div class="formula-label">采样流程（反向递推）</div>
+      <div class="formula">
+        <span class="formula-highlight">for t = T, T-1, ..., 1:</span><br>
+        &nbsp;&nbsp;z = 若 t&gt;1 则 N(0,I) 否则无<br>
+        &nbsp;&nbsp;<span class="formula-highlight">x_{t-1} = (1/√α_t)(x_t - (1-α_t)/√(1-ᾱ_t) · ε_θ(x_t, t)) + σ_t · z</span>
+      </div>
+      <div class="formula-note">从纯高斯噪声 x_T ~ N(0,I) 出发，迭代 T 步去噪得到生成样本 x₀</div>
     </div>
   </section>
 
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- CODE BLOCK -->
+  <!-- ═══════════════════════════════════════════════════ -->
   <section class="section">
     <div class="section-label">代码实现</div>
     <div class="section-title">model.py 核心逻辑</div>
@@ -103,36 +374,339 @@
         <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
         <span class="code-lang">Python · model.py</span>
       </div>
-      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">扩散模型</span>(nn.Module):
-    <span class="kw">def</span> <span class="fn">__init__</span>(self):
-        super().__span class="fn">init__</span>()
-        <span class="cm"># 模型定义</span>
-        
+      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">SinusoidalPositionEmbeddings</span>(nn.Module):
     <span class="kw">def</span> <span class="fn">forward</span>(self, x):
-        <span class="cm"># 前向传播</span>
+        half_dim = self.dim // <span class="num">2</span>
+        emb = math.log(<span class="num">10000</span>) / (half_dim - <span class="num">1</span>)
+        emb = torch.exp(torch.arange(half_dim) * -emb)
+        emb = x.unsqueeze(-<span class="num">1</span>) * emb.unsqueeze(<span class="num">0</span>)
+        <span class="kw">return</span> torch.cat((emb.sin(), emb.cos()), dim=-<span class="num">1</span>)
+
+<span class="kw">class</span> <span class="cls">ResBlock</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x, t):
+        emb = self.scale_emb(t.float())
+        h = self.net(x) * (<span class="num">1</span> + emb) + emb
+        <span class="kw">return</span> x + h   <span class="cm"># 残差连接</span>
+
+<span class="kw">class</span> <span class="cls">SimpleDiffusionModel</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, input_dim=<span class="num">784</span>, hidden_size=<span class="num">256</span>, num_steps=<span class="num">100</span>):
+        self.alphas = self._cosine_noise_schedule(num_steps)
+        <span class="cm"># 余弦调度比线性调度更平滑</span>
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x, t):
+        noise = torch.randn_like(x)
+        sqrt_alphas = torch.sqrt(self.alphas[t])
+        sqrt_one_minus_alphas = torch.sqrt(<span class="num">1</span> - self.alphas[t])
+        x_noisy = sqrt_alphas[:, None] * x + sqrt_one_minus_alphas[:, None] * noise
+        <span class="kw">return</span> self.net(x_noisy), noise  <span class="cm"># 预测噪声 vs 真实噪声</span>
+
+    <span class="kw">def</span> <span class="fn">sample</span>(self, shape, device=<span class="str">'cpu'</span>):
+        x = torch.randn(shape, device=device)
+        <span class="kw">for</span> t <span class="kw">in</span> reversed(range(self.num_steps)):
+            predicted_noise = self.net(x)
+            <span class="cm"># 逐步去噪递推...</span>
         <span class="kw">return</span> x</pre></div>
     </div>
   </section>
 
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- INTERACTIVE DEMO -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-label">交互演示</div>
+    <div class="section-title">可视化扩散过程</div>
+    
+    <div class="demo-container">
+      <div class="demo-title">拖动滑块观察不同时间步 t 的噪声程度变化</div>
+      
+      <!-- Step timeline -->
+      <div class="step-timeline" id="stepTimeline"></div>
+      
+      <!-- Main visualization -->
+      <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;">
+        <!-- Left: Sample grid -->
+        <div style="flex:0 0 auto;">
+          <div class="diagram-stage-label">9×9 Patch 可视化</div>
+          <div class="sample-grid" id="sampleGrid"></div>
+          <div class="noise-indicator">
+            <span class="noise-label" id="noiseLabel">t=0</span>
+            <div class="noise-bar-bg">
+              <div class="noise-bar-fill" id="noiseBar" style="width:0%;background:var(--green);"></div>
+            </div>
+            <span class="noise-label" id="snrLabel">SNR: ∞</span>
+          </div>
+        </div>
+        
+        <!-- Right: Controls + info -->
+        <div style="flex:1;min-width:280px;">
+          <div class="diagram-stage-label">控制面板</div>
+          
+          <div class="control-group">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span class="control-label">时间步 t</span>
+              <span class="control-value" id="tValue">0 / 100</span>
+            </div>
+            <input type="range" id="tSlider" class="t-slider" min="0" max="100" value="0">
+          </div>
+          
+          <div class="controls-row">
+            <button class="play-btn" id="playBtn" onclick="togglePlay()">
+              <span id="playIcon">▶</span> <span id="playText">自动播放</span>
+            </button>
+            <button class="play-btn paused" id="resetBtn" onclick="resetDemo()">
+              ↺ 重置
+            </button>
+          </div>
+          
+          <div class="output-box" id="demoOutput" style="margin-top:16px;">
+            拖动滑块或点击播放，观察数据如何逐步变为噪声，以及反向去噪过程。
+          </div>
+        </div>
+      </div>
+      
+      <!-- Mini SVG: diffusion arrow visualization -->
+      <div class="demo-canvas-wrap">
+        <svg viewBox="0 0 600 100" xmlns="http://www.w3.org/2000/svg">
+          <!-- Progress bar background -->
+          <rect x="20" y="45" width="560" height="10" rx="5" fill="var(--bg-elevated)"/>
+          <!-- Progress fill -->
+          <rect x="20" y="45" width="0" height="10" rx="5" fill="url(#fwdGrad)" id="progressFill"/>
+          <!-- Current position marker -->
+          <circle cx="20" cy="50" r="8" fill="var(--accent)" filter="url(#glow)" id="progressMarker"/>
+          <!-- Labels -->
+          <text x="20" y="35" text-anchor="middle" fill="var(--green)" font-size="10" font-family="Inter" font-weight="600">原始数据 x₀</text>
+          <text x="580" y="35" text-anchor="middle" fill="var(--red)" font-size="10" font-family="Inter" font-weight="600">纯噪声 x_T</text>
+          <text x="300" y="85" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono" id="progressText">t = 0 (0%)</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- NOTES -->
+  <!-- ═══════════════════════════════════════════════════ -->
   <section class="section">
     <div class="section-label">学习心得</div>
     <div class="section-title">关键洞察</div>
     <div class="notes-card">
       <h4>学到的知识</h4>
       <ul>
-        <li>扩散模型 是机器学习发展史上的重要模型</li>
-        <li>理解其数学原理有助于掌握后续模型</li>
+        <li>扩散模型的核心思想：将复杂的数据分布通过逐步加噪转化为简单的高斯分布，再学习逆向去噪过程</li>
+        <li>前向过程是固定的马尔可夫链（无需学习），反向过程用神经网络参数化（需要训练）</li>
+        <li>余弦噪声调度比线性调度更平滑，能显著提升生成质量</li>
+        <li>训练目标极简：直接让网络预测添加的噪声，等价于最大化数据的下界（ELBO）</li>
+        <li>采样需要 T 步迭代（通常 1000 步），计算成本是主要瓶颈，后续有 DDIM 等加速方法</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>踩坑记录</h4>
+      <ul>
+        <li>扩散模型采样需要很多步（100-1000），计算成本远高于 GAN/VQGAN</li>
+        <li>噪声调度 β_t 的选择对生成质量影响很大，余弦调度表现最佳</li>
+        <li>时间步 t 的位置编码需要用正弦函数而非简单线性映射，才能捕捉周期性</li>
       </ul>
     </div>
   </section>
 
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- FOOTER NAV -->
+  <!-- ═══════════════════════════════════════════════════ -->
   <div class="nav-footer">
-    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
+    <a href="../05_large_model_era/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">大模型时代</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
+    <a href="../05_large_model_era/03_vit/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">ViT</span></a>
   </div>
 
 </main>
+
+<script>
+// ── Diffusion Interactive Demo ──
+const TOTAL_STEPS = 100;
+let currentStep = 0;
+let isPlaying = false;
+let playInterval = null;
+
+// Seeded pseudo-random for reproducible "images"
+function seededRandom(seed) {
+  let s = seed;
+  return function() {
+    s = (s * 16807 + 0) % 2147483647;
+    return (s - 1) / 2147483646;
+  };
+}
+
+// Generate base "data" colors (a simple pattern)
+const baseColors = [];
+const rng = seededRandom(42);
+for (let i = 0; i < 9; i++) {
+  baseColors.push([]);
+  for (let j = 0; j < 9; j++) {
+    const hue = 200 + rng() * 60;
+    const sat = 50 + rng() * 40;
+    const lit = 30 + rng() * 40;
+    baseColors[i].push({ h: hue, s: sat, l: lit });
+  }
+}
+
+// Noisy version at step t
+function getNoiseAtStep(t) {
+  const alpha = Math.cos((t / TOTAL_STEPS + 0.008) / 1.008 * Math.PI / 2);
+  const alphaSq = alpha * alpha;
+  const noiseLevel = Math.sqrt(1 - alphaSq);
+  return { alphaSq, noiseLevel };
+}
+
+// Render sample grid
+function renderGrid(t) {
+  const grid = document.getElementById('sampleGrid');
+  grid.innerHTML = '';
+  const { alphaSq, noiseLevel } = getNoiseAtStep(t);
+  
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
+      const cell = document.createElement('div');
+      cell.className = 'sample-cell';
+      
+      const base = baseColors[i][j];
+      // Mix base color with gray noise based on noise level
+      const noiseH = 0, noiseS = 0, noiseL = 128 + (Math.random() - 0.5) * 60;
+      const l = base.l * alphaSq + noiseL * (1 - alphaSq);
+      const s = base.s * alphaSq;
+      const h = base.h * alphaSq + (Math.random() * 360) * (1 - alphaSq) * 0.1;
+      
+      cell.style.background = `hsl(${h}, ${s}%, ${l}%)`;
+      grid.appendChild(cell);
+    }
+  }
+}
+
+// Render step timeline dots
+function renderTimeline() {
+  const timeline = document.getElementById('stepTimeline');
+  timeline.innerHTML = '';
+  const stepCount = 11;
+  for (let i = 0; i < stepCount; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'step-dot';
+    dot.dataset.step = Math.round(i * (TOTAL_STEPS / (stepCount - 1)));
+    dot.addEventListener('click', () => setStep(parseInt(dot.dataset.step)));
+    timeline.appendChild(dot);
+    
+    if (i < stepCount - 1) {
+      const line = document.createElement('div');
+      line.className = 'step-line';
+      timeline.appendChild(line);
+    }
+  }
+  updateTimeline();
+}
+
+function updateTimeline() {
+  const dots = document.querySelectorAll('.step-dot');
+  dots.forEach(dot => {
+    const step = parseInt(dot.dataset.step);
+    dot.classList.toggle('active', step === currentStep);
+    dot.classList.toggle('passed', step < currentStep);
+  });
+  const lines = document.querySelectorAll('.step-line');
+  lines.forEach((line, i) => {
+    const threshold = Math.round((i + 1) * (TOTAL_STEPS / (lines.length + 1)));
+    line.classList.toggle('passed', currentStep >= threshold);
+  });
+}
+
+// Update UI for current step
+function updateUI(t) {
+  currentStep = t;
+  document.getElementById('tSlider').value = t;
+  document.getElementById('tValue').textContent = `${t} / ${TOTAL_STEPS}`;
+  document.getElementById('noiseLabel').textContent = `t=${t}`;
+  
+  const { alphaSq, noiseLevel } = getNoiseAtStep(t);
+  const pct = Math.round((t / TOTAL_STEPS) * 100);
+  
+  // Noise bar
+  const bar = document.getElementById('noiseBar');
+  bar.style.width = `${pct}%`;
+  const green = Math.round(177 * (1 - t / TOTAL_STEPS));
+  const red = Math.round(239 * (t / TOTAL_STEPS));
+  bar.style.background = `rgb(${red}, ${green}, 80)`;
+  
+  // SNR label
+  const snr = t === 0 ? '∞' : (alphaSq / (1 - alphaSq)).toFixed(1);
+  document.getElementById('snrLabel').textContent = `SNR: ${snr}`;
+  
+  // Progress bar in mini SVG
+  const progressFill = document.getElementById('progressFill');
+  progressFill.setAttribute('width', `${(t / TOTAL_STEPS) * 560}`);
+  const marker = document.getElementById('progressMarker');
+  marker.setAttribute('cx', `${20 + (t / TOTAL_STEPS) * 560}`);
+  document.getElementById('progressText').textContent = `t = ${t} (${pct}%)`;
+  
+  updateTimeline();
+  renderGrid(t);
+  
+  // Update output text
+  const output = document.getElementById('demoOutput');
+  if (t === 0) {
+    output.textContent = 't = 0: 原始数据，结构清晰可见，SNR 无穷大。';
+  } else if (t < 30) {
+    output.textContent = `t = ${t}: 轻微加噪，图像轮廓仍可辨认。前向过程 q(x_t|x₀) = N(√ᾱ_t·x₀, (1-ᾱ_t)I)。`;
+  } else if (t < 70) {
+    output.textContent = `t = ${t}: 中度噪声，细节开始模糊，仅保留粗略结构。噪声占比 ${(1-alphaSq*100/100).toFixed(0)}%。`;
+  } else if (t < 100) {
+    output.textContent = `t = ${t}: 接近纯噪声，几乎无法辨认原始内容。此时 x_T ≈ N(0, I)。`;
+  } else {
+    output.textContent = 't = 100: 纯高斯噪声，原始信息完全丢失。反向去噪将从这里开始。';
+  }
+}
+
+function setStep(t) {
+  t = Math.max(0, Math.min(TOTAL_STEPS, t));
+  updateUI(t);
+}
+
+function togglePlay() {
+  isPlaying = !isPlaying;
+  const btn = document.getElementById('playBtn');
+  const icon = document.getElementById('playIcon');
+  const text = document.getElementById('playText');
+  
+  if (isPlaying) {
+    btn.classList.remove('paused');
+    icon.textContent = '⏸';
+    text.textContent = '暂停';
+    playInterval = setInterval(() => {
+      let next = currentStep + 1;
+      if (next > TOTAL_STEPS) {
+        next = 0;
+      }
+      setStep(next);
+    }, 80);
+  } else {
+    btn.classList.add('paused');
+    icon.textContent = '▶';
+    text.textContent = '自动播放';
+    clearInterval(playInterval);
+  }
+}
+
+function resetDemo() {
+  if (isPlaying) togglePlay();
+  setStep(0);
+}
+
+// Slider input
+document.getElementById('tSlider').addEventListener('input', (e) => {
+  if (isPlaying) togglePlay();
+  setStep(parseInt(e.target.value));
+});
+
+// Initialize
+renderTimeline();
+renderGrid(0);
+updateUI(0);
+</script>
 
 </body>
 </html>
