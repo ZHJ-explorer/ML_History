@@ -7,7 +7,36 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
-/* Model-specific styles */
+/* ── GPT-1 specific styles ── */
+.mask-cell { transition: fill 0.2s, opacity 0.2s; cursor: pointer; }
+.mask-cell:hover { fill: rgba(113,112,255,0.35) !important; }
+.mask-cell.active { fill: rgba(113,112,255,0.5); }
+.token-step { opacity: 0.25; transition: opacity 0.3s, transform 0.3s; }
+.token-step.current { opacity: 1; }
+.demo-output .token-revealed { color: var(--accent); font-weight: 500; }
+.demo-output .token-hidden { color: var(--text-faint); }
+.arch-node { transition: filter 0.2s; cursor: default; }
+.arch-node:hover { filter: brightness(1.3); }
+.step-indicator { display: inline-flex; align-items: center; gap: 6px; }
+.step-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); opacity: 0.3; transition: opacity 0.3s; }
+.step-dot.active { opacity: 1; box-shadow: 0 0 6px var(--accent-glow); }
+.comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin: 20px 0; }
+.comparison-panel { background: var(--bg-surface); padding: 24px; }
+.comparison-panel h4 { font-size: 13px; font-weight: 500; color: var(--accent); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+.comparison-panel p { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+.causal-highlight { stroke: var(--accent); stroke-width: 2; fill: none; stroke-dasharray: 4 2; animation: dash 1s linear infinite; }
+@keyframes dash { to { stroke-dashoffset: -6; } }
+.mask-table { border-collapse: collapse; margin: 16px 0; }
+.mask-table td { width: 36px; height: 36px; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; border: 1px solid var(--border); }
+.mask-zero { background: var(--bg-elevated); color: var(--text-faint); }
+.mask-one { background: var(--accent-dim); color: var(--accent); }
+.mask-inf { background: var(--red-dim); color: var(--red); }
+.demo-controls { display: flex; gap: 12px; align-items: center; margin-top: 16px; flex-wrap: wrap; }
+.demo-slider { flex: 1; min-width: 120px; }
+.glow-text { text-shadow: 0 0 20px var(--accent-glow); }
+@media (max-width: 768px) {
+  .comparison-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -25,76 +54,307 @@
 
 <main class="container">
 
+  <!-- HERO -->
   <section class="hero">
     <div class="hero-eyebrow">04_deep_learning_boom阶段 · 2018</div>
     <h1>GPT-1</h1>
-    <p class="hero-subtitle">暂无简介</p>
+    <p class="hero-subtitle">Generative Pre-trained Transformer — OpenAI 首次将大规模预训练 + 微调范式引入自然语言处理，证明了单向语言模型在多项 NLP 任务上的泛化能力。</p>
     <div class="hero-meta">
       <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">2018</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">OpenAI</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Radford et al.</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">机构</span><span class="hero-meta-value">OpenAI</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">参数规模</span><span class="hero-meta-value">117M</span></div>
       <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">单向语言模型</span></div>
       <div class="hero-meta-item"><span class="hero-meta-label">框架</span><span class="hero-meta-value">PyTorch</span></div>
     </div>
   </section>
 
+  <!-- STATS -->
   <div class="stats-grid">
-    <div class="stat-cell"><span class="stat-value">2018</span><span class="stat-label">提出年份</span></div>
-    <div class="stat-cell"><span class="stat-value">单向语言模型</span><span class="stat-label">模型类型</span></div>
-    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
-    <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
+    <div class="stat-cell"><span class="stat-value">117M</span><span class="stat-label">参数量</span></div>
+    <div class="stat-cell"><span class="stat-value">12</span><span class="stat-label">Transformer 层</span></div>
+    <div class="stat-cell"><span class="stat-value">12</span><span class="stat-label">Attention 头</span></div>
+    <div class="stat-cell"><span class="stat-value">768</span><span class="stat-label">隐藏维度</span></div>
+    <div class="stat-cell"><span class="stat-value">400M</span><span class="stat-label">训练 Token 数 (WikiText-103)</span></div>
+    <div class="stat-cell"><span class="stat-value">1024</span><span class="stat-label">最大序列长度</span></div>
+    <div class="stat-cell"><span class="stat-value">50,257</span><span class="stat-label">BPE 词表大小</span></div>
+    <div class="stat-cell"><span class="stat-value">LM-1B / LM-12</span><span class="stat-label">两种预训练规格</span></div>
   </div>
 
+  <!-- ARCHITECTURE DIAGRAM -->
   <section class="section">
     <div class="section-label">网络架构</div>
-    <div class="section-title">结构示意</div>
+    <div class="section-title">单向 Transformer 解码器</div>
+    <div class="section-body">
+      <p>GPT-1 采用纯 <strong>Decoder-only</strong> 架构，核心是一个带有 <strong>causal mask</strong> 的 Multi-Head Self-Attention。每个位置只能关注自身及之前的位置，保证自回归生成的单向性。</p>
+    </div>
     <div class="diagram-container">
-      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
-        <!-- Generic architecture diagram -->
-        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
-        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
-        
-        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
-        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
-        
-        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
-        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
-        
+      <svg viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:900px;">
         <defs>
-          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-            <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
-          </marker>
+          <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="var(--text-muted)"/></marker>
+          <linearGradient id="nodeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:rgba(113,112,255,0.15)"/>
+            <stop offset="100%" style="stop-color:rgba(113,112,255,0.03)"/>
+          </linearGradient>
+          <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
         </defs>
+
+        <!-- Input tokens -->
+        <text x="30" y="30" fill="var(--text-faint)" font-size="11" font-family="Inter" font-weight="600" letter-spacing="0.06em" text-transform="uppercase">INPUT TOKENS</text>
+        <g transform="translate(30,48)">
+          <rect x="0" y="0" width="52" height="36" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+          <text x="26" y="22" text-anchor="middle" fill="var(--text)" font-size="12" font-family="JetBrains Mono">t₀</text>
+          <text x="26" y="52" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="Inter">Token 0</text>
+        </g>
+        <g transform="translate(96,48)">
+          <rect x="0" y="0" width="52" height="36" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+          <text x="26" y="22" text-anchor="middle" fill="var(--text)" font-size="12" font-family="JetBrains Mono">t₁</text>
+          <text x="26" y="52" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="Inter">Token 1</text>
+        </g>
+        <g transform="translate(162,48)">
+          <rect x="0" y="0" width="52" height="36" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+          <text x="26" y="22" text-anchor="middle" fill="var(--text)" font-size="12" font-family="JetBrains Mono">⋯</text>
+          <text x="26" y="52" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="Inter">⋯</text>
+        </g>
+        <g transform="translate(228,48)">
+          <rect x="0" y="0" width="52" height="36" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+          <text x="26" y="22" text-anchor="middle" fill="var(--text)" font-size="12" font-family="JetBrains Mono">tₙ</text>
+          <text x="26" y="52" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="Inter">Token n</text>
+        </g>
+        <!-- Embedding note -->
+        <text x="130" y="100" fill="var(--text-faint)" font-size="11" font-family="JetBrains Mono">Token Embedding + Position Embedding</text>
+
+        <!-- Arrows to encoder layers -->
+        <line x1="130" y1="108" x2="130" y2="140" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr)"/>
+        <line x1="450" y1="108" x2="450" y2="140" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <!-- Transformer blocks -->
+        <text x="30" y="158" fill="var(--text-faint)" font-size="11" font-family="Inter" font-weight="600" letter-spacing="0.06em" text-transform="uppercase">TRANSFORMER LAYERS (×12)</text>
+
+        <!-- Block 1 -->
+        <g class="arch-node" transform="translate(30,168)">
+          <rect x="0" y="0" width="160" height="90" rx="10" fill="url(#nodeGrad)" stroke="var(--accent)" stroke-width="1.5"/>
+          <!-- MHA sub-layer -->
+          <rect x="10" y="10" width="66" height="36" rx="6" fill="var(--bg-surface)" stroke="var(--accent)" stroke-width="1"/>
+          <text x="43" y="26" text-anchor="middle" fill="var(--accent)" font-size="11" font-family="Inter" font-weight="600">Multi-Head</text>
+          <text x="43" y="40" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Self-Attention</text>
+          <!-- Add & Norm -->
+          <rect x="84" y="10" width="66" height="36" rx="6" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
+          <text x="117" y="26" text-anchor="middle" fill="var(--text-secondary)" font-size="11" font-family="Inter" font-weight="500">Add</text>
+          <text x="117" y="40" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">LayerNorm</text>
+          <!-- FFN sub-layer -->
+          <rect x="10" y="52" width="66" height="36" rx="6" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
+          <text x="43" y="68" text-anchor="middle" fill="var(--text-secondary)" font-size="11" font-family="Inter" font-weight="500">FFN</text>
+          <text x="43" y="82" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">ReLU / GLU</text>
+          <!-- Add & Norm -->
+          <rect x="84" y="52" width="66" height="36" rx="6" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
+          <text x="117" y="68" text-anchor="middle" fill="var(--text-secondary)" font-size="11" font-family="Inter" font-weight="500">Add</text>
+          <text x="117" y="82" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">LayerNorm</text>
+          <!-- Causal mask badge -->
+          <rect x="10" y="0" width="56" height="16" rx="4" fill="var(--red-dim)" stroke="var(--red)" stroke-width="0.5"/>
+          <text x="38" y="11" text-anchor="middle" fill="var(--red)" font-size="9" font-family="JetBrains Mono" font-weight="600">CAUSAL</text>
+        </g>
+
+        <!-- Arrow block 1 → block 2 -->
+        <line x1="194" y1="213" x2="224" y2="213" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <!-- Block 2 -->
+        <g class="arch-node" transform="translate(224,168)">
+          <rect x="0" y="0" width="160" height="90" rx="10" fill="url(#nodeGrad)" stroke="var(--accent)" stroke-width="1.5" opacity="0.7"/>
+          <rect x="10" y="10" width="66" height="36" rx="6" fill="var(--bg-surface)" stroke="var(--accent)" stroke-width="1"/>
+          <text x="43" y="26" text-anchor="middle" fill="var(--accent)" font-size="11" font-family="Inter" font-weight="600">Multi-Head</text>
+          <text x="43" y="40" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Self-Attention</text>
+          <rect x="84" y="10" width="66" height="36" rx="6" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
+          <text x="117" y="26" text-anchor="middle" fill="var(--text-secondary)" font-size="11" font-family="Inter" font-weight="500">Add</text>
+          <text x="117" y="40" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">LayerNorm</text>
+          <rect x="10" y="52" width="66" height="36" rx="6" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
+          <text x="43" y="68" text-anchor="middle" fill="var(--text-secondary)" font-size="11" font-family="Inter" font-weight="500">FFN</text>
+          <text x="43" y="82" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">ReLU / GLU</text>
+          <rect x="84" y="52" width="66" height="36" rx="6" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
+          <text x="117" y="68" text-anchor="middle" fill="var(--text-secondary)" font-size="11" font-family="Inter" font-weight="500">Add</text>
+          <text x="117" y="82" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">LayerNorm</text>
+          <rect x="10" y="0" width="56" height="16" rx="4" fill="var(--red-dim)" stroke="var(--red)" stroke-width="0.5"/>
+          <text x="38" y="11" text-anchor="middle" fill="var(--red)" font-size="9" font-family="JetBrains Mono" font-weight="600">CAUSAL</text>
+        </g>
+
+        <!-- Ellipsis -->
+        <text x="410" y="218" text-anchor="middle" fill="var(--text-faint)" font-size="24" font-family="Inter">⋯</text>
+        <line x1="396" y1="213" x2="408" y2="213" stroke="var(--text-muted)" stroke-width="1.5"/>
+
+        <!-- Block N (last layer) -->
+        <g class="arch-node" transform="translate(424,168)">
+          <rect x="0" y="0" width="160" height="90" rx="10" fill="url(#nodeGrad)" stroke="var(--accent)" stroke-width="1.5"/>
+          <rect x="10" y="10" width="66" height="36" rx="6" fill="var(--bg-surface)" stroke="var(--accent)" stroke-width="1"/>
+          <text x="43" y="26" text-anchor="middle" fill="var(--accent)" font-size="11" font-family="Inter" font-weight="600">Multi-Head</text>
+          <text x="43" y="40" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Self-Attention</text>
+          <rect x="84" y="10" width="66" height="36" rx="6" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
+          <text x="117" y="26" text-anchor="middle" fill="var(--text-secondary)" font-size="11" font-family="Inter" font-weight="500">Add</text>
+          <text x="117" y="40" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">LayerNorm</text>
+          <rect x="10" y="52" width="66" height="36" rx="6" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
+          <text x="43" y="68" text-anchor="middle" fill="var(--text-secondary)" font-size="11" font-family="Inter" font-weight="500">FFN</text>
+          <text x="43" y="82" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">ReLU / GLU</text>
+          <rect x="84" y="52" width="66" height="36" rx="6" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
+          <text x="117" y="68" text-anchor="middle" fill="var(--text-secondary)" font-size="11" font-family="Inter" font-weight="500">Add</text>
+          <text x="117" y="82" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">LayerNorm</text>
+          <rect x="10" y="0" width="56" height="16" rx="4" fill="var(--red-dim)" stroke="var(--red)" stroke-width="0.5"/>
+          <text x="38" y="11" text-anchor="middle" fill="var(--red)" font-size="9" font-family="JetBrains Mono" font-weight="600">CAUSAL</text>
+        </g>
+
+        <!-- Arrow to output -->
+        <line x1="588" y1="213" x2="640" y2="213" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <!-- Output projection -->
+        <g transform="translate(640,168)">
+          <rect x="0" y="0" width="140" height="90" rx="10" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
+          <rect x="10" y="10" width="120" height="36" rx="6" fill="var(--accent-dim)" stroke="var(--accent)" stroke-width="1"/>
+          <text x="70" y="26" text-anchor="middle" fill="var(--accent)" font-size="11" font-family="Inter" font-weight="600">LayerNorm</text>
+          <text x="70" y="40" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Final LayerNorm</text>
+          <rect x="10" y="52" width="120" height="36" rx="6" fill="var(--orange-dim)" stroke="var(--orange)" stroke-width="1"/>
+          <text x="70" y="68" text-anchor="middle" fill="var(--orange)" font-size="11" font-family="Inter" font-weight="600">Linear → Softmax</text>
+          <text x="70" y="82" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Proj to vocab</text>
+        </g>
+
+        <!-- Shared weights note -->
+        <text x="710" y="290" text-anchor="middle" fill="var(--text-faint)" font-size="11" font-family="JetBrains Mono">共享 Embedding ↔ 输出权重</text>
+        <line x1="640" y1="280" x2="700" y2="280" stroke="var(--text-faint)" stroke-width="1" stroke-dasharray="3 3"/>
+
+        <!-- Highlight: causal mask explanation -->
+        <g transform="translate(30,290)">
+          <rect x="0" y="0" width="560" height="70" rx="10" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
+          <text x="20" y="24" fill="var(--text)" font-size="13" font-family="Inter" font-weight="500">Causal Mask 机制</text>
+          <text x="20" y="46" fill="var(--text-muted)" font-size="12" font-family="JetBrains Mono">Mask[i,j] = −∞  when j &gt; i   →   位置 i 只能 attend 到 ≤ i 的位置</text>
+          <text x="20" y="62" fill="var(--text-faint)" font-size="11" font-family="Inter">这保证了自回归生成的单向性：预测 tₙ 时看不到 tₙ₊₁ 及之后的 token</text>
+        </g>
+
+        <!-- Key insight box -->
+        <g transform="translate(610,290)">
+          <rect x="0" y="0" width="260" height="70" rx="10" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
+          <text x="20" y="24" fill="var(--text)" font-size="13" font-family="Inter" font-weight="500">与 BERT 的关键区别</text>
+          <text x="20" y="46" fill="var(--text-muted)" font-size="12" font-family="JetBrains Mono">GPT: 单向 → 适合文本生成</text>
+          <text x="20" y="62" fill="var(--text-muted)" font-size="12" font-family="JetBrains Mono">BERT: 双向 → 适合序列理解</text>
+        </g>
       </svg>
     </div>
-    <p class="diagram-caption">图: GPT-1 通用架构示意</p>
+    <p class="diagram-caption">图: GPT-1 单向 Transformer 解码器架构（12层），每层包含带 causal mask 的 Multi-Head Self-Attention 和 FFN</p>
   </section>
 
+  <!-- CAUSAL MASK VISUALIZATION -->
+  <section class="section">
+    <div class="section-label">注意力机制</div>
+    <div class="section-title">Causal Attention Mask</div>
+    <div class="section-body">
+      <p>每个解码器层内部的 Self-Attention 使用 <strong>下三角矩阵</strong> 作为 mask，确保位置 <em>i</em> 只能看到位置 ≤ <em>i</em> 的信息。图中高亮行展示当前 token 能 attend 到的范围。</p>
+    </div>
+    <div class="demo-container">
+      <div class="demo-title">Causal Mask 矩阵 (4×4 示意) — 点击行查看 attention 范围</div>
+      <table class="mask-table" id="maskTable">
+        <thead>
+          <tr style="color:var(--text-faint);font-size:11px;font-family:JetBrains Mono;">
+            <th style="padding:8px;border:1px solid var(--border);"></th>
+            <th style="padding:8px;border:1px solid var(--border);">t₀</th>
+            <th style="padding:8px;border:1px solid var(--border);">t₁</th>
+            <th style="padding:8px;border:1px solid var(--border);">t₂</th>
+            <th style="padding:8px;border:1px solid var(--border);">t₃</th>
+          </tr>
+        </thead>
+        <tbody id="maskBody">
+          <tr>
+            <td style="padding:8px;border:1px solid var(--border);color:var(--text-faint);font-size:11px;font-family:JetBrains Mono;">t₀</td>
+            <td class="mask-cell mask-one" data-row="0" data-col="0" style="cursor:pointer;">1</td>
+            <td class="mask-cell mask-inf" data-row="0" data-col="1" style="cursor:pointer;">−∞</td>
+            <td class="mask-cell mask-inf" data-row="0" data-col="2" style="cursor:pointer;">−∞</td>
+            <td class="mask-cell mask-inf" data-row="0" data-col="3" style="cursor:pointer;">−∞</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border:1px solid var(--border);color:var(--text-faint);font-size:11px;font-family:JetBrains Mono;">t₁</td>
+            <td class="mask-cell mask-one" data-row="1" data-col="0" style="cursor:pointer;">1</td>
+            <td class="mask-cell mask-one" data-row="1" data-col="1" style="cursor:pointer;">1</td>
+            <td class="mask-cell mask-inf" data-row="1" data-col="2" style="cursor:pointer;">−∞</td>
+            <td class="mask-cell mask-inf" data-row="1" data-col="3" style="cursor:pointer;">−∞</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border:1px solid var(--border);color:var(--text-faint);font-size:11px;font-family:JetBrains Mono;">t₂</td>
+            <td class="mask-cell mask-one" data-row="2" data-col="0" style="cursor:pointer;">1</td>
+            <td class="mask-cell mask-one" data-row="2" data-col="1" style="cursor:pointer;">1</td>
+            <td class="mask-cell mask-one" data-row="2" data-col="2" style="cursor:pointer;">1</td>
+            <td class="mask-cell mask-inf" data-row="2" data-col="3" style="cursor:pointer;">−∞</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border:1px solid var(--border);color:var(--text-faint);font-size:11px;font-family:JetBrains Mono;">t₃</td>
+            <td class="mask-cell mask-one" data-row="3" data-col="0" style="cursor:pointer;">1</td>
+            <td class="mask-cell mask-one" data-row="3" data-col="1" style="cursor:pointer;">1</td>
+            <td class="mask-cell mask-one" data-row="3" data-col="2" style="cursor:pointer;">1</td>
+            <td class="mask-cell mask-one" data-row="3" data-col="3" style="cursor:pointer;">1</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:12px;color:var(--text-faint);margin-top:8px;font-family:JetBrains Mono;">1 = 可见 · −∞ = 被 mask 掉（ softmax 后为 0 ）</p>
+    </div>
+  </section>
+
+  <!-- HISTORY TIMELINE -->
   <section class="section">
     <div class="section-label">历史背景</div>
     <div class="section-title">从问题到突破</div>
     <div class="section-body">
-      <p><strong>OpenAI</strong> 在 <strong>2018</strong> 年提出了 GPT-1，这是机器学习发展史上的一个重要里程碑。</p>
-      <p></p>
+      <p><strong>OpenAI</strong> 在 <strong>2018</strong> 年发表了 《Improving Language Understanding by Generative Pre-Training》（GPT-1），首次提出 <strong>预训练 + 微调</strong> 的范式。</p>
+      <p>在此之前，NLP 任务通常从零开始训练专用模型。GPT-1 证明：先在大规模无标注文本（BookCorpus, 980M词）上做语言模型预训练，再在下游任务上微调，可以显著提升泛化能力。</p>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">2017</div>
+        <div class="timeline-title">Transformer 诞生</div>
+        <div class="timeline-desc">Vaswani et al. "Attention Is All You Need" 提出 Transformer 架构</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2018.06</div>
+        <div class="timeline-title">GPT-1 发布</div>
+        <div class="timeline-desc">OpenAI 发布 GPT-1，117M 参数，12层 Decoder，单向语言建模预训练</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2018.10</div>
+        <div class="timeline-title">BERT 发布</div>
+        <div class="timeline-desc">Google 发布 BERT，双向预训练，在多项 NLU 任务上超越 GPT</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2019</div>
+        <div class="timeline-title">GPT-2 发布</div>
+        <div class="timeline-desc">OpenAI 将参数扩大到 1.5B，展现少样本学习能力</div>
+      </div>
     </div>
   </section>
 
+  <!-- FORMULA CARDS -->
   <section class="section">
     <div class="section-label">数学原理</div>
     <div class="section-title">核心公式</div>
+
     <div class="formula-card">
-      <div class="formula-label">核心公式</div>
-      <div class="formula">f(x) = ...</div>
-      <div class="formula-note">根据具体模型填写</div>
+      <div class="formula-label">Scaled Dot-Product Attention</div>
+      <div class="formula">Attention(Q, K, V) = softmax(QK<sup>T</sup> / √d<sub>k</sub>) · V</div>
+      <div class="formula-note">GPT-1 中使用 Multi-Head Attention：将 Q/K/V 拆分为 h=12 个头，并行计算后拼接</div>
+    </div>
+
+    <div class="formula-card">
+      <div class="formula-label">Causal Mask</div>
+      <div class="formula">M[i, j] = { 0      if j ≤ i<br>          { −∞     if j &gt; i</div>
+      <div class="formula-note">下三角 mask 确保位置 i 的预测只依赖于位置 ≤ i 的历史 token</div>
+    </div>
+
+    <div class="formula-card">
+      <div class="formula-label">Language Modeling Objective</div>
+      <div class="formula">ℒ = − Σ<sub>t</sub> log P(w<sub>t</sub> | w<sub>&lt;t</sub>; θ)</div>
+      <div class="formula-note">左.context 语言建模：最大化历史 token 条件概率的对数似然</div>
+    </div>
+
+    <div class="formula-card">
+      <div class="formula-label">Positional Encoding（RoPE 前身）</div>
+      <div class="formula">pos_embed[i, 2k]   = sin(i / 10000<sup>2k/d</sup>)<br>pos_embed[i, 2k+1] = cos(i / 10000<sup>2k/d</sup>)</div>
+      <div class="formula-note">GPT-1 使用绝对位置嵌入（learned positional embedding），每位置一个可学习向量</div>
     </div>
   </section>
 
+  <!-- CODE BLOCK -->
   <section class="section">
     <div class="section-label">代码实现</div>
     <div class="section-title">model.py 核心逻辑</div>
@@ -103,36 +363,215 @@
         <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
         <span class="code-lang">Python · model.py</span>
       </div>
-      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">GPT-1</span>(nn.Module):
-    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">GPT1</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn\">__init__</span>(self, vocab_size=<span class="num">50257</span>, d_model=<span class="num">768</span>,
+                 num_heads=<span class="num">12</span>, num_layers=<span class="num">12</span>, max_seq_len=<span class="num">1024</span>):
         super().__span class="fn">init__</span>()
-        <span class="cm"># 模型定义</span>
-        
-    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
-        <span class="cm"># 前向传播</span>
-        <span class="kw">return</span> x</pre></div>
+        self.token_embedding = nn.Embedding(vocab_size, d_model)
+        self.position_embedding = nn.Embedding(max_seq_len, d_model)
+
+        encoder_layer = nn.TransformerEncoderLayer(
+            d_model=d_model, nhead=num_heads,
+            dim_feedforward=<span class="num">3072</span>, dropout=<span class="num">0.1</span>
+        )
+        self.transformer_encoder = nn.TransformerEncoder(
+            encoder_layer, num_layers=num_layers
+        )
+        self.ln_final = nn.LayerNorm(d_model)
+        self.head = nn.Linear(d_model, vocab_size, bias=<span class="kw">False</span>)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, input_ids, attention_mask=<span class="kw">None</span>):
+        batch_size, seq_len = input_ids.size()
+        token_emb = self.token_embedding(input_ids)
+        pos_ids = torch.arange(seq_len).unsqueeze(<span class="num">0</span>).expand(batch_size, -<span class="num">1</span>)
+        pos_emb = self.position_embedding(pos_ids)
+        x = token_emb + pos_emb
+        x = self.transformer_encoder(x)
+        x = self.ln_final(x)
+        logits = self.head(x)
+        <span class="kw">return</span> logits</pre></div>
+    </div>
+    <p style="font-size:12px;color:var(--text-faint);margin-top:12px;">注：实际 PyTorch <code>TransformerEncoder</code> 需要传入 <code>mask</code> 参数以实现 causal mask；此处展示简化结构。</p>
+  </section>
+
+  <!-- COMPARISON: GPT vs BERT -->
+  <section class="section">
+    <div class="section-label">对比分析</div>
+    <div class="section-title">GPT-1 vs BERT</div>
+    <div class="comparison-grid">
+      <div class="comparison-panel">
+        <h4>GPT-1（单向）</h4>
+        <p>Decoder-only 架构，causal mask 限制只看左侧历史。<br><br>
+        <strong>优势：</strong>天然适合文本生成、续写任务。<br>
+        <strong>预训练：</strong>左向语言建模（LM）。<br>
+        <strong>下游：</strong>fine-tune 后可用于文本分类、问答。</p>
+      </div>
+      <div class="comparison-panel">
+        <h4>BERT（双向）</h4>
+        <p>Encoder-only 架构，双向注意力看到完整上下文。<br><br>
+        <strong>优势：</strong>在 NLU 任务（GLUE、SQuAD）上表现优异。<br>
+        <strong>预训练：</strong>MLM（掩码语言建模）+ NSP。<br>
+        <strong>局限：</strong>不适合直接用于文本生成。</p>
+      </div>
     </div>
   </section>
 
+  <!-- INTERACTIVE DEMO -->
+  <section class="section">
+    <div class="section-label">交互演示</div>
+    <div class="section-title">自回归文本生成</div>
+    <div class="section-body">
+      <p>GPT-1 的生成过程是 <strong>自回归</strong>的：给定前缀，逐 token 采样，每次将新 token 追加到输入序列末尾。下方演示展示了 causal mask 下每一步只关注已有 token 的过程。</p>
+    </div>
+    <div class="demo-container">
+      <div class="demo-title">Autoregressive Generation Demo</div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;">
+        <div style="flex:1;min-width:200px;">
+          <label style="font-size:12px;color:var(--text-faint);display:block;margin-bottom:6px;">输入前缀</label>
+          <input id="demoPrefix" value="The cat sat on the"
+            style="width:100%;background:var(--bg);border:1px solid var(--border-strong);border-radius:var(--radius);padding:8px 12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none;">
+          <div class="demo-controls" style="margin-top:12px;">
+            <button class="demo-btn" id="startBtn" onclick="startDemo()">▶ 开始生成</button>
+            <button class="demo-btn" id="resetBtn" onclick="resetDemo()" style="background:var(--bg-elevated);">重置</button>
+          </div>
+          <div style="margin-top:12px;">
+            <span class="demo-slider-label">生成步数</span>
+            <input type="range" class="demo-slider" id="stepSlider" min="1" max="10" value="5" oninput="updateStepLabel()">
+            <span id="stepLabel" style="font-size:12px;color:var(--text-faint);font-family:JetBrains Mono;">5 步</span>
+          </div>
+        </div>
+        <div style="flex:2;min-width:280px;">
+          <label style="font-size:12px;color:var(--text-faint);display:block;margin-bottom:6px;">生成结果</label>
+          <div class="demo-output" id="demoOutput" style="min-height:120px;">点击「开始生成」...</div>
+          <div id="stepVisualization" style="margin-top:12px;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTES -->
   <section class="section">
     <div class="section-label">学习心得</div>
     <div class="section-title">关键洞察</div>
     <div class="notes-card">
       <h4>学到的知识</h4>
       <ul>
-        <li>GPT-1 是机器学习发展史上的重要模型</li>
-        <li>理解其数学原理有助于掌握后续模型</li>
+        <li>GPT-1 首次将「预训练 + 微调」范式成功应用于 NLP，开启了大模型时代</li>
+        <li>单向（causal）vs 双向（masked）语言建模是生成任务和理解任务的根本分歧点</li>
+        <li>117M 参数在当时已展现出零样本（zero-shot）迁移能力</li>
+        <li>Position embedding 的引入使模型能够感知 token 顺序</li>
+        <li>Weight tying（输入/输出共享 embedding 矩阵）是 GPT 系列的标准做法</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>常见误区</h4>
+      <ul>
+        <li>GPT-1 使用 <strong>learned positional embedding</strong>，而非 Transformer 原版的 sinusoidal encoding</li>
+        <li>GPT-1 的 FFN 使用 ReLU，GPT-2 之后改用 GLU 变体（SwiGLU）</li>
+        <li>GPT-1 并未使用 Layer Scale 或 RMSNorm，这些是后续工作（Gopher、PaLM）的改进</li>
       </ul>
     </div>
   </section>
 
+  <!-- FOOTER NAV -->
   <div class="nav-footer">
-    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
+    <a href="../04_deep_learning_boom/05_bert/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">BERT</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
+    <a href="../04_deep_learning_boom/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">阶段总览 →</span><span class="nav-footer-title">深度学习爆发期</span></a>
   </div>
 
 </main>
+
+<script>
+// ── Causal mask table interaction ──
+document.querySelectorAll('.mask-cell').forEach(cell => {
+  cell.addEventListener('mouseenter', () => {
+    const row = +cell.dataset.row;
+    document.querySelectorAll('.mask-cell').forEach(c => c.classList.remove('active'));
+    for (let col = 0; col <= row; col++) {
+      const target = document.querySelector(`.mask-cell[data-row="${row}"][data-col="${col}"]`);
+      if (target) target.classList.add('active');
+    }
+  });
+  cell.addEventListener('mouseleave', () => {
+    document.querySelectorAll('.mask-cell').classList?.remove('active');
+    document.querySelectorAll('.mask-cell').forEach(c => c.classList.remove('active'));
+  });
+});
+
+// ── Autoregressive demo ──
+const continuationMap = {
+  'the cat sat on the': ['mat', 'floor', 'couch', 'rug', 'bed'],
+  'machine learning is': ['a subset of AI', 'transforming industries', 'powered by data', 'driving innovation', 'the future of tech'],
+  'deep learning enables': ['models to learn representations', 'end-to-end training', 'powerful pattern recognition', 'neural networks to scale', 'breakthroughs in many domains'],
+  'the transformer architecture': ['replaced RNNs in NLP', 'uses self-attention exclusively', 'enables parallel training', 'scaled to billions of parameters', 'fundamentally changed AI']
+};
+
+let demoInterval = null;
+let demoStep = 0;
+let demoTokens = [];
+
+function updateStepLabel() {
+  const v = document.getElementById('stepSlider').value;
+  document.getElementById('stepLabel').textContent = v + ' 步';
+}
+
+function startDemo() {
+  if (demoInterval) clearInterval(demoInterval);
+  const prefix = document.getElementById('demoPrefix').value.trim();
+  const steps = parseInt(document.getElementById('stepSlider').value);
+  const outputs = continuationMap[prefix.toLowerCase()] || ['is', 'a', 'very', 'important', 'concept', 'in', 'modern', 'computer', 'science', 'research'];
+  demoStep = 0;
+  demoTokens = prefix.split(' ');
+  const outputEl = document.getElementById('demoOutput');
+  const vizEl = document.getElementById('stepVisualization');
+  outputEl.innerHTML = '';
+  vizEl.innerHTML = '';
+
+  // Show prefix first
+  outputEl.innerHTML = `<span class="token-revealed">${demoTokens.join(' ')}</span>`;
+
+  demoInterval = setInterval(() => {
+    if (demoStep >= steps) {
+      clearInterval(demoInterval);
+      demoInterval = null;
+      return;
+    }
+    const token = outputs[demoStep];
+    demoTokens.push(token);
+    const allRevealed = demoTokens.slice(0, -1).join(' ');
+    const currentToken = `<span class="token-revealed glow-text">${token}</span>`;
+    outputEl.innerHTML = `${allRevealed} ${currentToken}`;
+
+    // Step visualization
+    const stepCount = demoTokens.length;
+    vizEl.innerHTML = `
+      <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;margin-top:4px;">
+        ${demoTokens.map((t, i) => {
+          const isCurrent = i === stepCount - 1;
+          return `<span style="display:inline-flex;align-items:center;gap:2px;">
+            <span class="step-dot ${isCurrent ? 'active' : ''}" style="${!isCurrent ? 'background:var(--text-faint);' : ''}"></span>
+            <span style="font-family:JetBrains Mono;font-size:11px;color:${isCurrent ? 'var(--accent)' : 'var(--text-muted)'};">${t}</span>
+            ${i < demoTokens.length - 1 ? '<span style="color:var(--text-faint);">→</span>' : ''}
+          </span>`;
+        }).join('')}
+      </div>
+      <div style="font-size:11px;color:var(--text-faint);margin-top:6px;font-family:JetBrains Mono;">
+        第 ${demoStep + 1}/${steps} 步 · 输入长度 ${stepCount} · causal mask 仅允许 attend 到左侧
+      </div>
+    `;
+    demoStep++;
+  }, 600);
+}
+
+function resetDemo() {
+  if (demoInterval) { clearInterval(demoInterval); demoInterval = null; }
+  document.getElementById('demoOutput').textContent = '点击「开始生成」...';
+  document.getElementById('stepVisualization').innerHTML = '';
+  demoStep = 0;
+  demoTokens = [];
+}
+</script>
 
 </body>
 </html>
