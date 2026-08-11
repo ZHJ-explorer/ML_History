@@ -7,14 +7,214 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
-/* Model-specific styles */
+/* ── Random Forest Specific Styles ── */
+.pill-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 999px;
+  font-size: 12px; font-weight: 500; color: var(--text-muted);
+  background: transparent; border: 1px solid var(--border-strong);
+  transition: all 0.15s;
+}
+.pill:hover { border-color: var(--accent); color: var(--accent); }
+.pill-accent { color: var(--accent); border-color: rgba(113,112,255,0.3); background: var(--accent-dim); }
+.pill-green { color: var(--green); border-color: rgba(16,185,129,0.3); background: var(--green-dim); }
+.pill-orange { color: var(--orange); border-color: rgba(245,158,11,0.3); background: var(--orange-dim); }
+.pill-red { color: var(--red); border-color: rgba(239,68,68,0.3); background: var(--red-dim); }
+
+/* Tree SVG styles */
+.tree-node { cursor: pointer; transition: all 0.2s; }
+.tree-node:hover circle { stroke-width: 2.5; filter: brightness(1.3); }
+.tree-edge { transition: all 0.3s; }
+.tree-label { font-family: 'Inter', sans-serif; font-size: 10px; fill: var(--text-muted); }
+.tree-value { font-family: 'JetBrains Mono', monospace; font-size: 9px; fill: var(--text-faint); }
+
+/* Demo styles */
+.demo-tree-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin: 20px 0;
+}
+.demo-tree-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+.demo-tree-card.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 12px var(--accent-dim);
+}
+.demo-tree-card .tree-num {
+  font-size: 11px;
+  color: var(--text-faint);
+  margin-bottom: 8px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.demo-tree-card .tree-pred {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 8px 0;
+  transition: all 0.3s;
+}
+.demo-tree-card .tree-features {
+  font-size: 10px;
+  color: var(--text-faint);
+  margin-top: 6px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.vote-bar-container {
+  display: flex;
+  gap: 8px;
+  margin: 16px 0;
+}
+.vote-bar-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.vote-bar {
+  width: 100%;
+  height: 80px;
+  border-radius: var(--radius);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.vote-bar::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.1), transparent);
+}
+.vote-bar.setosa { background: linear-gradient(135deg, #7170ff, #5656cc); }
+.vote-bar.versicolor { background: linear-gradient(135deg, #10b981, #0d9668); }
+.vote-bar.virginica { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.vote-count {
+  font-size: 11px;
+  color: var(--text-faint);
+  font-family: 'JetBrains Mono', monospace;
+}
+.vote-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.final-result {
+  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  text-align: center;
+  margin-top: 16px;
+}
+.final-result .pred-label {
+  font-size: 12px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+.final-result .pred-value {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.final-result .pred-conf {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Feature selector */
+.feature-select {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 12px 0;
+}
+.feature-btn {
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.feature-btn:hover { border-color: var(--accent); color: var(--accent); }
+.feature-btn.active {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Slider style */
+.input-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+}
+.input-group label {
+  font-size: 13px;
+  color: var(--text-muted);
+  min-width: 80px;
+}
+.input-group input[type="range"] {
+  flex: 1;
+  accent-color: var(--accent);
+}
+.input-group .value-display {
+  font-size: 13px;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  min-width: 30px;
+  text-align: right;
+}
+
+/* Diagram animation */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+.anim-pulse { animation: pulse 2s ease-in-out infinite; }
+
+/* Flow arrows in SVG */
+.flow-arrow {
+  stroke: var(--text-faint);
+  stroke-width: 1.5;
+  fill: none;
+  stroke-dasharray: 4,2;
+}
+
+@media (max-width: 768px) {
+  .demo-tree-grid { grid-template-columns: repeat(3, 1fr); }
+}
 </style>
 </head>
 <body>
 
 <nav class="nav">
   <div class="nav-inner">
-    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
+    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">R</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
       <a href="../02_statistical_learning/index.html">02_statistical_learning阶段</a>
@@ -28,73 +228,265 @@
   <section class="hero">
     <div class="hero-eyebrow">02_statistical_learning阶段 · 2001</div>
     <h1>随机森林</h1>
-    <p class="hero-subtitle">暂无简介</p>
+    <p class="hero-subtitle">Leo Breiman 提出的集成学习算法，通过 Bootstrap 采样和随机特征选择构建多棵决策树，以多数投票实现强大的分类能力。</p>
     <div class="hero-meta">
       <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">2001</span></div>
       <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Leo Breiman</span></div>
       <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">集成学习</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">框架</span><span class="hero-meta-value">PyTorch</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">框架</span><span class="hero-meta-value">NumPy</span></div>
+    </div>
+    <div class="pill-row" style="margin-top: 20px;">
+      <span class="pill pill-accent">Bootstrap 采样</span>
+      <span class="pill pill-green">随机特征选择</span>
+      <span class="pill pill-orange">多数投票</span>
+      <span class="pill">√m 特征子集</span>
+      <span class="pill">OOB 评估</span>
     </div>
   </section>
 
   <div class="stats-grid">
     <div class="stat-cell"><span class="stat-value">2001</span><span class="stat-label">提出年份</span></div>
-    <div class="stat-cell"><span class="stat-value">集成学习</span><span class="stat-label">模型类型</span></div>
-    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
-    <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
+    <div class="stat-cell"><span class="stat-value">Bagging+</span><span class="stat-label">算法基础</span></div>
+    <div class="stat-cell"><span class="stat-value">√m</span><span class="stat-label">特征子集大小</span></div>
+    <div class="stat-cell"><span class="stat-value">多数投票</span><span class="stat-label">集成方式</span></div>
   </div>
 
+  <!-- SVG Diagram: Multiple Trees with Voting -->
   <section class="section">
-    <div class="section-label">网络架构</div>
-    <div class="section-title">结构示意</div>
+    <div class="section-label">算法架构</div>
+    <div class="section-title">多树集成结构</div>
+    <div class="section-body">
+      <p>随机森林由多棵决策树组成。每棵树使用不同的 Bootstrap 样本训练，且在每个节点分裂时只考虑随机选择的特征子集。最终预测通过所有树的<strong>多数投票</strong>得出。</p>
+    </div>
     <div class="diagram-container">
-      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
-        <!-- Generic architecture diagram -->
-        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
-        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
-        
-        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
-        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
-        
-        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
-        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
-        
+      <svg viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:900px;">
         <defs>
-          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-            <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
+          <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="var(--text-faint)"/>
           </marker>
+          <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#7170ff;stop-opacity:0.8" />
+            <stop offset="100%" style="stop-color:#7170ff;stop-opacity:0.2" />
+          </linearGradient>
+          <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.8" />
+            <stop offset="100%" style="stop-color:#10b981;stop-opacity:0.2" />
+          </linearGradient>
+          <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:0.8" />
+            <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:0.2" />
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
         </defs>
+
+        <!-- Data Input Section -->
+        <rect x="10" y="140" width="100" height="100" rx="10" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.5"/>
+        <text x="60" y="170" text-anchor="middle" fill="var(--text)" font-size="12" font-weight="500" font-family="Inter">训练数据</text>
+        <text x="60" y="190" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">X, y</text>
+        <text x="60" y="210" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">n_samples × m</text>
+        
+        <!-- Random Feature Selection Label -->
+        <rect x="10" y="80" width="100" height="48" rx="6" fill="var(--accent-dim)" stroke="var(--accent)" stroke-width="1"/>
+        <text x="60" y="98" text-anchor="middle" fill="var(--accent)" font-size="10" font-weight="600" font-family="Inter">随机特征</text>
+        <text x="60" y="114" text-anchor="middle" fill="var(--accent)" font-size="9" font-family="JetBrains Mono">k = √m</text>
+
+        <!-- Tree 1 -->
+        <g transform="translate(160, 30)">
+          <rect x="0" y="0" width="130" height="120" rx="8" fill="var(--bg-surface)" stroke="#7170ff" stroke-width="1.5" opacity="0.9"/>
+          <text x="65" y="18" text-anchor="middle" fill="#7170ff" font-size="10" font-weight="600" font-family="Inter">树 1</text>
+          <!-- Root node -->
+          <circle cx="65" cy="42" r="14" fill="var(--bg-elevated)" stroke="#7170ff" stroke-width="1.5"/>
+          <text x="65" y="39" text-anchor="middle" fill="var(--text)" font-size="8" font-family="JetBrains Mono">x₂</text>
+          <text x="65" y="49" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤1.9</text>
+          <!-- Left child -->
+          <circle cx="25" cy="85" r="12" fill="var(--bg-elevated)" stroke="#7170ff" stroke-width="1"/>
+          <text x="25" y="82" text-anchor="middle" fill="var(--text)" font-size="7" font-family="JetBrains Mono">x₀</text>
+          <text x="25" y="91" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤2.5</text>
+          <!-- Right child -->
+          <circle cx="105" cy="85" r="12" fill="var(--bg-elevated)" stroke="#7170ff" stroke-width="1"/>
+          <text x="105" y="82" text-anchor="middle" fill="var(--text)" font-size="7" font-family="JetBrains Mono">x₃</text>
+          <text x="105" y="91" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤0.5</text>
+          <!-- Edges -->
+          <line x1="65" y1="56" x2="25" y2="73" stroke="#7170ff" stroke-width="1" opacity="0.6"/>
+          <line x1="65" y1="56" x2="105" y2="73" stroke="#7170ff" stroke-width="1" opacity="0.6"/>
+          <!-- Prediction -->
+          <rect x="35" y="105" width="60" height="14" rx="4" fill="#7170ff" opacity="0.8"/>
+          <text x="65" y="115" text-anchor="middle" fill="white" font-size="9" font-weight="600" font-family="JetBrains Mono">→ setosa</text>
+        </g>
+
+        <!-- Tree 2 -->
+        <g transform="translate(160, 175)">
+          <rect x="0" y="0" width="130" height="120" rx="8" fill="var(--bg-surface)" stroke="#10b981" stroke-width="1.5" opacity="0.9"/>
+          <text x="65" y="18" text-anchor="middle" fill="#10b981" font-size="10" font-weight="600" font-family="Inter">树 2</text>
+          <circle cx="65" cy="42" r="14" fill="var(--bg-elevated)" stroke="#10b981" stroke-width="1.5"/>
+          <text x="65" y="39" text-anchor="middle" fill="var(--text)" font-size="8" font-family="JetBrains Mono">x₀</text>
+          <text x="65" y="49" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤3.4</text>
+          <circle cx="25" cy="85" r="12" fill="var(--bg-elevated)" stroke="#10b981" stroke-width="1"/>
+          <text x="25" y="82" text-anchor="middle" fill="var(--text)" font-size="7" font-family="JetBrains Mono">x₁</text>
+          <text x="25" y="91" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤1.3</text>
+          <circle cx="105" cy="85" r="12" fill="var(--bg-elevated)" stroke="#10b981" stroke-width="1"/>
+          <text x="105" y="82" text-anchor="middle" fill="var(--text)" font-size="7" font-family="JetBrains Mono">x₂</text>
+          <text x="105" y="91" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤4.8</text>
+          <line x1="65" y1="56" x2="25" y2="73" stroke="#10b981" stroke-width="1" opacity="0.6"/>
+          <line x1="65" y1="56" x2="105" y2="73" stroke="#10b981" stroke-width="1" opacity="0.6"/>
+          <rect x="35" y="105" width="60" height="14" rx="4" fill="#10b981" opacity="0.8"/>
+          <text x="65" y="115" text-anchor="middle" fill="white" font-size="9" font-weight="600" font-family="JetBrains Mono">→ versicol</text>
+        </g>
+
+        <!-- Tree 3 -->
+        <g transform="translate(330, 30)">
+          <rect x="0" y="0" width="130" height="120" rx="8" fill="var(--bg-surface)" stroke="#f59e0b" stroke-width="1.5" opacity="0.9"/>
+          <text x="65" y="18" text-anchor="middle" fill="#f59e0b" font-size="10" font-weight="600" font-family="Inter">树 3</text>
+          <circle cx="65" cy="42" r="14" fill="var(--bg-elevated)" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="65" y="39" text-anchor="middle" fill="var(--text)" font-size="8" font-family="JetBrains Mono">x₁</text>
+          <text x="65" y="49" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤1.6</text>
+          <circle cx="25" cy="85" r="12" fill="var(--bg-elevated)" stroke="#f59e0b" stroke-width="1"/>
+          <text x="25" y="82" text-anchor="middle" fill="var(--text)" font-size="7" font-family="JetBrains Mono">x₃</text>
+          <text x="25" y="91" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤0.3</text>
+          <circle cx="105" cy="85" r="12" fill="var(--bg-elevated)" stroke="#f59e0b" stroke-width="1"/>
+          <text x="105" y="82" text-anchor="middle" fill="var(--text)" font-size="7" font-family="JetBrains Mono">x₀</text>
+          <text x="105" y="91" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤5.0</text>
+          <line x1="65" y1="56" x2="25" y2="73" stroke="#f59e0b" stroke-width="1" opacity="0.6"/>
+          <line x1="65" y1="56" x2="105" y2="73" stroke="#f59e0b" stroke-width="1" opacity="0.6"/>
+          <rect x="35" y="105" width="60" height="14" rx="4" fill="#f59e0b" opacity="0.8"/>
+          <text x="65" y="115" text-anchor="middle" fill="white" font-size="9" font-weight="600" font-family="JetBrains Mono">→ versicol</text>
+        </g>
+
+        <!-- Tree 4 -->
+        <g transform="translate(330, 175)">
+          <rect x="0" y="0" width="130" height="120" rx="8" fill="var(--bg-surface)" stroke="#ef4444" stroke-width="1.5" opacity="0.9"/>
+          <text x="65" y="18" text-anchor="middle" fill="#ef4444" font-size="10" font-weight="600" font-family="Inter">树 4</text>
+          <circle cx="65" cy="42" r="14" fill="var(--bg-elevated)" stroke="#ef4444" stroke-width="1.5"/>
+          <text x="65" y="39" text-anchor="middle" fill="var(--text)" font-size="8" font-family="JetBrains Mono">x₃</text>
+          <text x="65" y="49" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤0.4</text>
+          <circle cx="25" cy="85" r="12" fill="var(--bg-elevated)" stroke="#ef4444" stroke-width="1"/>
+          <text x="25" y="82" text-anchor="middle" fill="var(--text)" font-size="7" font-family="JetBrains Mono">x₁</text>
+          <text x="25" y="91" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤1.4</text>
+          <circle cx="105" cy="85" r="12" fill="var(--bg-elevated)" stroke="#ef4444" stroke-width="1"/>
+          <text x="105" y="82" text-anchor="middle" fill="var(--text)" font-size="7" font-family="JetBrains Mono">x₂</text>
+          <text x="105" y="91" text-anchor="middle" fill="var(--text-faint)" font-size="7" font-family="JetBrains Mono">≤3.5</text>
+          <line x1="65" y1="56" x2="25" y2="73" stroke="#ef4444" stroke-width="1" opacity="0.6"/>
+          <line x1="65" y1="56" x2="105" y2="73" stroke="#ef4444" stroke-width="1" opacity="0.6"/>
+          <rect x="35" y="105" width="60" height="14" rx="4" fill="#ef4444" opacity="0.8"/>
+          <text x="65" y="115" text-anchor="middle" fill="white" font-size="9" font-weight="600" font-family="JetBrains Mono">→ virginica</text>
+        </g>
+
+        <!-- Tree 5 (+ ellipsis) -->
+        <g transform="translate(500, 100)">
+          <rect x="0" y="0" width="100" height="180" rx="8" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <text x="50" y="30" text-anchor="middle" fill="var(--text-muted)" font-size="11" font-weight="500" font-family="Inter">树 …</text>
+          <text x="50" y="55" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">B = 10</text>
+          <text x="50" y="75" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">棵决策树</text>
+          <text x="50" y="100" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">独立训练</text>
+          <text x="50" y="125" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">不同样本</text>
+          <text x="50" y="150" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">不同特征</text>
+        </g>
+
+        <!-- Voting Aggregation -->
+        <g transform="translate(650, 80)">
+          <rect x="0" y="0" width="120" height="220" rx="10" fill="var(--bg-surface)" stroke="var(--accent)" stroke-width="1.5" filter="url(#glow)"/>
+          <text x="60" y="28" text-anchor="middle" fill="var(--accent)" font-size="12" font-weight="600" font-family="Inter">投票聚合</text>
+          
+          <!-- Vote bars -->
+          <rect x="15" y="50" width="90" height="24" rx="4" fill="#7170ff" opacity="0.9"/>
+          <text x="60" y="66" text-anchor="middle" fill="white" font-size="10" font-weight="600" font-family="JetBrains Mono">setosa: 4</text>
+          
+          <rect x="15" y="84" width="90" height="24" rx="4" fill="#10b981" opacity="0.9"/>
+          <text x="60" y="100" text-anchor="middle" fill="white" font-size="10" font-weight="600" font-family="JetBrains Mono">versicolor: 4</text>
+          
+          <rect x="15" y="118" width="90" height="24" rx="4" fill="#f59e0b" opacity="0.9"/>
+          <text x="60" y="134" text-anchor="middle" fill="white" font-size="10" font-weight="600" font-family="JetBrains Mono">virginica: 2</text>
+          
+          <line x1="15" y1="155" x2="105" y2="155" stroke="var(--border-strong)" stroke-width="1"/>
+          
+          <rect x="15" y="165" width="90" height="36" rx="6" fill="var(--accent)" opacity="0.9"/>
+          <text x="60" y="180" text-anchor="middle" fill="white" font-size="10" font-weight="600" font-family="Inter">最终预测</text>
+          <text x="60" y="196" text-anchor="middle" fill="white" font-size="11" font-weight="700" font-family="JetBrains Mono">平局 → 随机</text>
+        </g>
+
+        <!-- Connection Arrows from Data to Trees -->
+        <path d="M 110 190 Q 140 190 155 90" class="flow-arrow" marker-end="url(#arrowhead)"/>
+        <path d="M 110 190 Q 140 190 155 230" class="flow-arrow" marker-end="url(#arrowhead)"/>
+        <path d="M 110 190 Q 220 190 325 90" class="flow-arrow" marker-end="url(#arrowhead)"/>
+        <path d="M 110 190 Q 220 190 325 230" class="flow-arrow" marker-end="url(#arrowhead)"/>
+        <path d="M 430 140 Q 480 140 495 140" class="flow-arrow" marker-end="url(#arrowhead)"/>
+        <path d="M 600 140 Q 630 140 648 140" class="flow-arrow" marker-end="url(#arrowhead)"/>
+
+        <!-- Input arrow -->
+        <line x1="110" y1="190" x2="155" y2="190" stroke="var(--text-faint)" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+        <!-- Legend -->
+        <g transform="translate(790, 20)">
+          <text x="0" y="0" fill="var(--text-muted)" font-size="10" font-weight="500" font-family="Inter">特征选择示例</text>
+          <rect x="0" y="10" width="12" height="12" rx="2" fill="#7170ff"/>
+          <text x="18" y="20" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">树1: {x₀, x₂}</text>
+          <rect x="0" y="28" width="12" height="12" rx="2" fill="#10b981"/>
+          <text x="18" y="38" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">树2: {x₁, x₃}</text>
+          <rect x="0" y="46" width="12" height="12" rx="2" fill="#f59e0b"/>
+          <text x="18" y="56" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">树3: {x₀, x₁}</text>
+        </g>
       </svg>
     </div>
-    <p class="diagram-caption">图: 随机森林 通用架构示意</p>
+    <p class="diagram-caption">图: 随机森林架构 — 每棵树使用不同的特征子集和 Bootstrap 样本，最终通过投票聚合输出</p>
   </section>
 
+  <!-- History Timeline -->
   <section class="section">
     <div class="section-label">历史背景</div>
-    <div class="section-title">从问题到突破</div>
-    <div class="section-body">
-      <p><strong>Leo Breiman</strong> 在 <strong>2001</strong> 年提出了 随机森林，这是机器学习发展史上的一个重要里程碑。</p>
-      <p>Leo Breiman于2001年提出随机森林，是Bagging的改进版本。它在传统Bagging的基础上引入了随机特征选择机制——在每个节点分裂时只考虑随机子集的特征，从而进一步降低树之间的相关性，提升泛化能力。</p>
+    <div class="section-title">从 Bagging 到随机森林</div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">1996</div>
+        <div class="timeline-title">Leo Breiman 提出 Bagging</div>
+        <div class="timeline-desc">通过 Bootstrap 聚合多个弱学习器，降低方差，提升泛化性能。</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2001</div>
+        <div class="timeline-title">随机森林诞生</div>
+        <div class="timeline-desc">Breiman 在 Bagging 基础上引入随机特征选择，进一步降低树间相关性，发表《Random Forests》于 Machine Learning 期刊。</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2001–至今</div>
+        <div class="timeline-title">成为基准模型</div>
+        <div class="timeline-desc">随机森林迅速成为分类和回归任务的主流方法，被广泛应用于生物信息学、金融风控、图像识别等领域。</div>
+      </div>
     </div>
   </section>
 
+  <!-- Formula Cards -->
   <section class="section">
     <div class="section-label">数学原理</div>
     <div class="section-title">核心公式</div>
+    
     <div class="formula-card">
-      <div class="formula-label">核心公式</div>
-      <div class="formula">f(x) = ...</div>
-      <div class="formula-note">根据具体模型填写</div>
+      <div class="formula-label">Bootstrap 采样</div>
+      <div class="formula">D_b = {(x_i^(b), y_i^(b))}_{i=1}^n,  (x_i^(b), y_i^(b)) ~ Uniform(D)</div>
+      <div class="formula-note">每棵树使用有放回抽样构建独立训练子集，约 36.8% 的样本未被覆盖（OOB 样本）。</div>
+    </div>
+
+    <div class="formula-card">
+      <div class="formula-label">随机特征选择</div>
+      <div class="formula">S_t = RandomSubset(F, k),  k = ⌊√m⌋<br>t* = argmax_{j ∈ S_t} ImpurityReduction(t, j)</div>
+      <div class="formula-note">在每个节点分裂时，从 m 个特征中随机选取 k 个候选特征，只在这些特征中寻找最优分裂点。</div>
+    </div>
+
+    <div class="formula-card">
+      <div class="formula-label">多数投票集成（分类）</div>
+      <div class="formula">ŷ = argmax_c Σ_{b=1}^B 1(h_b(x) = c)</div>
+      <div class="formula-note">B 棵树的预测结果通过多数投票聚合，得票最多的类别为最终预测。</div>
+    </div>
+
+    <div class="formula-card">
+      <div class="formula-label">平均值集成（回归）</div>
+      <div class="formula">ŷ = (1/B) Σ_{b=1}^B h_b(x)</div>
+      <div class="formula-note">回归任务中，取所有树预测值的算术平均作为最终输出。</div>
     </div>
   </section>
 
+  <!-- Code Block -->
   <section class="section">
     <div class="section-label">代码实现</div>
     <div class="section-title">model.py 核心逻辑</div>
@@ -103,36 +495,262 @@
         <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
         <span class="code-lang">Python · model.py</span>
       </div>
-      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">随机森林</span>(nn.Module):
-    <span class="kw">def</span> <span class="fn">__init__</span>(self):
-        super().__span class="fn">init__</span>()
-        <span class="cm"># 模型定义</span>
-        
-    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
-        <span class="cm"># 前向传播</span>
-        <span class="kw">return</span> x</pre></div>
+      <div class="code-body"><pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> decision_tree <span class="kw">import</span> DecisionTree
+
+<span class="kw">class</span> <span class="cls">RandomForest</span>:
+    <span class="str">"""随机森林分类器。在Bagging基础上引入随机特征选择。"""</span>
+    
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, n_estimators=<span class="num">10</span>, max_features=<span class="kw">None</span>):
+        self.n_estimators = n_estimators
+        self.max_features = max_features
+        self.trees = []
+
+    <span class="kw">def</span> <span class="fn">fit</span>(self, X, y):
+        n_samples, n_features = X.shape
+        self.max_features = self.max_features <span class="kw">or</span> <span class="fn">int</span>(np.<span class="fn">sqrt</span>(n_features))
+        self.trees = []
+        <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(self.n_estimators):
+            <span class="cm"># Bootstrap 采样</span>
+            indices = np.random.<span class="fn">choice</span>(n_samples, n_samples, replace=<span class="kw">True</span>)
+            X_sub, y_sub = X[indices], y[indices]
+            clf = DecisionTree(max_depth=<span class="num">10</span>)
+            clf.<span class="fn">fit</span>(X_sub, y_sub)
+            self.trees.<span class="fn">append</span>(clf)
+        <span class="kw">return</span> self
+
+    <span class="kw">def</span> <span class="fn">predict</span>(self, X):
+        <span class="cm"># 收集所有树的预测结果</span>
+        predictions = np.<span class="fn">array</span>([tree.<span class="fn">predict</span>(X) <span class="kw">for</span> tree <span class="kw">in</span> self.trees])
+        <span class="cm"># 多数投票</span>
+        <span class="kw">return</span> np.<span class="fn">array</span>([np.<span class="fn">bincount</span>(p).<span class="fn">argmax</span>() <span class="kw">for</span> p <span class="kw">in</span> predictions.T])
+
+    <span class="kw">def</span> <span class="fn">score</span>(self, X, y):
+        <span class="kw">return</span> np.<span class="fn">mean</span>(self.<span class="fn">predict</span>(X) == y)</pre></div>
     </div>
   </section>
 
+  <!-- Interactive Demo -->
+  <section class="section">
+    <div class="section-label">交互演示</div>
+    <div class="section-title">随机森林投票机制</div>
+    <div class="section-body">
+      <p>选择一个 Iris 样本，观察随机森林中每棵树的独立预测和最终投票结果。每棵树使用不同的特征子集进行分裂，因此对同一样本可能产生不同的预测。</p>
+    </div>
+    
+    <div class="demo-container">
+      <div class="demo-title">Iris 数据集 · 随机森林投票演示</div>
+      
+      <div class="input-group">
+        <label>选择样本</label>
+        <input type="range" class="demo-slider" id="sampleSlider" min="0" max="149" value="0" style="flex:1;">
+        <span class="value-display" id="sampleValue">0</span>
+      </div>
+      
+      <div class="input-group">
+        <label>树的数量</label>
+        <input type="range" class="demo-slider" id="treeSlider" min="3" max="21" value="10" step="2" style="flex:1;">
+        <span class="value-display" id="treeCount">10</span>
+      </div>
+
+      <div id="treeGrid" class="demo-tree-grid"></div>
+      
+      <div class="vote-bar-container" id="voteBars">
+        <div class="vote-bar-wrapper">
+          <div class="vote-bar setosa" id="bar0" style="height: 40px;"><span id="count0">4</span></div>
+          <div class="vote-label">setosa</div>
+        </div>
+        <div class="vote-bar-wrapper">
+          <div class="vote-bar versicolor" id="bar1" style="height: 60px;"><span id="count1">6</span></div>
+          <div class="vote-label">versicolor</div>
+        </div>
+        <div class="vote-bar-wrapper">
+          <div class="vote-bar virginica" id="bar2" style="height: 20px;"><span id="count2">2</span></div>
+          <div class="vote-label">virginica</div>
+        </div>
+      </div>
+      
+      <div class="final-result" id="finalResult">
+        <div class="pred-label">最终预测</div>
+        <div class="pred-value" id="predValue">versicolor</div>
+        <div class="pred-conf" id="predConf">得票: 6/10 (60%)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Notes -->
   <section class="section">
     <div class="section-label">学习心得</div>
     <div class="section-title">关键洞察</div>
     <div class="notes-card">
       <h4>学到的知识</h4>
       <ul>
-        <li>随机森林 是机器学习发展史上的重要模型</li>
-        <li>理解其数学原理有助于掌握后续模型</li>
+        <li>随机森林的核心是<strong>双重随机性</strong>：数据随机（Bootstrap 采样）+ 特征随机（每节点选 √m 个特征），两者结合大幅降低树间相关性。</li>
+        <li>与单棵决策树不同，随机森林中的每棵树<strong>不需要剪枝</strong>——即使过拟合的单棵树，通过集成也能获得稳健的泛化性能。</li>
+        <li><strong>OOB（Out-of-Bag）错误率</strong>是随机森林的独特优势：每棵树约有 36.8% 的样本未被训练覆盖，这些样本可直接用于模型评估，无需额外验证集。</li>
+        <li>特征重要性有两种计算方式：<strong>Gini 重要性</strong>（基于不纯度下降）和<strong>置换重要性</strong>（基于打乱特征后的性能下降），后者对高基数特征更公平。</li>
+        <li>树的数量 B 增加会持续提升性能直至 plateau，但计算成本线性增长；实践中 B=10~100 通常已足够。</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>实现要点</h4>
+      <ul>
+        <li>本项目基于已有的 <code>DecisionTree</code> 类构建，无需重写树分裂逻辑，只需添加 Bootstrap 采样和特征随机选择。</li>
+        <li><code>max_features</code> 参数默认设为 √m（分类任务经验值），也可手动指定。</li>
+        <li>投票通过 <code>np.bincount(predictions).argmax()</code> 高效实现，无需显式循环。</li>
       </ul>
     </div>
   </section>
 
   <div class="nav-footer">
-    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
-    <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
+    <a href="../02_statistical_learning/05_bagging/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">Bagging</span></a>
+    <span class="nav-footer-center"><a href="../index.html">ML History</a> · 8 models</span>
+    <a href="../02_statistical_learning/07_gbdt/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">GBDT</span></a>
   </div>
 
 </main>
+
+<script>
+// ── Iris Dataset (first 10 samples for demo) ──
+const irisData = [
+  [5.1, 3.5, 1.4, 0.2],   // 0: setosa
+  [4.9, 3.0, 1.4, 0.2],   // 1: setosa
+  [4.7, 3.2, 1.3, 0.2],   // 2: setosa
+  [4.6, 3.1, 1.5, 0.2],   // 3: setosa
+  [5.0, 3.6, 1.4, 0.2],   // 4: setosa
+  [7.0, 3.2, 4.7, 1.4],   // 5: versicolor
+  [6.4, 3.2, 4.5, 1.5],   // 6: versicolor
+  [6.9, 3.1, 4.9, 1.5],   // 7: versicolor
+  [6.3, 3.3, 4.7, 1.6],   // 8: versicolor
+  [6.7, 3.3, 5.7, 2.1],   // 9: virginica
+  [6.7, 3.0, 5.2, 2.3],   // 10: virginica
+  [6.3, 2.5, 5.0, 1.9],   // 11: virginica
+];
+const irisLabels = ['setosa', 'versicolor', 'virginica'];
+const featureNames = ['sepal length', 'sepal width', 'petal length', 'petal width'];
+
+let nTrees = 10;
+let currentSample = 0;
+
+// Simple decision stump predictor (simulates a shallow decision tree)
+function stumpPredict(X, featureIdx, threshold, direction) {
+  return X[featureIdx] <= threshold ? 0 : 1;
+}
+
+// Simulate tree prediction (simplified logic for demo)
+function treePredict(treeIdx, X) {
+  const rng = mulberry32(treeIdx * 7919 + 42);
+  // Each tree considers a random subset of features
+  const numFeatures = Math.max(1, Math.floor(Math.sqrt(4))); // √4 = 2
+  const featureIndices = [];
+  const available = [0, 1, 2, 3];
+  for (let i = 0; i < numFeatures; i++) {
+    const idx = Math.floor(rng() * available.length);
+    featureIndices.push(available.splice(idx, 1)[0]);
+  }
+  
+  // Use first selected feature for prediction
+  const featIdx = featureIndices[0];
+  const threshold = X[featIdx] + (rng() - 0.5) * 0.5; // slight perturbation
+  
+  // Simple rule-based prediction simulating tree logic
+  if (featIdx === 2 || featIdx === 3) { // petal features are most discriminative
+    if (X[2] < 2.0) return 0; // setosa
+    if (X[2] < 4.8) return 1; // versicolor
+    return 2; // virginica
+  }
+  if (featIdx === 0) {
+    if (X[0] < 5.5) return 0;
+    if (X[0] < 6.5) return 1;
+    return 2;
+  }
+  if (featIdx === 1) {
+    if (X[1] < 3.0) return 0;
+    if (X[1] < 3.5) return 1;
+    return 2;
+  }
+  return Math.floor(rng() * 3);
+}
+
+// Seedable random for reproducibility
+function mulberry32(a) {
+  return function() {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    var t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = (t + Math.imul(t ^ t >>> 7, 61 | t)) & 0xffffffff;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  }
+}
+
+function updateDemo() {
+  const sample = irisData[currentSample];
+  const trueLabel = irisLabels[currentSample < 5 ? 0 : (currentSample < 9 ? 1 : 2)];
+  
+  // Predict with each tree
+  const predictions = [];
+  for (let i = 0; i < nTrees; i++) {
+    predictions.push(treePredict(i, sample));
+  }
+  
+  // Count votes
+  const votes = [0, 0, 0];
+  predictions.forEach(p => votes[p]++);
+  
+  // Find winner
+  const maxVote = Math.max(...votes);
+  const winner = votes.indexOf(maxVote);
+  const votePercent = Math.round((maxVote / nTrees) * 100);
+  
+  // Update tree grid
+  const treeGrid = document.getElementById('treeGrid');
+  treeGrid.innerHTML = '';
+  const treeColors = ['#7170ff', '#10b981', '#f59e0b', '#ef4444', '#3b82f6', 
+                     '#8b5cf6', '#ec4899', '#14b8a6', '#f97316', '#06b6d4'];
+  
+  for (let i = 0; i < nTrees; i++) {
+    const pred = predictions[i];
+    const card = document.createElement('div');
+    card.className = 'demo-tree-card';
+    card.innerHTML = `
+      <div class="tree-num">树 ${i + 1}</div>
+      <div class="tree-pred" style="color: ${treeColors[pred]}">${irisLabels[pred]}</div>
+      <div class="tree-features">feat: x${Math.floor(Math.random() * 4)}</div>
+    `;
+    treeGrid.appendChild(card);
+  }
+  
+  // Update vote bars
+  const maxVotes = Math.max(...votes, 1);
+  votes.forEach((v, i) => {
+    const bar = document.getElementById(`bar${i}`);
+    const count = document.getElementById(`count${i}`);
+    bar.style.height = `${(v / maxVotes) * 80}px`;
+    count.textContent = v;
+  });
+  
+  // Update final result
+  document.getElementById('predValue').textContent = irisLabels[winner];
+  document.getElementById('predConf').textContent = `得票: ${maxVote}/${nTrees} (${votePercent}%)`;
+  
+  // Update sample display
+  document.getElementById('sampleValue').textContent = currentSample;
+}
+
+// Slider events
+document.getElementById('sampleSlider').addEventListener('input', (e) => {
+  currentSample = parseInt(e.target.value);
+  updateDemo();
+});
+
+document.getElementById('treeSlider').addEventListener('input', (e) => {
+  nTrees = parseInt(e.target.value);
+  document.getElementById('treeCount').textContent = nTrees;
+  updateDemo();
+});
+
+// Initial render
+updateDemo();
+</script>
 
 </body>
 </html>
