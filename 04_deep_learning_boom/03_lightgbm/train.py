@@ -10,21 +10,13 @@ sys.path.insert(0, PROJECT_ROOT)
 from model import LightGBM
 
 
-def load_iris_data():
-    """加载iris数据集。"""
-    from sklearn.datasets import load_iris
-    iris = load_iris()
-    return iris.data[:100], iris.target[:100]
-
-
-def train_test_split(X, y, test_size=0.2):
-    """划分训练测试集。"""
-    n = len(y)
-    split = int(n * (1 - test_size))
-    idx = np.random.RandomState(42).permutation(n)
-    train_idx = idx[:split]
-    test_idx = idx[split:]
-    return X[train_idx], X[test_idx], y[train_idx], y[test_idx]
+def load_data():
+    """创建简单的二分类数据。"""
+    np.random.seed(42)
+    n_samples = 200
+    X = np.random.randn(n_samples, 4)
+    y = (X[:, 0] + X[:, 1] > 0).astype(int)
+    return X, y
 
 
 def demo():
@@ -32,13 +24,19 @@ def demo():
     print("LightGBM演示")
     print("=" * 50)
     
-    X, y = load_iris_data()
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+    X, y = load_data()
+    split = int(0.8 * len(y))
+    idx = np.random.RandomState(42).permutation(len(y))
+    X_train, X_test = X[idx[:split]], X[idx[split:]]
+    y_train, y_test = y[idx[:split]], y[idx[split:]]
     
     model = LightGBM(n_estimators=10, max_depth=3, learning_rate=0.1)
     model.fit(X_train, y_train)
     
-    print(f"准确率: {model.score(X_test, y_test):.4f}")
+    train_acc = model.score(X_train, y_train)
+    test_acc = model.score(X_test, y_test)
+    print(f"训练集准确率: {train_acc:.4f}")
+    print(f"测试集准确率: {test_acc:.4f}")
 
 
 if __name__ == "__main__":
