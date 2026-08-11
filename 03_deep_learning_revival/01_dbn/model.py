@@ -33,7 +33,7 @@ class RBM(nn.Module):
         # 更新
         self.w.data += lr * (torch.matmul(v.t(), h_prob_pos) - torch.matmul(v_neg.t(), h_neg)) / v.size(0)
         self.hb.data += lr * (h_prob_pos.mean(0) - h_neg.mean(0))
-        self.vb.data += lr * (v_prob.mean(0) - v_neg.mean(0))
+        self.vb.data += lr * (v_neg.mean(0) - v_neg.mean(0))
         return self
 
 
