@@ -7,7 +7,87 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
-/* Model-specific styles */
+  /* Skip-gram SVG animations */
+  .word-node { cursor: pointer; transition: all 0.3s ease; }
+  .word-node:hover circle { stroke: var(--accent); filter: drop-shadow(0 0 6px var(--accent-glow)); }
+  .word-node.active circle { stroke: var(--accent); fill: var(--accent-dim); }
+  .word-node.context circle { stroke: var(--green); }
+  .word-node.negative circle { stroke: var(--red); }
+  
+  @keyframes pulse-accent {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+  @keyframes slide-in {
+    from { transform: translateY(10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes glow-pulse {
+    0%, 100% { filter: drop-shadow(0 0 4px var(--accent-glow)); }
+    50% { filter: drop-shadow(0 0 12px var(--accent-glow)); }
+  }
+  
+  .anim-pulse { animation: pulse-accent 2s ease-in-out infinite; }
+  .anim-slide { animation: slide-in 0.4s ease-out; }
+  
+  /* Demo styles */
+  .demo-word { 
+    display: inline-block; 
+    padding: 4px 10px; 
+    border-radius: var(--radius); 
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-strong);
+    margin: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+  .demo-word:hover { border-color: var(--accent); color: var(--accent); }
+  .demo-word.selected { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+  .demo-word.positive { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+  .demo-word.negative { background: var(--red-dim); border-color: var(--red); color: var(--red); }
+  
+  .vector-display {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 12px;
+    background: var(--bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+  .vector-display .val { color: var(--accent); }
+  
+  .progress-bar {
+    height: 4px;
+    background: var(--bg-elevated);
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 8px 0;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #828fff);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+  
+  .step-indicator {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .step-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border-strong);
+    transition: all 0.3s;
+  }
+  .step-dot.active { background: var(--accent); box-shadow: 0 0 8px var(--accent-glow); }
+  
+  .formula-highlight { color: var(--accent); font-weight: 500; }
 </style>
 </head>
 <body>
@@ -28,52 +108,128 @@
   <section class="hero">
     <div class="hero-eyebrow">03_deep_learning_revival阶段 · 2013</div>
     <h1>Word2Vec</h1>
-    <p class="hero-subtitle">暂无简介</p>
+    <p class="hero-subtitle">高效词向量学习方法，通过负采样和层次Softmax实现快速训练，开创了NLP领域词向量的新时代。</p>
     <div class="hero-meta">
       <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">2013</span></div>
       <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Tomas Mikolov</span></div>
       <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">词向量</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">框架</span><span class="hero-meta-value">PyTorch</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">架构</span><span class="hero-meta-value">Skip-gram / CBOW</span></div>
     </div>
   </section>
 
   <div class="stats-grid">
     <div class="stat-cell"><span class="stat-value">2013</span><span class="stat-label">提出年份</span></div>
     <div class="stat-cell"><span class="stat-value">词向量</span><span class="stat-label">模型类型</span></div>
-    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
-    <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
+    <div class="stat-cell"><span class="stat-value">负采样</span><span class="stat-label">核心技巧</span></div>
+    <div class="stat-cell"><span class="stat-value">NLP</span><span class="stat-label">应用领域</span></div>
   </div>
 
   <section class="section">
     <div class="section-label">网络架构</div>
-    <div class="section-title">结构示意</div>
+    <div class="section-title">Skip-gram 架构示意</div>
     <div class="diagram-container">
-      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
-        <!-- Generic architecture diagram -->
-        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
-        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
-        
-        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
-        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
-        
-        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
-        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
-        
+      <svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:600px;">
         <defs>
           <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
             <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
           </marker>
+          <linearGradient id="centerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:var(--accent);stop-opacity:0.3"/>
+            <stop offset="100%" style="stop-color:var(--accent);stop-opacity:0.1"/>
+          </linearGradient>
         </defs>
+        
+        <!-- Title -->
+        <text x="300" y="25" text-anchor="middle" fill="var(--text-muted)" font-size="12" font-family="Inter">Skip-gram: 中心词 → 预测上下文词</text>
+        
+        <!-- Input window -->
+        <rect x="50" y="50" width="500" height="120" rx="12" fill="var(--bg)" stroke="var(--border-strong)" stroke-width="1" stroke-dasharray="4,4"/>
+        <text x="300" y="70" text-anchor="middle" fill="var(--text-faint)" font-size="11" font-family="Inter">上下文窗口 (window_size = 2)</text>
+        
+        <!-- Context words -->
+        <g class="word-node" data-word="the">
+          <circle cx="100" cy="110" r="28" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="2"/>
+          <text x="100" y="115" text-anchor="middle" fill="var(--text)" font-size="13" font-family="Inter" font-weight="500">the</text>
+        </g>
+        
+        <g class="word-node" data-word="quick">
+          <circle cx="180" cy="110" r="28" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="2"/>
+          <text x="180" y="115" text-anchor="middle" fill="var(--text)" font-size="13" font-family="Inter" font-weight="500">quick</text>
+        </g>
+        
+        <!-- Center word (highlighted) -->
+        <g class="word-node active" data-word="fox">
+          <circle cx="260" cy="110" r="32" fill="url(#centerGrad)" stroke="var(--accent)" stroke-width="2.5"/>
+          <text x="260" y="115" text-anchor="middle" fill="var(--text)" font-size="14" font-family="Inter" font-weight="600">fox</text>
+          <text x="260" y="145" text-anchor="middle" fill="var(--accent)" font-size="10" font-family="Inter">中心词</text>
+        </g>
+        
+        <g class="word-node context" data-word="brown">
+          <circle cx="340" cy="110" r="28" fill="var(--bg-surface)" stroke="var(--green)" stroke-width="2"/>
+          <text x="340" y="115" text-anchor="middle" fill="var(--text)" font-size="13" font-family="Inter" font-weight="500">brown</text>
+        </g>
+        
+        <g class="word-node context" data-word="dog">
+          <circle cx="420" cy="110" r="28" fill="var(--bg-surface)" stroke="var(--green)" stroke-width="2"/>
+          <text x="420" y="115" text-anchor="middle" fill="var(--text)" font-size="13" font-family="Inter" font-weight="500">dog</text>
+        </g>
+        
+        <g class="word-node context" data-word="jumps">
+          <circle cx="500" cy="110" r="28" fill="var(--bg-surface)" stroke="var(--green)" stroke-width="2"/>
+          <text x="500" y="115" text-anchor="middle" fill="var(--text)" font-size="13" font-family="Inter" font-weight="500">jumps</text>
+        </g>
+        
+        <!-- Arrows from center to context -->
+        <path d="M260,142 L100,148" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow)" opacity="0.6"/>
+        <path d="M260,142 L180,148" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow)" opacity="0.6"/>
+        <path d="M260,142 L340,148" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow)" opacity="0.6"/>
+        <path d="M260,142 L420,148" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow)" opacity="0.6"/>
+        <path d="M260,142 L500,148" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow)" opacity="0.6"/>
+        
+        <!-- Network layer visualization -->
+        <rect x="150" y="200" width="300" height="70" rx="10" fill="var(--bg-surface)" stroke="var(--border-strong)"/>
+        
+        <!-- Input layer -->
+        <rect x="170" y="215" width="60" height="40" rx="6" fill="var(--accent-dim)" stroke="var(--accent)" stroke-width="1.5"/>
+        <text x="200" y="232" text-anchor="middle" fill="var(--text)" font-size="10" font-family="Inter">输入</text>
+        <text x="200" y="246" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">one-hot</text>
+        
+        <!-- Hidden layer (embedding) -->
+        <rect x="255" y="215" width="90" height="40" rx="6" fill="var(--green-dim)" stroke="var(--green)" stroke-width="1.5"/>
+        <text x="300" y="232" text-anchor="middle" fill="var(--text)" font-size="10" font-family="Inter" font-weight="500">词向量层</text>
+        <text x="300" y="246" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">embedding</text>
+        
+        <!-- Output layer -->
+        <rect x="365" y="215" width="60" height="40" rx="6" fill="var(--orange-dim)" stroke="var(--orange)" stroke-width="1.5"/>
+        <text x="395" y="232" text-anchor="middle" fill="var(--text)" font-size="10" font-family="Inter">输出</text>
+        <text x="395" y="246" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">softmax</text>
+        
+        <!-- Connections -->
+        <line x1="230" y1="235" x2="255" y2="235" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <line x1="345" y1="235" x2="365" y2="235" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrow)"/>
+        
+        <!-- Labels -->
+        <text x="300" y="275" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter">神经网络: one-hot输入 → 词向量投影 → 预测概率分布</text>
       </svg>
     </div>
-    <p class="diagram-caption">图: Word2Vec 通用架构示意</p>
+    <p class="diagram-caption">图: Skip-gram架构 — 给定中心词"fox"，预测其上下文词"the", "quick", "brown", "dog"</p>
+    
+    <div class="comparison-grid" style="margin-top:20px;">
+      <div class="comparison-panel">
+        <h4>CBOW</h4>
+        <p>给定上下文词，预测中心词。训练速度快，对常见词效果更好。</p>
+        <div style="margin-top:12px;padding:8px 12px;background:var(--bg);border-radius:var(--radius);font-family:JetBrains Mono;font-size:11px;color:var(--text-muted);">
+          P(w_t | w_{t-c}...w_{t+c})
+        </div>
+      </div>
+      <div class="comparison-panel">
+        <h4>Skip-gram</h4>
+        <p>给定中心词，预测上下文词。对罕见词效果更好，能捕捉更多语义关系。</p>
+        <div style="margin-top:12px;padding:8px 12px;background:var(--bg);border-radius:var(--radius);font-family:JetBrains Mono;font-size:11px;color:var(--text-muted);">
+          P(w_{t-c}...w_{t+c} | w_t)
+        </div>
+      </div>
+    </div>
   </section>
 
   <section class="section">
@@ -81,44 +237,161 @@
     <div class="section-title">从问题到突破</div>
     <div class="section-body">
       <p><strong>Tomas Mikolov</strong> 在 <strong>2013</strong> 年提出了 Word2Vec，这是机器学习发展史上的一个重要里程碑。</p>
-      <p>2013年，Mikolov等人提出了Word2Vec，这是一种高效的词向量学习方法。它包括两种架构：CBOW（连续词袋模型）和Skip-gram。Word2Vec的出现标志着深度学习在NLP领域的重大突破。
-
-**当时的问题**：
-- 传统词表示方法（如One-hot）稀疏且无法捕捉语义
-- 词向量训练计算成本高
-
-**核心突破**：
-- 负采样（Negative Sampling）加速训练
-- ...</p>
+      <p>传统词表示方法（如 One-hot）存在两个核心问题：</p>
+      <ul>
+        <li>稀疏性：词汇表越大，向量越稀疏，无法捕捉语义关系</li>
+        <li>计算成本高：传统方法训练速度慢，难以处理大规模语料</li>
+      </ul>
+      <p><strong>核心突破</strong>：</p>
+      <ul>
+        <li><strong>负采样（Negative Sampling）</strong>：将多分类问题转化为二分类问题，大幅加速训练</li>
+        <li><strong>层次Softmax</strong>：利用哈夫曼树优化输出层计算</li>
+      </ul>
+      <p>Word2Vec 的词向量能够捕捉语义关系，如经典的 <code>king - man + woman ≈ queen</code>。</p>
     </div>
   </section>
 
   <section class="section">
     <div class="section-label">数学原理</div>
     <div class="section-title">核心公式</div>
+    
     <div class="formula-card">
-      <div class="formula-label">核心公式</div>
-      <div class="formula">f(x) = ...</div>
-      <div class="formula-note">根据具体模型填写</div>
+      <div class="formula-label">Skip-gram 目标函数</div>
+      <div class="formula">
+        <span class="formula-highlight">max</span> <span style="color:var(--text)">log P(上下文 | 中心词)</span><br>
+        = <span style="color:var(--text)">Σ</span> <span style="color:var(--accent)">log σ(v'_<span style="color:var(--green)">w_O</span></span><span style="color:var(--text)"> · v_<span style="color:var(--orange)">w_I</span></span><span style="color:var(--accent)">)</span>
+      </div>
+      <div class="formula-note">最大化中心词与上下文词向量点积的对数概率</div>
+    </div>
+    
+    <div class="formula-card">
+      <div class="formula-label">负采样损失函数</div>
+      <div class="formula">
+        <span class="formula-highlight">L</span> = -[<span style="color:var(--green)">log σ(v'_<span style="color:var(--green)">w_O</span></span><span style="color:var(--text)"> · v_<span style="color:var(--orange)">w_I</span></span><span style="color:var(--green)">)</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;+ <span style="color:var(--red)">Σ</span><span style="color:var(--text)"> log σ(-v'_<span style="color:var(--red)">w_i</span></span><span style="color:var(--text)"> · v_<span style="color:var(--orange)">w_I</span></span><span style="color:var(--red)">)</span>]
+      </div>
+      <div class="formula-note">1个正样本 + k个负样本（随机采样）</div>
     </div>
   </section>
 
   <section class="section">
     <div class="section-label">代码实现</div>
-    <div class="section-title">model.py 核心逻辑</div>
+    <div class="section-title">PyTorch 核心逻辑</div>
     <div class="code-block">
       <div class="code-header">
         <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
-        <span class="code-lang">Python · model.py</span>
+        <span class="code-lang">Python · word2vec.py</span>
       </div>
-      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">Word2Vec</span>(nn.Module):
-    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+      <div class="code-body"><pre><span class="kw">import</span> torch
+<span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+<span class="kw">import</span> torch.nn.functional <span class="kw">as</span> F
+
+<span class="kw">class</span> <span class="cls">Word2Vec</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, vocab_size, embed_dim):
         super().__span class="fn">init__</span>()
-        <span class="cm"># 模型定义</span>
+        <span class="cm"># 输入词向量矩阵</span>
+        self.input_embeddings = nn.Embedding(vocab_size, embed_dim)
+        <span class="cm"># 输出词向量矩阵</span>
+        self.output_embeddings = nn.Embedding(vocab_size, embed_dim)
         
-    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
-        <span class="cm"># 前向传播</span>
-        <span class="kw">return</span> x</pre></div>
+    <span class="kw">def</span> <span class="fn">forward</span>(self, center_words, context_words, negative_samples):
+        <span class="cm"># 获取词向量</span>
+        center_vec = self.input_embeddings(center_words)      <span class="cm"># [batch, embed_dim]</span>
+        context_vec = self.output_embeddings(context_words)   <span class="cm"># [batch, embed_dim]</span>
+        neg_vec = self.output_embeddings(negative_samples)    <span class="cm"># [batch, K, embed_dim]</span>
+        
+        <span class="cm"># 正样本得分</span>
+        pos_score = torch.sum(center_vec * context_vec, dim=-1)  <span class="cm"># [batch]</span>
+        
+        <span class="cm"># 负样本得分</span>
+        neg_score = torch.bmm(neg_vec, center_vec.unsqueeze(-1)).squeeze(-1)  <span class="cm"># [batch, K]</span>
+        
+        <span class="cm"># 负采样损失</span>
+        pos_loss = -F.logsigmoid(pos_score)           <span class="cm"># -log σ(pos_score)</span>
+        neg_loss = -F.logsigmoid(-neg_score).sum(dim=-1)  <span class="cm"># -Σ log σ(-neg_score)</span>
+        
+        <span class="kw">return</span> (pos_loss + neg_loss).mean()</pre></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">交互演示</div>
+    <div class="section-title">负采样训练过程</div>
+    <div class="demo-container">
+      <div class="demo-title">选择中心词，观察负采样过程</div>
+      
+      <div class="step-indicator" id="stepIndicator">
+        <div class="step-dot active"></div>
+        <div class="step-dot"></div>
+        <div class="step-dot"></div>
+        <div class="step-dot"></div>
+      </div>
+      
+      <div id="demoContent">
+        <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px;">点击下方词作为中心词，观察如何生成训练样本：</p>
+        <div id="wordSelector" style="margin-bottom:20px;">
+          <span class="demo-word" onclick="selectCenter('fox')">fox</span>
+          <span class="demo-word" onclick="selectCenter('cat')">cat</span>
+          <span class="demo-word" onclick="selectCenter('dog')">dog</span>
+          <span class="demo-word" onclick="selectCenter('runs')">runs</span>
+          <span class="demo-word" onclick="selectCenter('quick')">quick</span>
+        </div>
+        
+        <div id="demoResult" style="display:none;">
+          <div style="margin-bottom:16px;">
+            <span style="font-size:13px;color:var(--text-faint);text-transform:uppercase;">中心词向量 v(<span id="centerWord" style="color:var(--accent);"></span>)</span>
+            <div class="vector-display" id="centerVector" style="margin-top:8px;"></div>
+          </div>
+          
+          <div style="margin-bottom:16px;">
+            <span style="font-size:13px;color:var(--text-faint);text-transform:uppercase;">正样本（上下文词）</span>
+            <div id="positiveSamples" style="margin-top:8px;"></div>
+          </div>
+          
+          <div style="margin-bottom:16px;">
+            <span style="font-size:13px;color:var(--text-faint);text-transform:uppercase;">负样本（随机采样）</span>
+            <div id="negativeSamples" style="margin-top:8px;"></div>
+          </div>
+          
+          <div style="margin-bottom:16px;">
+            <span style="font-size:13px;color:var(--text-faint);text-transform:uppercase;">训练进度</span>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill" style="width:0%"></div>
+            </div>
+            <span style="font-size:12px;color:var(--text-faint);" id="progressText">epoch 0/100</span>
+          </div>
+          
+          <button class="demo-btn" onclick="runTraining()">▶ 开始训练</button>
+          <button class="demo-btn" style="background:var(--bg-elevated);margin-left:8px;" onclick="resetDemo()">重置</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">历史影响</div>
+    <div class="section-title">承前启后</div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">2013</div>
+        <div class="timeline-title">Word2Vec 提出</div>
+        <div class="timeline-desc">Mikolov等人发表论文，引入负采样和skip-gram架构</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2014</div>
+        <div class="timeline-title">GloVe 发布</div>
+        <div class="timeline-desc">Stanford团队提出基于全局统计的词向量方法</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2018</div>
+        <div class="timeline-title">ELMo 出现</div>
+        <div class="timeline-desc">上下文词向量的开端，突破静态表示限制</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2018</div>
+        <div class="timeline-title">BERT 革命</div>
+        <div class="timeline-desc">双向Transformer编码器，真正实现上下文感知词向量</div>
+      </div>
     </div>
   </section>
 
@@ -128,19 +401,160 @@
     <div class="notes-card">
       <h4>学到的知识</h4>
       <ul>
-        <li>Word2Vec 是机器学习发展史上的重要模型</li>
-        <li>理解其数学原理有助于掌握后续模型</li>
+        <li>CBOW通过上下文预测中心词，Skip-gram相反</li>
+        <li>负采样将多分类问题转化为二分类问题，大幅加速训练</li>
+        <li>词向量可以捕捉语义关系（如 king - man + woman = queen）</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>踩坑记录</h4>
+      <ul>
+        <li>词汇表大小和词向量维度需要仔细选择</li>
+        <li>训练数据量对效果影响很大</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>思考题答案</h4>
+      <ul>
+        <li><strong>CBOW vs Skip-gram：</strong>CBOW训练快，对常见词效果好；Skip-gram对罕见词效果好，能捕捉更多语义关系</li>
+        <li><strong>负采样加速原因：</strong>将K类分类转化为K个二分类，只需更新少量权重</li>
+        <li><strong>Word2Vec vs BERT：</strong>Word2Vec是静态词向量（同一词同一向量），BERT是上下文词向量（同一词不同语境不同向量）</li>
       </ul>
     </div>
   </section>
 
   <div class="nav-footer">
-    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
+    <a href="../03_deep_learning_revival/04_cnn/index.html" class="nav-footer-prev">
+      <span class="nav-footer-label">← 上一个</span>
+      <span class="nav-footer-title">CNN</span>
+    </a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
+    <a href="../03_deep_learning_revival/06_lstm/index.html" class="nav-footer-next" style="text-align:right;">
+      <span class="nav-footer-label">下一个 →</span>
+      <span class="nav-footer-title">LSTM</span>
+    </a>
   </div>
 
 </main>
+
+<script>
+  // Demo data
+  const wordVectors = {
+    'fox': [0.23, -0.45, 0.67, 0.12],
+    'cat': [-0.15, 0.34, -0.28, 0.56],
+    'dog': [0.18, 0.42, -0.35, 0.61],
+    'runs': [0.56, -0.23, 0.78, -0.15],
+    'quick': [-0.34, 0.67, 0.23, -0.45]
+  };
+  
+  const contextMap = {
+    'fox': ['the', 'quick', 'brown', 'jumps'],
+    'cat': ['the', 'small', 'black', 'sat'],
+    'dog': ['the', 'big', 'brown', 'ran'],
+    'runs': ['fast', 'very', 'quickly', 'daily'],
+    'quick': ['brown', 'fox', 'silver', 'flash']
+  };
+  
+  const vocabulary = ['the', 'a', 'quick', 'brown', 'fox', 'cat', 'dog', 'runs', 'jumps', 'fast', 'big', 'small', 'black', 'sat', 'very', 'daily', 'silver', 'flash'];
+  
+  let currentCenter = null;
+  let trainingInterval = null;
+  
+  function selectCenter(word) {
+    // Update UI
+    document.querySelectorAll('.demo-word').forEach(el => el.classList.remove('selected'));
+    event.target.classList.add('selected');
+    
+    currentCenter = word;
+    
+    // Show result
+    document.getElementById('demoResult').style.display = 'block';
+    document.getElementById('centerWord').textContent = word;
+    
+    // Display vector
+    const vec = wordVectors[word];
+    document.getElementById('centerVector').innerHTML = 
+      '[<span class="val">' + vec.map(v => v.toFixed(3)).join(', </span>, <span class="val">') + '</span>]';
+    
+    // Display positive samples
+    const positives = contextMap[word];
+    document.getElementById('positiveSamples').innerHTML = 
+      positives.map(w => `<span class="demo-word positive">${w}</span>`).join('');
+    
+    // Display negative samples
+    const negatives = sampleNegatives(positives);
+    document.getElementById('negativeSamples').innerHTML = 
+      negatives.map(w => `<span class="demo-word negative">${w}</span>`).join('');
+    
+    // Reset progress
+    resetProgress();
+  }
+  
+  function sampleNegatives(exclude) {
+    const available = vocabulary.filter(w => !exclude.includes(w));
+    const negatives = [];
+    for (let i = 0; i < 3; i++) {
+      const idx = Math.floor(Math.random() * available.length);
+      negatives.push(available[idx]);
+    }
+    return negatives;
+  }
+  
+  function runTraining() {
+    if (trainingInterval) clearInterval(trainingInterval);
+    
+    let epoch = 0;
+    const maxEpoch = 100;
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+    
+    trainingInterval = setInterval(() => {
+      epoch++;
+      const percent = (epoch / maxEpoch) * 100;
+      progressFill.style.width = percent + '%';
+      progressText.textContent = `epoch ${epoch}/${maxEpoch}`;
+      
+      // Update step indicator
+      const steps = document.querySelectorAll('.step-dot');
+      steps.forEach((dot, i) => {
+        dot.classList.toggle('active', i < Math.ceil(epoch / 25));
+      });
+      
+      if (epoch >= maxEpoch) {
+        clearInterval(trainingInterval);
+        progressText.textContent = '训练完成!';
+        progressText.style.color = 'var(--green)';
+      }
+    }, 50);
+  }
+  
+  function resetProgress() {
+    if (trainingInterval) clearInterval(trainingInterval);
+    document.getElementById('progressFill').style.width = '0%';
+    document.getElementById('progressText').textContent = 'epoch 0/100';
+    document.getElementById('progressText').style.color = 'var(--text-faint)';
+    document.querySelectorAll('.step-dot').forEach((dot, i) => {
+      dot.classList.toggle('active', i === 0);
+    });
+  }
+  
+  function resetDemo() {
+    document.getElementById('demoResult').style.display = 'none';
+    document.querySelectorAll('.demo-word').forEach(el => el.classList.remove('selected'));
+    currentCenter = null;
+    if (trainingInterval) clearInterval(trainingInterval);
+  }
+  
+  // Add hover effects to SVG nodes
+  document.querySelectorAll('.word-node').forEach(node => {
+    node.addEventListener('mouseenter', () => {
+      node.querySelector('circle').style.filter = 'drop-shadow(0 0 8px var(--accent-glow))';
+    });
+    node.addEventListener('mouseleave', () => {
+      node.querySelector('circle').style.filter = '';
+    });
+  });
+</script>
 
 </body>
 </html>
