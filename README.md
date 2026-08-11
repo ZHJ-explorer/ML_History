@@ -11,22 +11,22 @@
 
 ```
 ML_History/
-├── 01_foundations/          # 第一阶段：奠基时代 (1943-1969)
+├── 01_foundations/          # 第一阶段：奠基时代 (1943-1969) ✅ 完成
 │   ├── 01_mp_neuron/       # MP神经元模型
 │   ├── 02_linear_regression/  # 线性回归
 │   ├── 03_logistic_regression/  # 逻辑回归
 │   ├── 04_perceptron/      # 感知机
 │   ├── 05_knn/             # k近邻
 │   └── 06_kmeans/          # k-Means聚类
-├── 02_statistical_learning/  # 第二阶段：统计学习时代 (1980s-2000s)
-│   ├── 01_decision_tree/
-│   ├── 02_mlp_backprop/
-│   ├── 03_svm/
-│   ├── 04_adaboost/
-│   ├── 05_bagging/
-│   ├── 06_random_forest/
-│   └── 07_gbdt/
-├── 03_deep_learning_revival/  # 第三阶段：深度学习复兴 (2006-2014)
+├── 02_statistical_learning/  # 第二阶段：统计学习时代 (1980s-2000s) ✅ 完成
+│   ├── 01_decision_tree/   # 决策树(ID3)
+│   ├── 02_mlp_backprop/    # MLP+反向传播
+│   ├── 03_svm/             # 支持向量机
+│   ├── 04_adaboost/        # AdaBoost
+│   ├── 05_bagging/         # Bagging
+│   ├── 06_random_forest/   # 随机森林
+│   └── 07_gbdt/            # GBDT
+├── 03_deep_learning_revival/  # 第三阶段：深度学习复兴 (2006-2014) 🚧 进行中
 │   ├── 01_dbn/
 │   ├── 02_lenet5_cnn/
 │   ├── 03_rnn/
@@ -45,7 +45,6 @@ ML_History/
 │   ├── 02_diffusion_model/
 │   └── 03_vit/
 ├── common/                 # 通用工具函数
-├── data/                   # 数据集（已排除在git外）
 ├── docs/                   # 学习笔记与历史背景
 └── IDEA.md                 # 详细项目说明
 ```
@@ -71,13 +70,15 @@ ML_History/
 
 ```bash
 # 安装依赖
-pip install numpy matplotlib scikit-learn
+pip install numpy matplotlib scikit-learn pytest
 
-# 运行第一个模型
-python 01_foundations/01_mp_neuron/test.py
+# 运行测试
+python -m pytest 01_foundations/*/test_*.py -v
+python -m pytest 02_statistical_learning/*/test_*.py -v
 
-# 运行整个第一阶段
-python -m pytest tests/test_foundations/
+# 运行训练演示
+python 01_foundations/01_mp_neuron/train.py
+python 02_statistical_learning/01_decision_tree/train.py
 ```
 
 ## 推荐数据集
