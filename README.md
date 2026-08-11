@@ -26,14 +26,14 @@ ML_History/
 │   ├── 05_bagging/         # Bagging
 │   ├── 06_random_forest/   # 随机森林
 │   └── 07_gbdt/            # GBDT
-├── 03_deep_learning_revival/  # 第三阶段：深度学习复兴 (2006-2014) 🚧 进行中
-│   ├── 01_dbn/
-│   ├── 02_lenet5_cnn/
-│   ├── 03_rnn/
-│   ├── 04_lstm/
-│   ├── 05_word2vec/
-│   └── 06_gan/
-├── 04_deep_learning_boom/  # 第四阶段：深度学习爆发 (2015-2019)
+├── 03_deep_learning_revival/  # 第三阶段：深度学习复兴 (2006-2014) ✅ 完成
+│   ├── 01_dbn/             # 深度信念网络
+│   ├── 02_lenet5_cnn/      # LeNet-5 CNN
+│   ├── 03_rnn/             # RNN
+│   ├── 04_lstm/            # LSTM
+│   ├── 05_word2vec/        # Word2Vec
+│   └── 06_gan/             # GAN
+├── 04_deep_learning_boom/  # 第四阶段：深度学习爆发 (2015-2019) 🚧 进行中
 │   ├── 01_resnet/
 │   ├── 02_xgboost/
 │   ├── 03_lightgbm/
@@ -70,15 +70,17 @@ ML_History/
 
 ```bash
 # 安装依赖
-pip install numpy matplotlib scikit-learn pytest
+pip install numpy matplotlib scikit-learn torch pytest
 
 # 运行测试
 python -m pytest 01_foundations/*/test_*.py -v
 python -m pytest 02_statistical_learning/*/test_*.py -v
+python -m pytest 03_deep_learning_revival/*/test_*.py -v
 
 # 运行训练演示
 python 01_foundations/01_mp_neuron/train.py
 python 02_statistical_learning/01_decision_tree/train.py
+python 03_deep_learning_revival/01_dbn/train.py
 ```
 
 ## 推荐数据集
