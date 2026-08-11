@@ -7,7 +7,116 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
-/* Model-specific styles */
+/* ── AdaBoost Specific Styles ── */
+.iteration-indicator {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.iteration-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.iteration-dot.active {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  color: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+.iteration-dot:hover {
+  border-color: var(--accent);
+}
+.demo-controls {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.btn-secondary {
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-strong);
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-secondary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.info-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+.info-item {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+}
+.info-label {
+  font-size: 11px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+.info-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  color: var(--text);
+}
+.weight-legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.weight-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.weight-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.comparison-grid .comparison-panel h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.comparison-grid .comparison-panel h4::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.comparison-panel.boosting h4 { color: var(--accent); }
+.comparison-panel.boosting h4::before { background: var(--accent); }
+.comparison-panel.bagging h4 { color: var(--green); }
+.comparison-panel.bagging h4::before { background: var(--green); }
 </style>
 </head>
 <body>
@@ -28,7 +137,7 @@
   <section class="hero">
     <div class="hero-eyebrow">02_statistical_learning阶段 · 1995</div>
     <h1>AdaBoost</h1>
-    <p class="hero-subtitle">暂无简介</p>
+    <p class="hero-subtitle">自适应提升算法，通过迭代训练弱分类器并调整样本权重，将多个弱分类器组合成一个强分类器。这是第一个实用的boosting算法。</p>
     <div class="hero-meta">
       <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">1995</span></div>
       <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Freund & Schapire</span></div>
@@ -39,41 +148,112 @@
 
   <div class="stats-grid">
     <div class="stat-cell"><span class="stat-value">1995</span><span class="stat-label">提出年份</span></div>
-    <div class="stat-cell"><span class="stat-value">集成学习</span><span class="stat-label">模型类型</span></div>
-    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
-    <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
+    <div class="stat-cell"><span class="stat-value">Boosting</span><span class="stat-label">算法类别</span></div>
+    <div class="stat-cell"><span class="stat-value">指数上界</span><span class="stat-label">误差保证</span></div>
+    <div class="stat-cell"><span class="stat-value">Python</span><span class="stat-label">实现示例</span></div>
   </div>
 
   <section class="section">
-    <div class="section-label">网络架构</div>
-    <div class="section-title">结构示意</div>
-    <div class="diagram-container">
-      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
-        <!-- Generic architecture diagram -->
-        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
-        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
-        
-        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
-        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
-        
-        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
-        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
-        
+    <div class="section-label">算法原理</div>
+    <div class="section-title">Boosting 迭代过程</div>
+    <div class="section-body">
+      <p><strong>AdaBoost</strong>（Adaptive Boosting）通过多轮迭代训练弱分类器，每轮根据上一轮的预测结果调整样本权重。错误分类的样本权重增加，正确分类的权重减少，使得后续分类器更加关注难分样本。</p>
+    </div>
+    
+    <div class="diagram-container" id="boosting-diagram">
+      <svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px;">
         <defs>
           <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
             <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
           </marker>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
         </defs>
+
+        <!-- Title -->
+        <text x="350" y="30" text-anchor="middle" fill="var(--text)" font-size="16" font-family="Inter" font-weight="500">AdaBoost 迭代过程示意</text>
+
+        <!-- Data points area -->
+        <g id="data-points">
+          <!-- Iteration 1: Equal weights -->
+          <g transform="translate(80, 100)">
+            <text x="0" y="-20" text-anchor="middle" fill="var(--accent)" font-size="11" font-family="JetBrains Mono">迭代 1</text>
+            <circle cx="30" cy="40" r="8" fill="var(--red)" opacity="0.9"/>
+            <circle cx="70" cy="80" r="8" fill="var(--blue)" opacity="0.9"/>
+            <circle cx="110" cy="50" r="8" fill="var(--red)" opacity="0.9"/>
+            <circle cx="150" cy="90" r="8" fill="var(--blue)" opacity="0.9"/>
+            <circle cx="60" cy="110" r="8" fill="var(--red)" opacity="0.9"/>
+            <circle cx="130" cy="130" r="8" fill="var(--blue)" opacity="0.9"/>
+          </g>
+
+          <!-- Iteration 2: Weighted -->
+          <g transform="translate(280, 100)">
+            <text x="0" y="-20" text-anchor="middle" fill="var(--accent)" font-size="11" font-family="JetBrains Mono">迭代 2</text>
+            <circle cx="30" cy="40" r="12" fill="var(--red)" opacity="0.9"/>
+            <circle cx="70" cy="80" r="8" fill="var(--blue)" opacity="0.9"/>
+            <circle cx="110" cy="50" r="14" fill="var(--red)" opacity="0.9"/>
+            <circle cx="150" cy="90" r="8" fill="var(--blue)" opacity="0.9"/>
+            <circle cx="60" cy="110" r="10" fill="var(--red)" opacity="0.9"/>
+            <circle cx="130" cy="130" r="8" fill="var(--blue)" opacity="0.9"/>
+          </g>
+
+          <!-- Iteration 3: More weighted -->
+          <g transform="translate(480, 100)">
+            <text x="0" y="-20" text-anchor="middle" fill="var(--accent)" font-size="11" font-family="JetBrains Mono">迭代 3</text>
+            <circle cx="30" cy="40" r="16" fill="var(--red)" opacity="0.9"/>
+            <circle cx="70" cy="80" r="8" fill="var(--blue)" opacity="0.9"/>
+            <circle cx="110" cy="50" r="18" fill="var(--red)" opacity="0.9"/>
+            <circle cx="150" cy="90" r="8" fill="var(--blue)" opacity="0.9"/>
+            <circle cx="60" cy="110" r="14" fill="var(--red)" opacity="0.9"/>
+            <circle cx="130" cy="130" r="8" fill="var(--blue)" opacity="0.9"/>
+          </g>
+        </g>
+
+        <!-- Decision boundaries -->
+        <g id="boundaries">
+          <!-- Iteration 1 boundary -->
+          <line x1="80" y1="160" x2="80" y2="260" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5,3" opacity="0.6"/>
+          <text x="80" y="280" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">G₁</text>
+          
+          <!-- Iteration 2 boundary -->
+          <line x1="280" y1="160" x2="280" y2="260" stroke="var(--green)" stroke-width="2" opacity="0.8"/>
+          <text x="280" y="280" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">G₂</text>
+          
+          <!-- Iteration 3 boundary -->
+          <line x1="480" y1="160" x2="480" y2="260" stroke="var(--orange)" stroke-width="2" opacity="0.8"/>
+          <text x="480" y="280" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">G₃</text>
+        </g>
+
+        <!-- Ensemble combination -->
+        <g transform="translate(250, 340)">
+          <rect x="0" y="0" width="200" height="50" rx="8" fill="var(--bg-surface)" stroke="var(--accent)" stroke-width="2" filter="url(#glow)"/>
+          <text x="100" y="25" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter" font-weight="500">最终分类器 H(x)</text>
+          <text x="100" y="42" text-anchor="middle" fill="var(--accent)" font-size="10" font-family="JetBrains Mono">加权投票输出</text>
+        </g>
+
+        <!-- Arrows from iterations to ensemble -->
+        <line x1="160" y1="300" x2="230" y2="340" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrow)" opacity="0.5"/>
+        <line x1="350" y1="300" x2="310" y2="340" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrow)" opacity="0.5"/>
+        <line x1="540" y1="300" x2="400" y2="340" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrow)" opacity="0.5"/>
+
+        <!-- Legend -->
+        <g transform="translate(600, 360)">
+          <circle cx="0" cy="-8" r="6" fill="var(--red)" opacity="0.9"/>
+          <text x="12" y="-4" fill="var(--text-muted)" font-size="11" font-family="Inter">正样本 (+1)</text>
+          <circle cx="0" cy="12" r="6" fill="var(--blue)" opacity="0.9"/>
+          <text x="12" y="16" fill="var(--text-muted)" font-size="11" font-family="Inter">负样本 (-1)</text>
+        </g>
       </svg>
     </div>
-    <p class="diagram-caption">图: AdaBoost 通用架构示意</p>
+    <p class="diagram-caption">图: AdaBoost 迭代过程 — 样本权重随迭代增加，弱分类器逐步优化决策边界</p>
+
+    <div class="weight-legend">
+      <div class="weight-item"><div class="weight-dot" style="background: var(--red);"></div>正样本</div>
+      <div class="weight-item"><div class="weight-dot" style="background: var(--blue);"></div>负样本</div>
+      <div class="weight-item"><div class="weight-dot" style="background: var(--accent); width: 20px; height: 3px; border-radius: 2px;"></div>决策边界</div>
+    </div>
   </section>
 
   <section class="section">
@@ -81,62 +261,370 @@
     <div class="section-title">从问题到突破</div>
     <div class="section-body">
       <p><strong>Freund & Schapire</strong> 在 <strong>1995</strong> 年提出了 AdaBoost，这是机器学习发展史上的一个重要里程碑。</p>
-      <p>1995年，Schapire和Freund提出了AdaBoost算法，这是第一个实用的boosting算法。它通过迭代地训练弱分类器并调整样本权重，将多个弱分类器组合成一个强分类器。
-
-**核心突破**：
-- 自适应调整样本权重
-- 理论保证：指数衰减的误差上界</p>
+      <p>1995年，Schapire和Freund提出了AdaBoost算法，这是第一个实用的boosting算法。它通过迭代地训练弱分类器并调整样本权重，将多个弱分类器组合成一个强分类器。</p>
+      <div class="pill-row">
+        <span class="pill pill-accent">自适应权重</span>
+        <span class="pill pill-green">指数误差上界</span>
+        <span class="pill pill-orange">集成学习</span>
+      </div>
     </div>
   </section>
 
   <section class="section">
     <div class="section-label">数学原理</div>
     <div class="section-title">核心公式</div>
+    
     <div class="formula-card">
-      <div class="formula-label">核心公式</div>
-      <div class="formula">f(x) = ...</div>
-      <div class="formula-note">根据具体模型填写</div>
+      <div class="formula-label">弱分类器加权输出</div>
+      <div class="formula">G_m(x) = sign(Σ α_m · G_m(x))</div>
+      <div class="formula-note">最终分类器由所有弱分类器的加权投票决定，α_m 为第 m 个分类器的权重系数</div>
+    </div>
+
+    <div class="formula-card">
+      <div class="formula-label">系数计算</div>
+      <div class="formula">α_m = ½ · log((1 - e_m) / e_m)</div>
+      <div class="formula-note">e_m 为第 m 轮分类器的加权错误率，错误率越低，权重越大</div>
+    </div>
+
+    <div class="formula-card">
+      <div class="formula-label">样本权重更新</div>
+      <div class="formula">w_{i,m+1} = w_{i,m} · exp(-α_m · y_i · G_m(x_i))</div>
+      <div class="formula-note">被错误分类的样本权重增大，正确分类的权重减小，使得后续分类器关注困难样本</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">对比分析</div>
+    <div class="section-title">Boosting vs Bagging</div>
+    <div class="comparison-grid">
+      <div class="comparison-panel boosting">
+        <h4>Boosting (AdaBoost)</h4>
+        <p>• 串行训练，每轮依赖上一轮结果<br>• 自适应调整样本权重<br>• 关注难分样本<br>• 误差上界指数衰减<br>• 对异常值敏感</p>
+      </div>
+      <div class="comparison-panel bagging">
+        <h4>Bagging</h4>
+        <p>• 并行训练，各轮独立<br>• 均匀采样，权重不变<br>• 关注整体分布<br>• 降低方差，减少过拟合<br>• 对异常值鲁棒</p>
+      </div>
     </div>
   </section>
 
   <section class="section">
     <div class="section-label">代码实现</div>
-    <div class="section-title">model.py 核心逻辑</div>
+    <div class="section-title">Python 核心逻辑</div>
     <div class="code-block">
       <div class="code-header">
         <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
-        <span class="code-lang">Python · model.py</span>
+        <span class="code-lang">Python · adaboost.py</span>
       </div>
-      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">AdaBoost</span>(nn.Module):
-    <span class="kw">def</span> <span class="fn">__init__</span>(self):
-        super().__span class="fn">init__</span>()
-        <span class="cm"># 模型定义</span>
+      <div class="code-body"><pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> sklearn.tree <span class="kw">import</span> DecisionTreeClassifier
+
+<span class="kw">class</span> <span class="cls">AdaBoost</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, n_estimators=<span class="num">10</span>):
+        self.n_estimators = n_estimators
+        self.classifiers = []
+        self.alphas = []
         
-    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
-        <span class="cm"># 前向传播</span>
-        <span class="kw">return</span> x</pre></div>
+    <span class="kw">def</span> <span class="fn">fit</span>(self, X, y):
+        n_samples = X.shape[<span class="num">0</span>]
+        weights = np.ones(n_samples) / n_samples
+        
+        <span class="kw">for</span> m <span class="kw">in</span> range(self.n_estimators):
+            <span class="cm"># 训练弱分类器</span>
+            clf = DecisionTreeClassifier(max_depth=<span class="num">1</span>)
+            clf.fit(X, y, sample_weight=weights)
+            
+            <span class="cm"># 计算加权错误率</span>
+            predictions = clf.predict(X)
+            errors = (predictions != y).astype(float)
+            error_rate = np.dot(weights, errors) / np.dot(weights, np.ones(n_samples))
+            
+            <span class="cm"># 计算分类器权重</span>
+            alpha = <span class="num">0.5</span> * np.log((<span class="num">1</span> - error_rate) / error_rate)
+            self.alphas.append(alpha)
+            self.classifiers.append(clf)
+            
+            <span class="cm"># 更新样本权重</span>
+            weights *= np.exp(-alpha * y * predictions)
+            weights /= np.sum(weights)
+            
+        <span class="kw">return</span> self
+        
+    <span class="kw">def</span> <span class="fn">predict</span>(self, X):
+        <span class="cm"># 加权投票</span>
+        predictions = np.zeros(X.shape[<span class="num">0</span>])
+        <span class="kw">for</span> clf, alpha <span class="kw">in</span> zip(self.classifiers, self.alphas):
+            predictions += alpha * clf.predict(X)
+        <span class="kw">return</span> np.sign(predictions)</pre></div>
     </div>
   </section>
 
   <section class="section">
-    <div class="section-label">学习心得</div>
+    <div class="section-label">交互式演示</div>
+    <div class="section-title">Boosting 迭代过程</div>
+    <div class="section-body">
+      <p>点击下方按钮逐步展示 AdaBoost 的迭代过程，观察样本权重如何随训练轮次变化。</p>
+    </div>
+    
+    <div class="demo-container">
+      <div class="demo-title">迭代控制</div>
+      
+      <div class="iteration-indicator" id="iteration-indicator">
+        <div class="iteration-dot active" data-step="0">初始</div>
+        <div class="iteration-dot" data-step="1">1</div>
+        <div class="iteration-dot" data-step="2">2</div>
+        <div class="iteration-dot" data-step="3">3</div>
+        <div class="iteration-dot" data-step="4">4</div>
+        <div class="iteration-dot" data-step="5">5</div>
+      </div>
+
+      <svg id="demo-svg" viewBox="0 0 600 350" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:600px;">
+        <!-- Data points will be drawn dynamically -->
+        <g id="points-layer"></g>
+        
+        <!-- Decision boundary -->
+        <line id="boundary" x1="300" y1="50" x2="300" y2="300" stroke="var(--accent)" stroke-width="2" opacity="0" stroke-dasharray="5,3"/>
+        
+        <!-- Info text -->
+        <text id="info-text" x="300" y="340" text-anchor="middle" fill="var(--text-muted)" font-size="12" font-family="Inter"></text>
+      </svg>
+
+      <div class="info-row" id="info-row">
+        <div class="info-item">
+          <div class="info-label">当前轮次</div>
+          <div class="info-value" id="step-display">初始</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">分类器权重 α</div>
+          <div class="info-value" id="alpha-display">—</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">错误率 e</div>
+          <div class="info-value" id="error-display">—</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">累计分类数</div>
+          <div class="info-value" id="correct-display">0</div>
+        </div>
+      </div>
+
+      <div class="demo-controls">
+        <button class="demo-btn" id="prev-btn">← 上一步</button>
+        <button class="demo-btn" id="next-btn">下一步 →</button>
+        <button class="btn-secondary" id="reset-btn">重置</button>
+        <button class="btn-secondary" id="auto-btn">自动播放</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">思考题</div>
     <div class="section-title">关键洞察</div>
     <div class="notes-card">
-      <h4>学到的知识</h4>
+      <h4>深入思考</h4>
       <ul>
-        <li>AdaBoost 是机器学习发展史上的重要模型</li>
-        <li>理解其数学原理有助于掌握后续模型</li>
+        <li>AdaBoost 和 Bagging 有什么区别？为什么 Boosting 通常是串行的而 Bagging 是并行的？</li>
+        <li>为什么 AdaBoost 对异常值敏感？这与其权重更新机制有何关系？</li>
+        <li>如何解释指数衰减的误差上界？这对模型训练有什么指导意义？</li>
+        <li>在实际应用中，如何选择弱分类器的数量和类型？</li>
       </ul>
     </div>
   </section>
 
   <div class="nav-footer">
-    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
-    <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
+    <a href="../02_statistical_learning/03_decision_tree/index.html" class="nav-footer-prev">
+      <span class="nav-footer-label">← 上一个</span>
+      <span class="nav-footer-title">决策树</span>
+    </a>
+    <span class="nav-footer-center"><a href="../index.html">ML History</a> · 02_statistical_learning</span>
+    <a href="../02_statistical_learning/05_svm/index.html" class="nav-footer-next" style="text-align:right;">
+      <span class="nav-footer-label">下一个 →</span>
+      <span class="nav-footer-title">支持向量机</span>
+    </a>
   </div>
 
 </main>
+
+<script>
+// ── AdaBoost Interactive Demo ──
+(function() {
+  const N = 15;
+  const DATA = [
+    {x: 100, y: 150, label: 1},
+    {x: 150, y: 200, label: -1},
+    {x: 200, y: 120, label: 1},
+    {x: 250, y: 180, label: -1},
+    {x: 300, y: 140, label: 1},
+    {x: 350, y: 200, label: -1},
+    {x: 400, y: 160, label: 1},
+    {x: 450, y: 130, label: -1},
+    {x: 500, y: 190, label: 1},
+    {x: 120, y: 250, label: -1},
+    {x: 180, y: 280, label: 1},
+    {x: 240, y: 260, label: -1},
+    {x: 320, y: 270, label: 1},
+    {x: 380, y: 240, label: -1},
+    {x: 460, y: 280, label: 1},
+  ];
+
+  // Pre-computed iterations with simulated decision boundaries
+  const iterations = [
+    { step: 0, alpha: '—', error: '—', correct: 0, boundaryX: null, info: '初始状态：所有样本权重相等' },
+    { step: 1, alpha: '0.423', error: '0.267', correct: 11, boundaryX: 280, info: 'G₁: x < 280 判为正类，错误率 26.7%' },
+    { step: 2, alpha: '0.658', error: '0.143', correct: 13, boundaryX: 380, info: 'G₂: x < 380 判为正类，错误率 14.3%' },
+    { step: 3, alpha: '0.847', error: '0.089', correct: 14, boundaryX: 420, info: 'G₃: x < 420 判为正类，错误率 8.9%' },
+    { step: 4, alpha: '1.099', error: '0.056', correct: 15, boundaryX: 480, info: 'G₄: x < 480 判为正类，错误率 5.6%' },
+    { step: 5, alpha: '1.444', error: '0.033', correct: 15, boundaryX: 520, info: 'G₅: x < 520 判为正类，错误率 3.3%' },
+  ];
+
+  let currentStep = 0;
+  let autoPlaying = false;
+  let autoTimer = null;
+
+  const svg = document.getElementById('demo-svg');
+  const pointsLayer = document.getElementById('points-layer');
+  const boundary = document.getElementById('boundary');
+  const infoText = document.getElementById('info-text');
+
+  function drawPoints(step) {
+    pointsLayer.innerHTML = '';
+    const iter = iterations[step];
+    
+    DATA.forEach((point, i) => {
+      // Calculate weight based on step
+      let weight = 1;
+      if (step > 0) {
+        // Simulate weight increase for misclassified points
+        const isMisclassified = (step === 1 && point.x >= 280) || 
+                                (step === 2 && point.x >= 380) ||
+                                (step === 3 && point.x >= 420) ||
+                                (step === 4 && point.x >= 480) ||
+                                (step === 5 && point.x >= 520);
+        weight = isMisclassified ? 2 + step * 0.5 : 1;
+      }
+      
+      const radius = 6 + weight * 2;
+      const color = point.label === 1 ? 'var(--red)' : 'var(--blue)';
+      const opacity = step === 0 ? 0.7 : Math.min(0.9, 0.5 + weight * 0.1);
+      
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', point.x);
+      circle.setAttribute('cy', point.y);
+      circle.setAttribute('r', radius);
+      circle.setAttribute('fill', color);
+      circle.setAttribute('opacity', opacity);
+      
+      // Add weight label for later steps
+      if (step >= 2 && weight > 1) {
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', point.x);
+        text.setAttribute('y', point.y - radius - 4);
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('fill', 'var(--text-muted)');
+        text.setAttribute('font-size', '9');
+        text.setAttribute('font-family', 'JetBrains Mono');
+        text.textContent = weight.toFixed(1);
+        pointsLayer.appendChild(text);
+      }
+      
+      pointsLayer.appendChild(circle);
+    });
+  }
+
+  function updateBoundary(step) {
+    if (step === 0) {
+      boundary.setAttribute('opacity', '0');
+    } else {
+      const iter = iterations[step];
+      boundary.setAttribute('x1', iter.boundaryX);
+      boundary.setAttribute('x2', iter.boundaryX);
+      boundary.setAttribute('opacity', '0.8');
+    }
+  }
+
+  function updateInfo(step) {
+    const iter = iterations[step];
+    document.getElementById('step-display').textContent = step === 0 ? '初始' : iter.step;
+    document.getElementById('alpha-display').textContent = iter.alpha;
+    document.getElementById('error-display').textContent = iter.error;
+    document.getElementById('correct-display').textContent = iter.correct + '/' + DATA.length;
+    infoText.textContent = iter.info;
+    
+    // Update dots
+    document.querySelectorAll('.iteration-dot').forEach((dot, i) => {
+      dot.classList.toggle('active', i === step);
+    });
+  }
+
+  function renderStep(step) {
+    currentStep = step;
+    drawPoints(step);
+    updateBoundary(step);
+    updateInfo(step);
+  }
+
+  function nextStep() {
+    if (currentStep < iterations.length - 1) {
+      renderStep(currentStep + 1);
+    } else {
+      stopAutoPlay();
+    }
+  }
+
+  function prevStep() {
+    if (currentStep > 0) {
+      renderStep(currentStep - 1);
+    }
+  }
+
+  function reset() {
+    stopAutoPlay();
+    renderStep(0);
+  }
+
+  function startAutoPlay() {
+    if (autoPlaying) return;
+    autoPlaying = true;
+    document.getElementById('auto-btn').textContent = '停止播放';
+    autoTimer = setInterval(() => {
+      if (currentStep < iterations.length - 1) {
+        nextStep();
+      } else {
+        stopAutoPlay();
+      }
+    }, 1200);
+  }
+
+  function stopAutoPlay() {
+    autoPlaying = false;
+    document.getElementById('auto-btn').textContent = '自动播放';
+    if (autoTimer) {
+      clearInterval(autoTimer);
+      autoTimer = null;
+    }
+  }
+
+  // Event listeners
+  document.getElementById('next-btn').addEventListener('click', nextStep);
+  document.getElementById('prev-btn').addEventListener('click', prevStep);
+  document.getElementById('reset-btn').addEventListener('click', reset);
+  document.getElementById('auto-btn').addEventListener('click', () => {
+    if (autoPlaying) stopAutoPlay();
+    else startAutoPlay();
+  });
+
+  document.querySelectorAll('.iteration-dot').forEach(dot => {
+    dot.addEventListener('click', (e) => {
+      const step = parseInt(e.target.dataset.step);
+      stopAutoPlay();
+      renderStep(step);
+    });
+  });
+
+  // Initial render
+  renderStep(0);
+})();
+</script>
 
 </body>
 </html>
