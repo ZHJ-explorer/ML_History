@@ -7,7 +7,208 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
-/* Model-specific styles */
+/* ── Perceptron Specific ── */
+.perceptron-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  transition: all 0.25s;
+  min-height: 38px;
+}
+.perceptron-step.active {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  color: var(--text);
+}
+.perceptron-step.done {
+  opacity: 0.5;
+}
+.step-num {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 600;
+  color: var(--text-faint);
+  flex-shrink: 0;
+}
+.perceptron-step.active .step-num {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+.perceptron-step.done .step-num {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+.w-update {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin: 10px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  overflow-x: auto;
+}
+.w-update .highlight-w { color: var(--accent); font-weight: 600; }
+.w-update .highlight-b { color: var(--green); font-weight: 600; }
+.w-update .highlight-lr { color: var(--orange); font-weight: 600; }
+.w-update .highlight-in { color: var(--red); font-weight: 600; }
+.w-update .highlight-out { color: var(--blue); font-weight: 600; }
+
+/* SVG scatter plot */
+.scatter-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin-top: 12px;
+}
+.scatter-wrap svg { width: 100%; height: auto; }
+
+/* Iteration log */
+.iter-log {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  max-height: 260px;
+  overflow-y: auto;
+  margin-top: 14px;
+}
+.iter-log .iter-header {
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 10px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.iter-log .row-ok { color: var(--green); }
+.iter-log .row-err { color: var(--red); }
+.iter-log .row-conv { color: var(--accent); font-weight: 600; }
+
+/* Convergence badge */
+.conv-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 10px;
+  transition: all 0.3s;
+}
+.conv-badge.converged {
+  background: var(--green-dim);
+  color: var(--green);
+  border: 1px solid rgba(16,185,129,0.3);
+}
+.conv-badge.training {
+  background: var(--orange-dim);
+  color: var(--orange);
+  border: 1px solid rgba(245,158,11,0.3);
+}
+
+/* Buttons row */
+.btn-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+.btn-row .demo-btn { flex: 0 0 auto; }
+.btn-row .demo-btn.secondary {
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-strong);
+}
+.btn-row .demo-btn.secondary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Dataset selector */
+.ds-selector { display: flex; gap: 8px; margin-bottom: 16px; }
+.ds-btn {
+  padding: 5px 14px;
+  border-radius: var(--radius);
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.ds-btn:hover { border-color: var(--accent); color: var(--accent); }
+.ds-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+/* Speed slider */
+.speed-row { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+.speed-row label { font-size: 12px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+.speed-row input[type=range] { flex: 1; accent-color: var(--accent); }
+.speed-val { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); min-width: 32px; text-align: right; }
+
+/* Formula sub-label */
+.formula-sub {
+  font-size: 12px;
+  color: var(--text-faint);
+  margin-top: 6px;
+  line-height: 1.6;
+}
+.formula-sub code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  color: var(--accent);
+}
+
+/* Step breakdown table */
+.step-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  margin-top: 12px;
+}
+.step-table th {
+  background: var(--bg-elevated);
+  color: var(--text-faint);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 10px;
+  padding: 8px 12px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+.step-table td {
+  padding: 7px 12px;
+  text-align: center;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+}
+.step-table tr:last-child td { border-bottom: none; }
+.step-table .cell-ok { color: var(--green); }
+.step-table .cell-err { color: var(--red); }
+.step-table .cell-last td { background: var(--accent-dim); color: var(--accent); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -25,122 +226,670 @@
 
 <main class="container">
 
+  <!-- HERO -->
   <section class="hero">
     <div class="hero-eyebrow">01_foundations阶段 · 1957</div>
     <h1>感知机</h1>
-    <p class="hero-subtitle">暂无简介</p>
-    <div class="hero-meta">
-      <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">1957</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Frank Rosenblatt</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">二值分类器</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">框架</span><span class="hero-meta-value">PyTorch</span></div>
+    <p class="hero-subtitle">Frank Rosenblatt 提出的第一个能够自动学习的神经网络模型，奠定了现代深度学习的基础。</p>
+    <div class="pill-row">
+      <span class="pill pill-accent">二值分类器</span>
+      <span class="pill pill-green">收敛定理</span>
+      <span class="pill pill-orange">阶跃激活</span>
+      <span class="pill pill-red">线性可分</span>
+    </div>
+    <div class="hero-meta" style="margin-top:24px;">
+      <div class="hero-meta-item"><span class="hero-meta-label">提出年份</span><span class="hero-meta-value">1957</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">提出者</span><span class="hero-meta-value">Frank Rosenblatt</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">问题类型</span><span class="hero-meta-value">二分类</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">实现框架</span><span class="hero-meta-value">NumPy</span></div>
     </div>
   </section>
 
+  <!-- STATS -->
   <div class="stats-grid">
     <div class="stat-cell"><span class="stat-value">1957</span><span class="stat-label">提出年份</span></div>
-    <div class="stat-cell"><span class="stat-value">二值分类器</span><span class="stat-label">模型类型</span></div>
-    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
-    <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
+    <div class="stat-cell"><span class="stat-value">Rosenblatt</span><span class="stat-label">提出者</span></div>
+    <div class="stat-cell"><span class="stat-value">阶跃函数</span><span class="stat-label">激活函数</span></div>
+    <div class="stat-cell"><span class="stat-value">✓ 收敛</span><span class="stat-label">线性可分</span></div>
   </div>
 
-  <section class="section">
-    <div class="section-label">网络架构</div>
-    <div class="section-title">结构示意</div>
-    <div class="diagram-container">
-      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
-        <!-- Generic architecture diagram -->
-        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
-        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
-        
-        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
-        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
-        
-        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
-        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
-        
-        <defs>
-          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-            <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
-          </marker>
-        </defs>
-      </svg>
-    </div>
-    <p class="diagram-caption">图: 感知机 通用架构示意</p>
-  </section>
-
+  <!-- HISTORY -->
   <section class="section">
     <div class="section-label">历史背景</div>
-    <div class="section-title">从问题到突破</div>
+    <div class="section-title">从 MP 神经元到感知机</div>
     <div class="section-body">
-      <p><strong>Frank Rosenblatt</strong> 在 <strong>1957</strong> 年提出了 感知机，这是机器学习发展史上的一个重要里程碑。</p>
-      <p>1957年，Frank Rosenblatt在康奈尔航空实验室开发了感知机（Perceptron），这是第一个能够学习的神经网络模型。感知机的提出标志着神经网络研究的第一个高潮。
-
-**当时的问题**：
-- MP神经元没有学习机制，需要手动设置权重
-- 需要一种能够自动学习的模型
-
-**核心突破**：
-- 感知机学习规则（Perceptron Learning Rule）
-- 证明了如果数据线性可...</p>
+      <p><strong>Frank Rosenblatt</strong> 于 <strong>1957</strong> 年在康奈尔航空实验室提出感知机，这是第一个能够自动学习的神经网络模型，标志着神经网络研究的第一个高潮。</p>
+      <div class="comparison-grid" style="margin-top:20px;">
+        <div class="comparison-panel">
+          <h4>当时的问题</h4>
+          <p>MP 神经元没有学习机制，权重需要手动设置。科学家需要一种能够自动从数据中学习的模型。</p>
+        </div>
+        <div class="comparison-panel">
+          <h4>核心突破</h4>
+          <p>感知机学习规则（Perceptron Learning Rule）：根据预测误差自动调整权重，并严格证明了对线性可分数据必定收敛。</p>
+        </div>
+      </div>
     </div>
   </section>
 
+  <!-- TIMELINE -->
+  <section class="section">
+    <div class="section-label">发展脉络</div>
+    <div class="section-title">关键里程碑</div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">1943</div>
+        <div class="timeline-title">MP 神经元</div>
+        <div class="timeline-desc">McCulloch & Pitts 提出首个数学神经元模型，但无学习机制</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">1957</div>
+        <div class="timeline-title">感知机</div>
+        <div class="timeline-desc">Rosenblatt 引入学习规则，实现权重自动更新</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">1969</div>
+        <div class="timeline-title">《Perceptrons》</div>
+        <div class="timeline-desc">Minsky & Papert 指出感知机无法解决 XOR，引发第一次 AI 寒冬</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">1986</div>
+        <div class="timeline-title">反向传播与 MLP</div>
+        <div class="timeline-desc">Hinton 等人提出多层网络与反向传播，从根本上解决了非线性可分问题</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SVG: 2D Classification Space -->
+  <section class="section">
+    <div class="section-label">可视化</div>
+    <div class="section-title">二维分类空间</div>
+    <div class="section-body">
+      <p>感知机在二维空间中用一条直线（决策边界）分隔正类（<span style="color:var(--green)">○ +1</span>）和负类（<span style="color:var(--red)">● −1</span>）。以下 SVG 展示了 OR 门数据集及其分类情况。</p>
+    </div>
+    <div class="diagram-container">
+      <svg id="classification-svg" viewBox="0 0 520 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:520px;">
+        <defs>
+          <filter id="dotGlow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <marker id="arrEnd" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L7,3 z" fill="var(--text-faint)"/>
+          </marker>
+        </defs>
+
+        <!-- Background -->
+        <rect width="520" height="380" fill="var(--bg)" rx="4"/>
+
+        <!-- Grid area -->
+        <g transform="translate(60, 30)">
+          <!-- Grid lines -->
+          <g opacity="0.08">
+            <line x1="0" y1="0" x2="0" y2="300" stroke="var(--text)" stroke-width="1"/>
+            <line x1="0" y1="300" x2="420" y2="300" stroke="var(--text)" stroke-width="1"/>
+            <line x1="105" y1="0" x2="105" y2="300" stroke="var(--text)" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="210" y1="0" x2="210" y2="300" stroke="var(--text)" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="315" y1="0" x2="315" y2="300" stroke="var(--text)" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="0" y1="75" x2="420" y2="75" stroke="var(--text)" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="0" y1="150" x2="420" y2="150" stroke="var(--text)" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="0" y1="225" x2="420" y2="225" stroke="var(--text)" stroke-width="1" stroke-dasharray="3,3"/>
+          </g>
+
+          <!-- Axes -->
+          <line x1="0" y1="300" x2="420" y2="300" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrEnd)"/>
+          <line x1="0" y1="300" x2="0" y2="0" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrEnd)"/>
+
+          <!-- Axis labels -->
+          <text x="210" y="350" text-anchor="middle" fill="var(--text-muted)" font-size="12" font-family="Inter">x₁</text>
+          <text x="-12" y="150" text-anchor="middle" fill="var(--text-muted)" font-size="12" font-family="Inter" transform="rotate(-90,-12,150)">x₂</text>
+
+          <!-- Tick labels -->
+          <text x="0" y="318" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">0</text>
+          <text x="105" y="318" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">0.5</text>
+          <text x="210" y="318" text-anchor="middle" fill="var(--text)" font-size="11" font-family="JetBrains Mono" font-weight="600">1.0</text>
+          <text x="315" y="318" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">1.5</text>
+          <text x="420" y="318" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">2.0</text>
+
+          <text x="-10" y="300" text-anchor="end" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">0</text>
+          <text x="-10" y="225" text-anchor="end" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">0.5</text>
+          <text x="-10" y="150" text-anchor="end" fill="var(--text)" font-size="11" font-family="JetBrains Mono" font-weight="600">1.0</text>
+          <text x="-10" y="75" text-anchor="end" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">1.5</text>
+
+          <!-- Decision boundary line: x₁ + x₂ = 1.5 (for OR gate) -->
+          <line x1="0" y1="255" x2="315" y2="0" stroke="var(--accent)" stroke-width="2" stroke-dasharray="8,4" opacity="0.8"/>
+          <text x="330" y="5" fill="var(--accent)" font-size="10" font-family="JetBrains Mono">w·x + b = 0</text>
+
+          <!-- Data points -->
+          <!-- (0,0) → y=-1 (red) -->
+          <circle cx="0" cy="300" r="7" fill="var(--red)" opacity="0.85" filter="url(#dotGlow)"/>
+          <text x="0" y="322" text-anchor="middle" fill="var(--red)" font-size="10" font-family="JetBrains Mono">(0,0)</text>
+          <text x="12" y="296" fill="var(--red)" font-size="9" font-family="JetBrains Mono">−1</text>
+
+          <!-- (0,1) → y=+1 (green) -->
+          <circle cx="0" cy="150" r="7" fill="var(--green)" opacity="0.85" filter="url(#dotGlow)"/>
+          <text x="12" y="146" fill="var(--green)" font-size="9" font-family="JetBrains Mono">+1</text>
+          <text x="0" y="138" text-anchor="middle" fill="var(--green)" font-size="10" font-family="JetBrains Mono">(0,1)</text>
+
+          <!-- (1,0) → y=+1 (green) -->
+          <circle cx="210" cy="300" r="7" fill="var(--green)" opacity="0.85" filter="url(#dotGlow)"/>
+          <text x="210" y="322" text-anchor="middle" fill="var(--green)" font-size="10" font-family="JetBrains Mono">(1,0)</text>
+          <text x="222" y="296" fill="var(--green)" font-size="9" font-family="JetBrains Mono">+1</text>
+
+          <!-- (1,1) → y=+1 (green) -->
+          <circle cx="210" cy="150" r="7" fill="var(--green)" opacity="0.85" filter="url(#dotGlow)"/>
+          <text x="222" y="146" fill="var(--green)" font-size="9" font-family="JetBrains Mono">+1</text>
+          <text x="210" y="138" text-anchor="middle" fill="var(--green)" font-size="10" font-family="JetBrains Mono">(1,1)</text>
+
+          <!-- Weight vector arrow from origin -->
+          <line x1="0" y1="300" x2="60" y2="240" stroke="var(--orange)" stroke-width="1.5" marker-end="url(#arrEnd)"/>
+          <text x="68" y="230" fill="var(--orange)" font-size="10" font-family="JetBrains Mono">w</text>
+
+          <!-- Legend -->
+          <rect x="340" y="250" width="10" height="10" rx="2" fill="var(--green)"/>
+          <text x="356" y="259" fill="var(--text-muted)" font-size="10" font-family="Inter">+1 (正类)</text>
+          <rect x="340" y="270" width="10" height="10" rx="2" fill="var(--red)"/>
+          <text x="356" y="279" fill="var(--text-muted)" font-size="10" font-family="Inter">−1 (负类)</text>
+          <line x1="340" y1="298" x2="360" y2="298" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <text x="366" y="302" fill="var(--text-muted)" font-size="10" font-family="Inter">决策边界</text>
+        </g>
+      </svg>
+    </div>
+    <p class="diagram-caption">图: OR 门二维分类空间，绿色为 +1（正类），红色为 −1（负类），虚线为决策边界 w·x + b = 0</p>
+  </section>
+
+  <!-- FORMULAS -->
   <section class="section">
     <div class="section-label">数学原理</div>
     <div class="section-title">核心公式</div>
+
     <div class="formula-card">
-      <div class="formula-label">核心公式</div>
-      <div class="formula">f(x) = ...</div>
-      <div class="formula-note">根据具体模型填写</div>
+      <div class="formula-label">模型定义 · 阶跃激活</div>
+      <div class="formula">ŷ = f(w·x + b), &nbsp; f(z) = <span class="formula-highlight">1</span> if z ≥ 0, &nbsp; <span class="formula-highlight">0</span> otherwise</div>
+      <div class="formula-note">将线性组合通过阶跃函数映射为二值输出 {0, 1}</div>
+    </div>
+
+    <div class="formula-card">
+      <div class="formula-label">感知机学习规则</div>
+      <div class="formula">
+        w<sub>i</sub> := w<sub>i</sub> + <span class="formula-highlight">η</span> · (y − ŷ) · x<sub>i</sub><br>
+        b := b + <span class="formula-highlight">η</span> · (y − ŷ)
+      </div>
+      <div class="formula-note">仅在预测错误时更新权重；<code>η</code> 为学习率，控制更新步长</div>
+    </div>
+
+    <div class="formula-card">
+      <div class="formula-label">收敛性定理</div>
+      <div class="formula">
+        若训练数据 <strong style="color:var(--green)">线性可分</strong>，则感知机算法<b style="color:var(--green)">必定收敛</b>，<br>
+        且迭代次数上界为 &nbsp; (<span class="formula-highlight">R / γ</span>)<sup>2</span>
+      </div>
+      <div class="formula-note"><code>R</code> = 样本最大范数，<code>γ</code> = 间隔（margin）。Minsky & Papert (1969) 指出 XOR 线性不可分，导致感知机研究陷入低谷。</div>
     </div>
   </section>
 
+  <!-- CODE -->
   <section class="section">
     <div class="section-label">代码实现</div>
-    <div class="section-title">model.py 核心逻辑</div>
+    <div class="section-title">NumPy 核心实现</div>
     <div class="code-block">
       <div class="code-header">
         <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
         <span class="code-lang">Python · model.py</span>
       </div>
-      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">感知机</span>(nn.Module):
-    <span class="kw">def</span> <span class="fn">__init__</span>(self):
-        super().__span class="fn">init__</span>()
-        <span class="cm"># 模型定义</span>
-        
-    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
-        <span class="cm"># 前向传播</span>
-        <span class="kw">return</span> x</pre></div>
+      <div class="code-body"><pre><span class=\"kw\">import</span> numpy <span class=\"kw\">as</span> np
+
+<span class=\"kw\">class</span> <span class=\"cls\">Perceptron</span>:
+    <span class=\"kw\">def</span> <span class=\"fn\">__init__</span>(self, lr=<span class=\"num\">0.01</span>, max_iter=<span class=\"num\">100</span>):
+        self.lr = lr
+        self.max_iter = max_iter
+        self.weights = <span class=\"kw\">None</span>
+        self.bias = <span class=\"kw\">None</span>
+
+    <span class=\"kw\">def</span> <span class=\"fn\">fit</span>(self, X, y):
+        n_samples, n_features = X.shape
+        self.weights = np.<span class=\"fn\">zeros</span>(n_features)
+        self.bias = <span class=\"num\">0</span>
+        <span class=\"kw\">for</span> _ <span class=\"kw\">in</span> <span class=\"fn\">range</span>(self.max_iter):
+            errors = <span class=\"num\">0</span>
+            <span class=\"kw\">for</span> xi, target <span class=\"kw\">in</span> <span class=\"fn\">zip</span>(X, y):
+                pred = <span class=\"num\">1</span> <span class=\"kw\">if</span> np.<span class=\"fn\">dot</span>(xi, self.weights) + self.bias >= <span class=\"num\">0</span> <span class=\"kw\">else</span> <span class=\"num\">0</span>
+                update = self.lr * (target - pred)
+                self.weights += update * xi
+                self.bias += update
+                <span class=\"kw\">if</span> update != <span class=\"num\">0</span>: errors += <span class=\"num\">1</span>
+            <span class=\"kw\">if</span> errors == <span class=\"num\">0</span>: <span class=\"kw\">break</span>
+        <span class=\"kw\">return</span> self</pre></div>
     </div>
   </section>
 
+  <!-- INTERACTIVE DEMO -->
+  <section class="section">
+    <div class="section-label">交互演示</div>
+    <div class="section-title">感知机学习过程动画</div>
+    <div class="section-body">
+      <p>选择数据集，点击「开始学习」观察感知机如何逐步更新权重直至收敛。每次迭代遍历所有样本，仅当预测错误时更新权重。</p>
+    </div>
+    <div class="demo-container">
+
+      <!-- Dataset selector -->
+      <div class="ds-selector">
+        <button class="ds-btn active" onclick="selectDataset('or')">OR 门 (线性可分)</button>
+        <button class="ds-btn" onclick="selectDataset('and')">AND 门 (线性可分)</button>
+        <button class="ds-btn" onclick="selectDataset('xor')">XOR 门 (线性不可分)</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;">
+        <!-- Left: SVG scatter + status -->
+        <div>
+          <div class="scatter-wrap">
+            <svg id="demo-scatter" viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;"></svg>
+          </div>
+          <div id="conv-status" class="conv-badge training">⏳ 待训练</div>
+          <div class="speed-row">
+            <label>速度</label>
+            <input type="range" id="speed-slider" class="demo-slider" min="1" max="10" value="5" oninput="updateSpeed()">
+            <span class="speed-val" id="speed-val">5</span>
+          </div>
+          <div class="btn-row">
+            <button class="demo-btn" id="btn-start" onclick="startTraining()">▶ 开始学习</button>
+            <button class="demo-btn secondary" id="btn-step" onclick="stepTraining()">⏭ 单步</button>
+            <button class="demo-btn secondary" onclick="resetDemo()">↺ 重置</button>
+          </div>
+        </div>
+
+        <!-- Right: Step log + info -->
+        <div>
+          <div class="w-update" id="weight-display">
+            <div><span class="highlight-w">w</span> = [0.00, 0.00]</div>
+            <div><span class="highlight-b">b</span> = 0.00</div>
+            <div style="color:var(--text-faint);margin-top:6px;">迭代: <span id="iter-count">0</span> / <span id="iter-total">—</span></div>
+          </div>
+          <div class="iter-log" id="iter-log">
+            <div class="iter-header">训练日志 — 点击「开始学习」或「单步」</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- LIMITATIONS & IMPACT -->
+  <section class="section">
+    <div class="section-label">评价</div>
+    <div class="section-title">局限性与历史影响</div>
+    <div class="section-body">
+      <div class="comparison-grid">
+        <div class="comparison-panel">
+          <h4>局限性</h4>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+            <li style="padding-left:16px;position:relative;font-size:14px;color:var(--text-muted);">→ 只能解决线性可分问题</li>
+            <li style="padding-left:16px;position:relative;font-size:14px;color:var(--text-muted);">→ 无法解决 XOR 等非线性问题</li>
+            <li style="padding-left:16px;position:relative;font-size:14px;color:var(--text-muted);">→ 阶跃函数不可微，无法用梯度下降</li>
+          </ul>
+        </div>
+        <div class="comparison-panel">
+          <h4>历史影响</h4>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+            <li style="padding-left:16px;position:relative;font-size:14px;color:var(--text-muted);">→ 直接启发了多层感知机（MLP）</li>
+            <li style="padding-left:16px;position:relative;font-size:14px;color:var(--text-muted);">→ 为反向传播算法奠定基础</li>
+            <li style="padding-left:16px;position:relative;font-size:14px;color:var(--text-muted);">→ 为支持向量机（SVM）的发展铺路</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTES -->
   <section class="section">
     <div class="section-label">学习心得</div>
     <div class="section-title">关键洞察</div>
     <div class="notes-card">
       <h4>学到的知识</h4>
       <ul>
-        <li>感知机 是机器学习发展史上的重要模型</li>
-        <li>理解其数学原理有助于掌握后续模型</li>
+        <li>感知机学习规则：根据错误自动调整权重，无需手动设定</li>
+        <li>收敛性定理：线性可分数据保证感知机必定收敛</li>
+        <li>无法解决 XOR 问题——单层感知机只能学习线性分类器</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>踩坑记录</h4>
+      <ul>
+        <li>需要多次遍历数据直到收敛（errors == 0 才停止）</li>
+        <li>学习率太大可能导致权重震荡不收敛</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>思考题答案</h4>
+      <ul>
+        <li><strong>为什么感知机不能解决 XOR 问题？</strong> — XOR 是线性不可分问题，单层感知机只能学习线性分类器</li>
+        <li><strong>如何改进感知机以解决非线性问题？</strong> — 使用多层感知机（MLP），引入非线性激活函数和反向传播</li>
       </ul>
     </div>
   </section>
 
+  <!-- FOOTER NAV -->
   <div class="nav-footer">
-    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
-    <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
+    <a href="../01_foundations/03_logistic_regression/index.html" class="nav-footer-prev">
+      <span class="nav-footer-label">← 上一个</span>
+      <span class="nav-footer-title">逻辑回归</span>
+    </a>
+    <span class="nav-footer-center"><a href="../index.html">ML History</a> · 感知机</span>
+    <a href="../01_foundations/05_knn/index.html" class="nav-footer-next" style="text-align:right;">
+      <span class="nav-footer-label">下一个 →</span>
+      <span class="nav-footer-title">k 近邻（k-NN）</span>
+    </a>
   </div>
 
 </main>
+
+<script>
+// ── Dataset definitions ──
+const DATASETS = {
+  or: {
+    name: 'OR 门',
+    X: [[0,0],[0,1],[1,0],[1,1]],
+    y: [0, 1, 1, 1],
+    desc: 'OR: 只要任一输入为1，输出即为1'
+  },
+  and: {
+    name: 'AND 门',
+    X: [[0,0],[0,1],[1,0],[1,1]],
+    y: [0, 0, 0, 1],
+    desc: 'AND: 两个输入都为1，输出才为1'
+  },
+  xor: {
+    name: 'XOR 门',
+    X: [[0,0],[0,1],[1,0],[1,1]],
+    y: [0, 1, 1, 0],
+    desc: 'XOR: 输入不同输出为1 — 线性不可分'
+  }
+};
+
+let currentDS = 'or';
+let weights = [0, 0];
+let bias = 0;
+let iterCount = 0;
+let maxIter = 100;
+let lr = 0.1;
+let isRunning = false;
+let isConverged = false;
+let animTimer = null;
+let speed = 5;
+
+// SVG coordinate mapping
+const SVG_W = 340, SVG_H = 260;
+const MARGIN = 20;
+const SCALE = (SVG_H - MARGIN * 2) / 2; // maps [0,2] to pixel range
+
+function toSvg(x, y) {
+  return [MARGIN + x * SCALE, SVG_H - MARGIN - y * SCALE];
+}
+
+// ── Scatter SVG rendering ──
+function drawScatter() {
+  const svg = document.getElementById('demo-scatter');
+  const ds = DATASETS[currentDS];
+  let html = `<defs>
+    <filter id="ptGlow"><feGaussianBlur stdDeviation="2.5" result="blur"/>
+    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>`;
+
+  // Background
+  html += `<rect width="${SVG_W}" height="${SVG_H}" fill="var(--bg)" rx="4"/>`;
+
+  // Grid
+  html += `<g opacity="0.1">`;
+  for (let i = 0; i <= 2; i++) {
+    const [px] = toSvg(i, 0);
+    html += `<line x1="${px}" y1="${MARGIN}" x2="${px}" y2="${SVG_H - MARGIN}" stroke="var(--text)" stroke-width="1"/>`;
+  }
+  for (let i = 0; i <= 2; i++) {
+    const [, py] = toSvg(0, i);
+    html += `<line x1="${MARGIN}" y1="${py}" x2="${SVG_W - MARGIN}" y2="${py}" stroke="var(--text)" stroke-width="1"/>`;
+  }
+  html += `</g>`;
+
+  // Axes
+  const [ox, oy] = toSvg(0, 0);
+  html += `<line x1="${ox}" y1="${oy}" x2="${ox}" y2="${MARGIN}" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrEnd)"/>`;
+  html += `<line x1="${ox}" y1="${oy}" x2="${SVG_W - MARGIN}" y2="${oy}" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrEnd)"/>`;
+  html += `<text x="${SVG_W/2}" y="${SVG_H - 2}" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="Inter">x₁</text>`;
+  html += `<text x="6" y="${SVG_H/2}" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="Inter" transform="rotate(-90,6,${SVG_H/2})">x₂</text>`;
+
+  // Tick labels
+  for (let i = 0; i <= 2; i++) {
+    const [px] = toSvg(i, 0);
+    const [, py] = toSvg(0, i);
+    html += `<text x="${px}" y="${oy + 14}" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">${i}</text>`;
+    html += `<text x="${ox - 6}" y="${py + 3}" text-anchor="end" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">${i}</text>`;
+  }
+
+  // Decision boundary line: w1*x1 + w2*x2 + b = 0 => x2 = -(w1*x1 + b)/w2
+  if (Math.abs(weights[1]) > 1e-8) {
+    const x1Min = 0, x1Max = 2;
+    const x2Min = -(weights[0] * x1Min + bias) / weights[1];
+    const x2Max = -(weights[0] * x1Max + bias) / weights[1];
+    const [sx1, sy1] = toSvg(x1Min, Math.max(0, Math.min(2, x2Min)));
+    const [sx2, sy2] = toSvg(x1Max, Math.max(0, Math.min(2, x2Max)));
+    html += `<line x1="${sx1}" y1="${sy1}" x2="${sx2}" y2="${sy2}" stroke="var(--accent)" stroke-width="1.8" stroke-dasharray="6,3" opacity="0.7"/>`;
+  }
+
+  // Weight vector (from point representing origin in data coords to w)
+  // We'll draw it as an arrow from (0,0) in data space
+  const [wx, wy] = toSvg(weights[0] * 0.3, weights[1] * 0.3); // scaled down for visibility
+  if (Math.sqrt(weights[0]**2 + weights[1]**2) > 0.01) {
+    const [ox2, oy2] = toSvg(0, 0);
+    html += `<line x1="${ox2}" y1="${oy2}" x2="${wx}" y2="${wy}" stroke="var(--orange)" stroke-width="1.5" marker-end="url(#arrEnd)"/>`;
+    html += `<text x="${wx + 6}" y="${wy - 4}" fill="var(--orange)" font-size="9" font-family="JetBrains Mono">w</text>`;
+  }
+
+  // Data points
+  ds.X.forEach((pt, i) => {
+    const [px, py] = toSvg(pt[0], pt[1]);
+    const label = ds.y[i] === 1 ? '+1' : '−1';
+    const color = ds.y[i] === 1 ? 'var(--green)' : 'var(--red)';
+    const dotColor = ds.y[i] === 1 ? 'var(--green)' : 'var(--red)';
+    // Check if this point is misclassified
+    const pred = (weights[0] * pt[0] + weights[1] * pt[1] + bias) >= 0 ? 1 : 0;
+    const isWrong = pred !== ds.y[i];
+    const r = isWrong && !isConverged ? 9 : 7;
+    const stroke = isWrong && !isConverged ? 'var(--orange)' : 'none';
+    const sw = isWrong && !isConverged ? 2 : 0;
+    html += `<circle cx="${px}" cy="${py}" r="${r}" fill="${dotColor}" opacity="${isConverged ? 0.9 : 0.75}" stroke="${stroke}" stroke-width="${sw}" filter="url(#ptGlow)"/>`;
+    html += `<text x="${px}" y="${py - 12}" text-anchor="middle" fill="${color}" font-size="10" font-family="JetBrains Mono" font-weight="600">${label}</text>`;
+    html += `<text x="${px}" y="${py + 16}" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">(${pt[0]},${pt[1]})</text>`;
+  });
+
+  // Legend
+  html += `<rect x="${SVG_W - 90}" y="${SVG_H - 50}" width="10" height="10" rx="2" fill="var(--green)" opacity="0.8"/>`;
+  html += `<text x="${SVG_W - 74}" y="${SVG_H - 42}" fill="var(--text-muted)" font-size="10" font-family="Inter">+1 正类</text>`;
+  html += `<rect x="${SVG_W - 90}" y="${SVG_H - 34}" width="10" height="10" rx="2" fill="var(--red)" opacity="0.8"/>`;
+  html += `<text x="${SVG_W - 74}" y="${SVG_H - 26}" fill="var(--text-muted)" font-size="10" font-family="Inter">−1 负类</text>`;
+  html += `<line x1="${SVG_W - 90}" y1="${SVG_H - 12}" x2="${SVG_W - 70}" y2="${SVG_H - 12}" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4,2"/>`;
+  html += `<text x="${SVG_W - 66}" y="${SVG_H - 8}" fill="var(--text-muted)" font-size="10" font-family="Inter">边界</text>`;
+
+  svg.innerHTML = html;
+}
+
+// ── Training logic ──
+function getPrediction(x) {
+  return (weights[0] * x[0] + weights[1] * x[1] + bias) >= 0 ? 1 : 0;
+}
+
+function perceptronStep() {
+  const ds = DATASETS[currentDS];
+  let errors = 0;
+  let logLines = [];
+
+  for (let i = 0; i < ds.X.length; i++) {
+    const xi = ds.X[i];
+    const yi = ds.y[i];
+    const pred = getPrediction(xi);
+    const update = lr * (yi - pred);
+
+    logLines.push({ xi, yi, pred, update, isError: update !== 0 });
+
+    if (update !== 0) {
+      weights[0] += update * xi[0];
+      weights[1] += update * xi[1];
+      bias += update;
+      errors++;
+    }
+  }
+
+  iterCount++;
+  return { errors, logLines };
+}
+
+// ── UI Updates ──
+function updateWeightDisplay(stepLog) {
+  const wd = document.getElementById('weight-display');
+  const prevW = wd.innerHTML;
+  wd.innerHTML = `
+    <div><span class="highlight-w">w</span> = [${weights[0].toFixed(3)}, ${weights[1].toFixed(3)}]</div>
+    <div><span class="highlight-b">b</span> = ${bias.toFixed(3)}</div>
+    <div style="color:var(--text-faint);margin-top:6px;">迭代: <span id="iter-count">${iterCount}</span> / <span id="iter-total">${maxIter}</span></div>
+    ${stepLog ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:11px;">
+      ${stepLog.map(s => `<div>
+        <span class="${s.isError ? 'highlight-in' : 'highlight-out'}">${s.xi.join(',')}</span> →
+        pred=<span class="${s.isError ? 'highlight-in' : 'highlight-out'}">${s.pred}</span>,
+        y=${s.yi},
+        ${s.isError ? '<span class="highlight-lr">更新</span>' : '<span style="color:var(--green)">✓</span>'}
+      </div>`).join('')}
+    </div>` : ''
+  `;
+  document.getElementById('iter-count').textContent = iterCount;
+  document.getElementById('iter-total').textContent = maxIter;
+}
+
+function addLogEntry(stepLog, converged) {
+  const log = document.getElementById('iter-log');
+  const header = log.querySelector('.iter-header');
+  if (header) header.remove();
+
+  const iterNum = document.createElement('div');
+  iterNum.style.cssText = 'color:var(--text-faint);font-size:10px;margin-top:6px;margin-bottom:2px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600;';
+  iterNum.textContent = `── 第 ${iterCount} 轮 ──`;
+  log.appendChild(iterNum);
+
+  stepLog.forEach(s => {
+    const row = document.createElement('div');
+    row.className = s.isError ? 'row-err' : 'row-ok';
+    row.textContent = `  ${s.xi.join(',')}  pred=${s.pred}  y=${s.yi}  ${s.isError ? '✗ 更新 w,b' : '✓ 正确'}`;
+    log.appendChild(row);
+  });
+
+  if (stepLog.some(s => s.isError)) {
+    const errCount = stepLog.filter(s => s.isError).length;
+    const summary = document.createElement('div');
+    summary.className = 'row-err';
+    summary.style.marginTop = '4px';
+    summary.textContent = `  → 本轮 ${errCount} 个错误，继续迭代...`;
+    log.appendChild(summary);
+  } else {
+    const summary = document.createElement('div');
+    summary.className = 'row-conv';
+    summary.style.marginTop = '4px';
+    summary.textContent = `  → 全部样本正确！算法收敛 ✓`;
+    log.appendChild(summary);
+  }
+
+  log.scrollTop = log.scrollHeight;
+}
+
+function updateStatus(converged) {
+  const badge = document.getElementById('conv-status');
+  if (converged) {
+    badge.className = 'conv-badge converged';
+    badge.textContent = '✓ 已收敛';
+  } else {
+    badge.className = 'conv-badge training';
+    badge.textContent = `⏳ 训练中 (迭代 ${iterCount})`;
+  }
+}
+
+// ── Controls ──
+function selectDataset(key) {
+  stopTraining();
+  currentDS = key;
+  document.querySelectorAll('.ds-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', ['or','and','xor'][i] === key);
+  });
+  resetDemo();
+}
+
+function updateSpeed() {
+  speed = parseInt(document.getElementById('speed-slider').value);
+  document.getElementById('speed-val').textContent = speed;
+}
+
+function startTraining() {
+  if (isRunning) return;
+  isRunning = true;
+  document.getElementById('btn-start').disabled = true;
+  document.getElementById('btn-start').style.opacity = '0.5';
+
+  function tick() {
+    if (isConverged || iterCount >= maxIter) {
+      stopTraining();
+      return;
+    }
+    const result = perceptronStep();
+    updateWeightDisplay(result);
+    addLogEntry(result.logLines, result.errors === 0);
+    drawScatter();
+    updateStatus(result.errors === 0);
+
+    if (result.errors === 0) {
+      isConverged = true;
+      stopTraining();
+    } else {
+      const delay = Math.max(50, 550 - speed * 50);
+      animTimer = setTimeout(tick, delay);
+    }
+  }
+  tick();
+}
+
+function stepTraining() {
+  if (isRunning || isConverged) return;
+  const result = perceptronStep();
+  updateWeightDisplay(result);
+  addLogEntry(result.logLines, result.errors === 0);
+  drawScatter();
+  updateStatus(result.errors === 0);
+  if (result.errors === 0) {
+    isConverged = true;
+    stopTraining();
+  }
+}
+
+function stopTraining() {
+  isRunning = false;
+  if (animTimer) clearTimeout(animTimer);
+  document.getElementById('btn-start').disabled = false;
+  document.getElementById('btn-start').style.opacity = '1';
+}
+
+function resetDemo() {
+  stopTraining();
+  weights = [0, 0];
+  bias = 0;
+  iterCount = 0;
+  isConverged = false;
+  document.getElementById('iter-log').innerHTML = '<div class="iter-header">训练日志 — 点击「开始学习」或「单步」</div>';
+  document.getElementById('iter-count').textContent = '0';
+  document.getElementById('iter-total').textContent = '—';
+  updateWeightDisplay(null);
+  updateStatus(false);
+  drawScatter();
+}
+
+// ── Init ──
+drawScatter();
+</script>
 
 </body>
 </html>
