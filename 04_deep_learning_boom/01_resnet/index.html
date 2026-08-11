@@ -3,11 +3,236 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ResNet — ML History</title>
+<title>ResNet — 残差网络 · ML History</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
-/* Model-specific styles */
+/* ── ResNet Specific ── */
+.resnet-block {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 8px 0;
+}
+.resnet-path {
+  width: 32px;
+  height: 4px;
+  background: var(--text-faint);
+  border-radius: 2px;
+  position: relative;
+}
+.resnet-path::after {
+  content: '→';
+  position: absolute;
+  right: -8px;
+  top: -6px;
+  color: var(--text-faint);
+  font-size: 10px;
+}
+.resnet-box {
+  padding: 6px 14px;
+  border-radius: var(--radius);
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'JetBrains Mono', monospace;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+}
+.resnet-box.conv { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
+.resnet-box.relu { border-color: var(--orange); color: var(--orange); background: var(--orange-dim); }
+.resnet-box.add { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+.resnet-box.identity { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+/* Gradient demo */
+.gradient-demo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+.gradient-panel {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+.gradient-panel h4 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.gradient-panel.with-resnet h4 { color: var(--green); }
+.gradient-panel.no-resnet h4 { color: var(--red); }
+.gradient-bar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+.gradient-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.gradient-bar-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-faint);
+  width: 60px;
+  text-align: right;
+}
+.gradient-bar-track {
+  flex: 1;
+  height: 20px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius);
+  overflow: hidden;
+  position: relative;
+}
+.gradient-bar-fill {
+  height: 100%;
+  border-radius: var(--radius);
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.gradient-bar-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  width: 50px;
+}
+.gradient-panel.with-resnet .gradient-bar-fill { background: linear-gradient(90deg, var(--green), #34d399); }
+.gradient-panel.no-resnet .gradient-bar-fill { background: linear-gradient(90deg, var(--red), var(--orange)); }
+
+/* Flow animation */
+.flow-demo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+  margin: 16px 0;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.flow-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.flow-node .node-box {
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-surface);
+  color: var(--text);
+  min-width: 60px;
+  text-align: center;
+}
+.flow-node .node-box.highlight { border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
+.flow-arrow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-faint);
+  font-size: 18px;
+}
+.flow-arrow.active { color: var(--accent); }
+.flow-particle {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: flowPulse 1.5s ease-in-out infinite;
+}
+@keyframes flowPulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Slider controls */
+.demo-controls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.demo-control-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.demo-control-item label {
+  font-size: 11px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+.demo-control-item input[type="range"] {
+  width: 160px;
+  accent-color: var(--accent);
+}
+.demo-control-item .value-display {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--accent);
+}
+
+/* SVG styles */
+.resnet-svg { width: 100%; max-width: 700px; }
+.resnet-svg .box { fill: var(--bg-elevated); stroke: var(--accent); stroke-width: 1.5; }
+.resnet-svg .box-reLU { stroke: var(--orange); }
+.resnet-svg .box-conv { stroke: var(--blue); }
+.resnet-svg .box-add { stroke: var(--green); }
+.resnet-svg .box-identity { stroke: var(--accent); stroke-dasharray: 4,2; }
+.resnet-svg .path-line { stroke: var(--text-muted); stroke-width: 1.5; fill: none; }
+.resnet-svg .path-line-gradient { stroke: var(--accent); stroke-width: 2; fill: none; }
+.resnet-svg .arrow-head { fill: var(--text-muted); }
+.resnet-svg .arrow-head-accent { fill: var(--accent); }
+.resnet-svg text { font-family: 'JetBrains Mono', monospace; }
+
+/* Architecture visualization */
+.arch-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.arch-row:last-child { border-bottom: none; }
+.arch-layer {
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  color: var(--text-secondary);
+}
+.arch-layer.conv { border-color: var(--blue); color: var(--blue); }
+.arch-layer.bn { border-color: var(--orange); color: var(--orange); }
+.arch-layer.relu { border-color: var(--red); color: var(--red); }
+.arch-layer.pool { border-color: var(--purple, #a78bfa); color: var(--purple, #a78bfa); }
+.arch-layer.linear { border-color: var(--green); color: var(--green); }
+.arch-arrow { color: var(--text-faint); font-size: 14px; }
+.arch-label { font-size: 11px; color: var(--text-faint); width: 80px; }
+.arch-channels { font-size: 10px; color: var(--text-faint); font-family: 'JetBrains Mono'; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .gradient-demo { grid-template-columns: 1fr; }
+  .flow-demo { flex-wrap: wrap; }
+}
 </style>
 </head>
 <body>
@@ -25,76 +250,334 @@
 
 <main class="container">
 
+  <!-- HERO -->
   <section class="hero">
     <div class="hero-eyebrow">04_deep_learning_boom阶段 · 2015</div>
     <h1>ResNet</h1>
-    <p class="hero-subtitle">暂无简介</p>
-    <div class="hero-meta">
-      <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">2015</span></div>
+    <p class="hero-subtitle">残差连接让神经网络可以无限加深——Microsoft Research 的突破性工作，在 ImageNet 上创造了历史，开启了深度学习的新纪元。</p>
+    <div class="pill-row">
+      <span class="pill pill-accent">残差学习</span>
+      <span class="pill pill-green">跳跃连接</span>
+      <span class="pill pill-orange">梯度流优化</span>
+      <span class="pill pill-red">ImageNet SOTA</span>
+    </div>
+    <div class="hero-meta" style="margin-top:24px;">
+      <div class="hero-meta-item"><span class="hero-meta-label">提出年份</span><span class="hero-meta-value">2015</span></div>
       <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Kaiming He et al.</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">残差网络</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">残差卷积网络</span></div>
       <div class="hero-meta-item"><span class="hero-meta-label">框架</span><span class="hero-meta-value">PyTorch</span></div>
     </div>
   </section>
 
+  <!-- STATS GRID -->
   <div class="stats-grid">
-    <div class="stat-cell"><span class="stat-value">2015</span><span class="stat-label">提出年份</span></div>
-    <div class="stat-cell"><span class="stat-value">残差网络</span><span class="stat-label">模型类型</span></div>
-    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
-    <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
+    <div class="stat-cell"><span class="stat-value">152</span><span class="stat-label">最大层数</span></div>
+    <div class="stat-cell"><span class="stat-value">3.6%</span><span class="stat-label">Top-5 错误率</span></div>
+    <div class="stat-cell"><span class="stat-value">CVPR'16</span><span class="stat-label">发表会议</span></div>
+    <div class="stat-cell"><span class="stat-value">MSR</span><span class="stat-label">研究机构</span></div>
   </div>
 
+  <!-- ARCHITECTURE DIAGRAM -->
   <section class="section">
-    <div class="section-label">网络架构</div>
-    <div class="section-title">结构示意</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div>
+        <div class="section-label">网络架构</div>
+        <div class="section-title">残差块结构</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="demo-tab active" onclick="showBlockType('basic')">Basic Block</button>
+        <button class="demo-tab" onclick="showBlockType('bottleneck')">Bottleneck</button>
+      </div>
+    </div>
     <div class="diagram-container">
-      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
-        <!-- Generic architecture diagram -->
-        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
-        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
-        
-        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
-        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
-        
-        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
-        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
-        
+      <svg id="resnet-svg" class="resnet-svg" viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-            <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
+          <marker id="arrow-gray" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="var(--text-muted)"/>
           </marker>
+          <marker id="arrow-blue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="var(--blue)"/>
+          </marker>
+          <marker id="arrow-orange" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="var(--orange)"/>
+          </marker>
+          <marker id="arrow-green" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="var(--green)"/>
+          </marker>
+          <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="var(--accent)"/>
+          </marker>
+          <filter id="glow-accent">
+            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
         </defs>
+
+        <!-- Title -->
+        <text x="350" y="28" text-anchor="middle" fill="var(--text)" font-size="14" font-family="Inter" font-weight="500" letter-spacing="0.02em">残差块 (Residual Block) — Basic Block</text>
+        <text x="350" y="48" text-anchor="middle" fill="var(--text-faint)" font-size="11" font-family="JetBrains Mono">y = F(x) + x → ReLU(y)</text>
+
+        <!-- Main flow path (top) -->
+        <!-- Input -->
+        <g class="flow-group">
+          <rect class="box" x="20" y="100" width="80" height="50" rx="8"/>
+          <text x="60" y="120" text-anchor="middle" fill="var(--text)" font-size="11" font-weight="500">输入 x</text>
+          <text x="60" y="136" text-anchor="middle" fill="var(--text-faint)" font-size="9">Input</text>
+          
+          <!-- Arrow to conv1 -->
+          <line x1="100" y1="125" x2="140" y2="125" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow-gray)"/>
+          
+          <!-- Conv1 -->
+          <rect class="box box-conv" x="140" y="100" width="80" height="50" rx="8"/>
+          <text x="180" y="120" text-anchor="middle" fill="var(--blue)" font-size="11" font-weight="500">Conv</text>
+          <text x="180" y="136" text-anchor="middle" fill="var(--blue)" font-size="9">3×3, same</text>
+          
+          <!-- Arrow to BN1 -->
+          <line x1="220" y1="125" x2="250" y2="125" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow-gray)"/>
+          
+          <!-- BN1 -->
+          <rect class="box box-reLU" x="250" y="100" width="80" height="50" rx="8"/>
+          <text x="290" y="120" text-anchor="middle" fill="var(--orange)" font-size="11" font-weight="500">BN</text>
+          <text x="290" y="136" text-anchor="middle" fill="var(--orange)" font-size="9">BatchNorm</text>
+          
+          <!-- Arrow to ReLU1 -->
+          <line x1="330" y1="125" x2="360" y2="125" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow-gray)"/>
+          
+          <!-- ReLU1 -->
+          <rect class="box box-reLU" x="360" y="100" width="70" height="50" rx="8"/>
+          <text x="395" y="120" text-anchor="middle" fill="var(--red)" font-size="11" font-weight="500">ReLU</text>
+          <text x="395" y="136" text-anchor="middle" fill="var(--text-faint)" font-size="9">activation</text>
+          
+          <!-- Arrow to conv2 -->
+          <line x1="430" y1="125" x2="460" y2="125" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow-gray)"/>
+          
+          <!-- Conv2 -->
+          <rect class="box box-conv" x="460" y="100" width="80" height="50" rx="8"/>
+          <text x="500" y="120" text-anchor="middle" fill="var(--blue)" font-size="11" font-weight="500">Conv</text>
+          <text x="500" y="136" text-anchor="middle" fill="var(--blue)" font-size="9">3×3, same</text>
+          
+          <!-- Arrow to BN2 -->
+          <line x1="540" y1="125" x2="570" y2="125" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow-gray)"/>
+          
+          <!-- BN2 -->
+          <rect class="box box-reLU" x="570" y="100" width="80" height="50" rx="8"/>
+          <text x="610" y="120" text-anchor="middle" fill="var(--orange)" font-size="11" font-weight="500">BN</text>
+          <text x="610" y="136" text-anchor="middle" fill="var(--orange)" font-size="9">BatchNorm</text>
+        </g>
+
+        <!-- Identity shortcut (bottom) -->
+        <g class="shortcut-group">
+          <!-- Vertical line down from input -->
+          <line x1="60" y1="150" x2="60" y2="220" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6,3" marker-end="url(#arrow-accent)"/>
+          <!-- Horizontal shortcut line -->
+          <line x1="60" y1="220" x2="650" y2="220" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6,3"/>
+          <!-- Vertical line up to add -->
+          <line x1="650" y1="220" x2="650" y2="175" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6,3" marker-end="url(#arrow-accent)"/>
+          
+          <!-- Identity label -->
+          <rect x="280" y="205" width="100" height="30" rx="6" fill="var(--accent-dim)" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="330" y="224" text-anchor="middle" fill="var(--accent)" font-size="11" font-weight="600">Identity</text>
+        </g>
+
+        <!-- Add node -->
+        <g class="add-group">
+          <circle cx="650" cy="155" r="18" fill="var(--green-dim)" stroke="var(--green)" stroke-width="2"/>
+          <text x="650" y="160" text-anchor="middle" fill="var(--green)" font-size="16" font-weight="700">+</text>
+        </g>
+
+        <!-- Arrow to final ReLU -->
+        <line x1="668" y1="155" x2="690" y2="155" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow-gray)"/>
+        
+        <!-- Final ReLU -->
+        <rect class="box box-reLU" x="690" y="130" width="60" height="50" rx="8"/>
+        <text x="720" y="150" text-anchor="middle" fill="var(--red)" font-size="11" font-weight="500">ReLU</text>
+        <text x="720" y="166" text-anchor="middle" fill="var(--text-faint)" font-size="9">output</text>
+
+        <!-- Output -->
+        <text x="745" y="160" text-anchor="start" fill="var(--text)" font-size="12" font-weight="500">y</text>
+
+        <!-- Formula annotation -->
+        <g transform="translate(20, 260)">
+          <rect width="660" height="45" rx="8" fill="var(--bg-surface)" stroke="var(--border-strong)"/>
+          <text x="20" y="24" fill="var(--text-faint)" font-size="11" font-family="JetBrains Mono">F(x) = BN(Relu(BN(Conv3×3(Relu(Conv3×3(x))))))</text>
+          <text x="20" y="40" fill="var(--accent)" font-size="11" font-family="JetBrains Mono">y = ReLU(F(x) + x)</text>
+        </g>
       </svg>
     </div>
-    <p class="diagram-caption">图: ResNet 通用架构示意</p>
+    <p class="diagram-caption">图: ResNet Basic Block 结构 — 两个 3×3 卷积层，每个后接 Batch Normalization 和 ReLU，通过 Identity 跳跃连接实现残差学习</p>
   </section>
 
+  <!-- NETWORK ARCHITECTURE -->
+  <section class="section">
+    <div class="section-label">网络架构</div>
+    <div class="section-title">ResNet-18 完整架构</div>
+    <div class="section-body" style="margin-bottom:20px;">
+      <p>ResNet-18 包含 <strong>10 个卷积层</strong>（不含 1×1 降维层）+ <strong>1 个全连接层</strong>，共 18 层可学习参数。使用 <strong>Basic Block</strong>，每个卷积层后都跟随 Batch Normalization。</p>
+    </div>
+    <div style="background:var(--bg-surface);border:1px solid var(--border-strong);border-radius:var(--radius-lg);padding:20px;">
+      <div class="arch-row">
+        <span class="arch-label">输入层</span>
+        <span class="arch-layer conv">Conv7×7</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer bn">BN</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer relu">ReLU</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer pool">MaxPool 3×3</span>
+        <span class="arch-channels" style="margin-left:12px;">64 ch</span>
+      </div>
+      <div class="arch-row">
+        <span class="arch-label">Layer 1</span>
+        <span class="arch-layer conv">Conv3×3</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer bn">BN</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer relu">ReLU</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer conv">Conv3×3</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer bn">BN</span>
+        <span class="arch-arrow">+</span>
+        <span class="arch-layer identity" style="color:var(--accent);border-color:var(--accent);">skip</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer relu">ReLU</span>
+        <span class="arch-channels" style="margin-left:12px;">×2, 64 ch</span>
+      </div>
+      <div class="arch-row">
+        <span class="arch-label">Layer 2</span>
+        <span class="arch-layer conv">Conv3×3</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer bn">BN</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer relu">ReLU</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer conv">Conv3×3</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer bn">BN</span>
+        <span class="arch-arrow">+</span>
+        <span class="arch-layer identity" style="color:var(--accent);border-color:var(--accent);">skip</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer relu">ReLU</span>
+        <span class="arch-channels" style="margin-left:12px;">×2, 128 ch (stride=2)</span>
+      </div>
+      <div class="arch-row">
+        <span class="arch-label">Layer 3</span>
+        <span class="arch-layer conv">Conv3×3</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer bn">BN</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer relu">ReLU</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer conv">Conv3×3</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer bn">BN</span>
+        <span class="arch-arrow">+</span>
+        <span class="arch-layer identity" style="color:var(--accent);border-color:var(--accent);">skip</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer relu">ReLU</span>
+        <span class="arch-channels" style="margin-left:12px;">×2, 256 ch (stride=2)</span>
+      </div>
+      <div class="arch-row">
+        <span class="arch-label">Layer 4</span>
+        <span class="arch-layer conv">Conv3×3</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer bn">BN</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer relu">ReLU</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer conv">Conv3×3</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer bn">BN</span>
+        <span class="arch-arrow">+</span>
+        <span class="arch-layer identity" style="color:var(--accent);border-color:var(--accent);">skip</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer relu">ReLU</span>
+        <span class="arch-channels" style="margin-left:12px;">×2, 512 ch (stride=2)</span>
+      </div>
+      <div class="arch-row">
+        <span class="arch-label">输出</span>
+        <span class="arch-layer pool">AvgPool 7×7</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-layer linear">Linear 512→10</span>
+        <span class="arch-channels" style="margin-left:12px;">CIFAR-10</span>
+      </div>
+    </div>
+    <p class="diagram-caption">图: ResNet-18 架构 — 4 个 Layer，每个含 2 个 Basic Block，共 18 层参数</p>
+  </section>
+
+  <!-- HISTORY TIMELINE -->
   <section class="section">
     <div class="section-label">历史背景</div>
-    <div class="section-title">从问题到突破</div>
+    <div class="section-title">从退化问题到解决方案</div>
     <div class="section-body">
-      <p><strong>Kaiming He et al.</strong> 在 <strong>2015</strong> 年提出了 ResNet，这是机器学习发展史上的一个重要里程碑。</p>
-      <p></p>
+      <p><strong>Kaiming He 等人</strong>在 <strong>2015</strong> 年发表的 ResNet，解决了深度神经网络训练中的<strong>退化问题</strong>（degradation problem）：随着网络加深，训练误差反而上升。</p>
+      <p>在此之前，VGGNet（2014）将网络推到 19 层取得了成功，但更深的网络却无法训练。ResNet 的关键洞察是：<strong>恒等映射应该是最优解的退化情况</strong>——如果当前层不需要做任何变换，网络应该能够轻松跳过它。</p>
+      <div class="comparison-grid" style="margin-top:20px;">
+        <div class="comparison-panel">
+          <h4>传统深度网络的问题</h4>
+          <p>层数增加 → 梯度需要通过更多层相乘 → 梯度消失/爆炸 → 深层权重无法有效更新 → 准确率饱和后下降</p>
+        </div>
+        <div class="comparison-panel">
+          <h4>ResNet 的突破</h4>
+          <p>添加跳跃连接 → 梯度有直达路径 → 深层网络可以训练 → 152 层仍能有效学习 → ImageNet 冠军</p>
+        </div>
+      </div>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">2012</div>
+        <div class="timeline-title">AlexNet 突破</div>
+        <div class="timeline-desc">8 层 CNN 赢得 ImageNet 竞赛，开启深度学习时代</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2014</div>
+        <div class="timeline-title">VGGNet 深度探索</div>
+        <div class="timeline-desc">19 层网络展示深度优势，但更深的网络开始遇到训练困难</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2015</div>
+        <div class="timeline-title">ResNet 解决退化问题</div>
+        <div class="timeline-desc">跳跃连接使 152 层网络成为可能，Top-5 错误率降至 3.6%</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2016-至今</div>
+        <div class="timeline-title">残差思想的普及</div>
+        <div class="timeline-desc">DenseNet、SENet、Transformer 等都采用了残差连接思想</div>
+      </div>
     </div>
   </section>
 
+  <!-- FORMULA CARDS -->
   <section class="section">
     <div class="section-label">数学原理</div>
     <div class="section-title">核心公式</div>
+    
     <div class="formula-card">
-      <div class="formula-label">核心公式</div>
-      <div class="formula">f(x) = ...</div>
-      <div class="formula-note">根据具体模型填写</div>
+      <div class="formula-label">残差块输出 · Residual Block Output</div>
+      <div class="formula">y = F(x, {W<sub>i</sub>}) + x<br>f(y) = ReLU(y)</div>
+      <div class="formula-note">F(x) 是残差函数（通常 2-3 个卷积层），x 通过恒等映射直接连接到输出，实现"快捷通道"。</div>
+    </div>
+
+    <div class="formula-card">
+      <div class="formula-label">梯度传播对比 · Gradient Flow</div>
+      <div class="formula">无残差: ∂L/∂x = ∂L/∂y · W<sub>n</sub> · ... · W<sub>2</sub> · W<sub>1</sub><br>有残差: ∂L/∂x = ∂L/∂y · (W<sub>n</sub> · ... · W<sub>1</sub> + 1)</div>
+      <div class="formula-note">跳跃连接在反向传播时提供 "+1" 项，确保梯度不会因多层连乘而消失。</div>
+    </div>
+
+    <div class="formula-card">
+      <div class="formula-label">Bottleneck Block · 降维-升维</div>
+      <div class="formula">x → Conv<sub>1×1</sub>(↓d) → Conv<sub>3×3</sub>(保持) → Conv<sub>1×1</sub>(↑d) → +x</div>
+      <div class="formula-note">ResNet-50/101/152 使用 Bottleneck Block：先用 1×1 卷积降维，再 3×3 卷积处理，最后升维回原维度。</div>
+    </div>
+
+    <div class="formula-card">
+      <div class="formula-label">维度不匹配时的 Shortcut</div>
+      <div class="formula">F(x) + W<sub>s</sub>·x &nbsp; (when dimensions differ)<br>W<sub>s</sub>: 1×1 convolution with stride</div>
+      <div class="formula-note">当输入输出通道数或空间尺寸不同时，shortcut 路径使用 1×1 卷积进行升维/降维对齐。</div>
     </div>
   </section>
 
+  <!-- CODE BLOCK -->
   <section class="section">
     <div class="section-label">代码实现</div>
     <div class="section-title">model.py 核心逻辑</div>
@@ -103,36 +586,316 @@
         <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
         <span class="code-lang">Python · model.py</span>
       </div>
-      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">ResNet</span>(nn.Module):
-    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+      <div class="code-body"><pre><span class="kw">import</span> torch
+<span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+
+
+<span class="kw">class</span> <span class="cls">BasicBlock</span>(nn.Module):
+    <span class="str">"""ResNet 基础块：两个 3×3 卷积 + 跳跃连接"""</span>
+    expansion = <span class="num">1</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, in_channels, out_channels, stride=<span class="num">1</span>):
         super().__span class="fn">init__</span>()
-        <span class="cm"># 模型定义</span>
+        self.conv1 = nn.<span class="fn">Conv2d</span>(in_channels, out_channels, <span class="num">3</span>, stride, <span class="num">1</span>, bias=<span class="kw">False</span>)
+        self.bn1 = nn.<span class="fn">BatchNorm2d</span>(out_channels)
+        self.conv2 = nn.<span class="fn">Conv2d</span>(out_channels, out_channels, <span class="num">3</span>, <span class="num">1</span>, <span class="num">1</span>, bias=<span class="kw">False</span>)
+        self.bn2 = nn.<span class="fn">BatchNorm2d</span>(out_channels)
         
+        <span class="cm"># 跳跃连接：维度不匹配时使用 1×1 卷积</span>
+        self.shortcut = nn.<span class="fn">Sequential</span>()
+        <span class="kw">if</span> stride != <span class="num">1</span> <span class="kw">or</span> in_channels != self.expansion * out_channels:
+            self.shortcut = nn.<span class="fn">Sequential</span>(
+                nn.<span class="fn">Conv2d</span>(in_channels, out_channels, <span class="num">1</span>, stride, bias=<span class="kw">False</span>),
+                nn.<span class="fn">BatchNorm2d</span>(out_channels)
+            )
+    
     <span class="kw">def</span> <span class="fn">forward</span>(self, x):
-        <span class="cm"># 前向传播</span>
-        <span class="kw">return</span> x</pre></div>
+        out = torch.<span class="fn">relu</span>(self.bn1(self.conv1(x)))
+        out = self.bn2(self.conv2(out))
+        out += self.shortcut(x)  <span class="cm"># ← 核心：残差连接</span>
+        out = torch.<span class="fn">relu</span>(out)
+        <span class="kw">return</span> out
+
+
+<span class="kw">class</span> <span class="cls">ResNet</span>(nn.Module):
+    <span class="str">"""ResNet 主网络"""</span>
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, block, num_blocks, num_classes=<span class="num">10</span>):
+        super().__span class="fn">init__</span>()
+        self.in_channels = <span class="num">64</span>
+        self.conv1 = nn.<span class="fn">Conv2d</span>(<span class="num">3</span>, <span class="num">64</span>, <span class="num">3</span>, <span class="num">1</span>, <span class="num">1</span>, bias=<span class="kw">False</span>)
+        self.bn1 = nn.<span class="fn">BatchNorm2d</span>(<span class="num">64</span>)
+        self.layer1 = self.<span class="fn">_make_layer</span>(block, <span class="num">64</span>, num_blocks[<span class="num">0</span>], stride=<span class="num">1</span>)
+        self.layer2 = self.<span class="fn">_make_layer</span>(block, <span class="num">128</span>, num_blocks[<span class="num">1</span>], stride=<span class="num">2</span>)
+        self.layer3 = self.<span class="fn">_make_layer</span>(block, <span class="num">256</span>, num_blocks[<span class="num">2</span>], stride=<span class="num">2</span>)
+        self.layer4 = self.<span class="fn">_make_layer</span>(block, <span class="num">512</span>, num_blocks[<span class="num">3</span>], stride=<span class="num">2</span>)
+        self.linear = nn.<span class="fn">Linear</span>(<span class="num">512</span> * block.expansion, num_classes)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        out = torch.<span class="fn">relu</span>(self.bn1(self.conv1(x)))
+        out = self.layer1(out)
+        out = self.layer2(out)
+        out = self.layer3(out)
+        out = self.layer4(out)
+        out = nn.functional.<span class="fn">avg_pool2d</span>(out, <span class="num">4</span>)
+        out = out.<span class="fn">view</span>(out.size(<span class="num">0</span>), -<span class="num">1</span>)
+        <span class="kw">return</span> self.linear(out)
+
+
+<span class="kw">def</span> <span class="fn">resnet18</span>():
+    <span class="kw">return</span> ResNet(BasicBlock, [<span class="num">2</span>, <span class="num">2</span>, <span class="num">2</span>, <span class="num">2</span>])</pre></div>
     </div>
   </section>
 
+  <!-- INTERACTIVE DEMO: Gradient Propagation -->
+  <section class="section">
+    <div class="section-label">交互演示</div>
+    <div class="section-title">梯度传播对比实验</div>
+    <div class="section-body">
+      <p>调节网络深度（层数），观察<strong>有残差连接</strong>与<strong>无残差连接</strong>的梯度传播差异。注意观察梯度如何随层数变化而衰减。</p>
+    </div>
+    <div class="demo-container">
+      
+      <!-- Controls -->
+      <div class="demo-controls">
+        <div class="demo-control-item">
+          <label>网络层数</label>
+          <input type="range" id="depth-slider" class="demo-slider" min="2" max="100" value="20" oninput="updateGradientDemo()">
+          <span class="value-display" id="depth-value">20 层</span>
+        </div>
+        <div class="demo-control-item">
+          <label>每层梯度衰减</label>
+          <input type="range" id="decay-slider" class="demo-slider" min="5" max="99" value="85" oninput="updateGradientDemo()">
+          <span class="value-display" id="decay-value">0.85</span>
+        </div>
+        <button class="demo-btn" onclick="runGradientDemo()">▶ 运行模拟</button>
+        <button class="demo-btn secondary" onclick="resetGradientDemo()">↺ 重置</button>
+      </div>
+
+      <!-- Demo output -->
+      <div id="gradient-result" style="margin-bottom:16px;">
+        <div class="demo-output" id="gradient-text">点击「运行模拟」开始梯度传播实验...</div>
+      </div>
+
+      <!-- Visual comparison -->
+      <div class="gradient-demo">
+        <!-- With ResNet -->
+        <div class="gradient-panel with-resnet">
+          <h4>✓ 有残差连接</h4>
+          <div class="gradient-bar-container" id="with-resnet-bars">
+            <!-- Bars will be generated by JS -->
+          </div>
+          <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);">
+            <div style="font-size:11px;color:var(--text-faint);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin-bottom:8px;">梯度统计</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <div>
+                <div style="font-size:10px;color:var(--text-faint);">平均梯度</div>
+                <div style="font-family:'JetBrains Mono';font-size:16px;color:var(--green);font-weight:500;" id="avg-w">-</div>
+              </div>
+              <div>
+                <div style="font-size:10px;color:var(--text-faint);">最小梯度</div>
+                <div style="font-family:'JetBrains Mono';font-size:16px;color:var(--green);font-weight:500;" id="min-w">-</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Without ResNet -->
+        <div class="gradient-panel no-resnet">
+          <h4>✗ 无残差连接</h4>
+          <div class="gradient-bar-container" id="no-resnet-bars">
+            <!-- Bars will be generated by JS -->
+          </div>
+          <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);">
+            <div style="font-size:11px;color:var(--text-faint);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin-bottom:8px;">梯度统计</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <div>
+                <div style="font-size:10px;color:var(--text-faint);">平均梯度</div>
+                <div style="font-family:'JetBrains Mono';font-size:16px;color:var(--red);font-weight:500;" id="avg-n">-</div>
+              </div>
+              <div>
+                <div style="font-size:10px;color:var(--text-faint);">最小梯度</div>
+                <div style="font-family:'JetBrains Mono';font-size:16px;color:var(--red);font-weight:500;" id="min-n">-</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flow visualization -->
+      <div class="flow-demo" id="flow-demo">
+        <div class="flow-node">
+          <div class="node-box" id="flow-input">输入 x</div>
+        </div>
+        <div class="flow-arrow" id="flow-arrow-1">→</div>
+        <div class="flow-node">
+          <div class="node-box" id="flow-conv1">Conv 1</div>
+        </div>
+        <div class="flow-arrow" id="flow-arrow-2">→</div>
+        <div class="flow-node">
+          <div class="node-box" id="flow-conv2">Conv 2</div>
+        </div>
+        <div class="flow-arrow" id="flow-arrow-3">→</div>
+        <div class="flow-node">
+          <div class="node-box" id="flow-skip" style="border-color:var(--green);color:var(--green);">+skip</div>
+        </div>
+        <div class="flow-arrow" id="flow-arrow-4">→</div>
+        <div class="flow-node">
+          <div class="node-box highlight" id="flow-output">输出 y</div>
+        </div>
+      </div>
+      <p class="diagram-caption" style="text-align:center;">图: 梯度在残差块中的传播路径 — 浅蓝色为常规梯度流，绿色为跳跃连接的直通路径</p>
+    </div>
+  </section>
+
+  <!-- NOTES -->
   <section class="section">
     <div class="section-label">学习心得</div>
     <div class="section-title">关键洞察</div>
     <div class="notes-card">
       <h4>学到的知识</h4>
       <ul>
-        <li>ResNet 是机器学习发展史上的重要模型</li>
-        <li>理解其数学原理有助于掌握后续模型</li>
+        <li><strong>残差学习的本质</strong>：不是学习完整映射 H(x)，而是学习增量 F(x) = H(x) - x，让恒等映射成为可选的退化情况</li>
+        <li><strong>梯度高速通道</strong>：跳跃连接在反向传播时提供 +1 项，确保梯度不会因多层连乘而指数级衰减</li>
+        <li><strong>退化 vs 过拟合</strong>：深层网络准确率下降是退化问题（训练困难），不是过拟合——训练误差也上升</li>
+        <li><strong>Batch Normalization 配合</strong>：ResNet 在卷积后立即使用 BN，有助于稳定深层网络训练</li>
+        <li><strong>思想的普适性</strong>：残差连接已成为现代深度学习的基础组件，从 Transformer 到 Diffusion Model 都在使用</li>
+        <li><strong>工程意义</strong>：让网络可以"任意加深"而不担心性能退化，为后续研究打开了空间</li>
+      </ul>
+    </div>
+    <div class="notes-card" style="margin-top:12px;">
+      <h4>实现要点</h4>
+      <ul>
+        <li>维度不匹配时，shortcut 路径需添加 1×1 卷积进行升维/降维</li>
+        <li>Basic Block 用于 ResNet-18/34，Bottleneck Block 用于 ResNet-50+</li>
+        <li>CIFAR-10 上使用 3×3 卷积代替 ImageNet 的 7×7 卷积和最大池化</li>
+        <li>每个卷积层后都紧跟 BN，最后才使用 ReLU（Post-activation ResNet）</li>
       </ul>
     </div>
   </section>
 
+  <!-- FOOTER NAV -->
   <div class="nav-footer">
     <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
+    <a href="../04_deep_learning_boom/02_xgboost/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">XGBoost</span></a>
   </div>
 
 </main>
+
+<script>
+// ── Gradient Demo ──
+function updateGradientDemo() {
+  const depth = parseInt(document.getElementById('depth-slider').value);
+  const decay = parseInt(document.getElementById('decay-slider').value) / 100;
+  document.getElementById('depth-value').textContent = depth + ' 层';
+  document.getElementById('decay-value').textContent = decay.toFixed(2);
+}
+
+function runGradientDemo() {
+  const depth = parseInt(document.getElementById('depth-slider').value);
+  const decay = parseFloat(document.getElementById('decay-slider').value / 100);
+  
+  // Calculate gradients
+  const layers = [];
+  for (let i = 0; i < depth; i++) {
+    layers.push({
+      layer: i + 1,
+      withoutResnet: Math.pow(decay, depth - i),
+      withResnet: Math.min(1.0, 0.5 + 0.5 * Math.pow(0.9, (depth - i) * 0.3))
+    });
+  }
+
+  // Update bars
+  updateBars('no-resnet-bars', layers, 'without');
+  updateBars('with-resnet-bars', layers, 'with');
+
+  // Update stats
+  const avgNo = layers.reduce((s, l) => s + l.withoutResnet, 0) / depth;
+  const minNo = Math.min(...layers.map(l => l.withoutResnet));
+  const avgWith = layers.reduce((s, l) => s + l.withResnet, 0) / depth;
+  const minWith = Math.min(...layers.map(l => l.withResnet));
+
+  document.getElementById('avg-n').textContent = avgNo.toFixed(3);
+  document.getElementById('min-n').textContent = minNo.toFixed(4);
+  document.getElementById('avg-w').textContent = avgWith.toFixed(3);
+  document.getElementById('min-w').textContent = minWith.toFixed(4);
+
+  // Update text
+  const ratio = (avgWith / avgNo).toFixed(1);
+  document.getElementById('gradient-text').innerHTML = 
+    `<span style="color:var(--accent)">实验结果</span> (${depth} 层网络，每层衰减 ${decay.toFixed(2)}x)\n\n` +
+    `无残差连接：平均梯度 = ${avgNo.toFixed(4)}，最小梯度 = ${minNo.toFixed(6)}\n` +
+    `有残差连接：平均梯度 = ${avgWith.toFixed(4)}，最小梯度 = ${minWith.toFixed(6)}\n\n` +
+    `<span style="color:var(--green)">结论</span>：残差连接使平均梯度提升 <strong>${ratio}x</strong>，有效缓解了梯度消失问题。` +
+    `当网络加深到 ${depth} 层时，无残差的梯度已接近消失 (${minNo.toFixed(6)})，而有残差的梯度仍保持在 ${minWith.toFixed(4)}。`;
+
+  // Animate flow
+  animateFlow();
+}
+
+function updateBars(containerId, layers, type) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  
+  // Show every Nth layer to avoid clutter
+  const showEvery = Math.max(1, Math.floor(layers.length / 10));
+  const sampled = layers.filter((_, i) => i % showEvery === 0 || i === layers.length - 1);
+  
+  sampled.forEach((layer, idx) => {
+    const row = document.createElement('div');
+    row.className = 'gradient-bar-row';
+    
+    const gradient = type === 'without' ? layer.withoutResnet : layer.withResnet;
+    const width = Math.max(2, gradient * 100);
+    
+    row.innerHTML = `
+      <span class="gradient-bar-label">L${layer.layer}</span>
+      <div class="gradient-bar-track">
+        <div class="gradient-bar-fill" style="width:${width}%;"></div>
+      </div>
+      <span class="gradient-bar-value">${gradient.toFixed(3)}</span>
+    `;
+    container.appendChild(row);
+  });
+}
+
+function animateFlow() {
+  const arrows = ['flow-arrow-1', 'flow-arrow-2', 'flow-arrow-3', 'flow-arrow-4'];
+  arrows.forEach((id, i) => {
+    const el = document.getElementById(id);
+    el.classList.add('active');
+    setTimeout(() => el.classList.remove('active'), 1500);
+  });
+}
+
+function resetGradientDemo() {
+  document.getElementById('gradient-text').textContent = '点击「运行模拟」开始梯度传播实验...';
+  document.getElementById('with-resnet-bars').innerHTML = '';
+  document.getElementById('no-resnet-bars').innerHTML = '';
+  ['avg-w', 'min-w', 'avg-n', 'min-n'].forEach(id => document.getElementById(id).textContent = '-');
+}
+
+function showBlockType(type) {
+  const tabs = document.querySelectorAll('.demo-tab');
+  tabs.forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  
+  const svgTitle = document.querySelector('#resnet-svg text[x="350"][y="28"]');
+  const svgSub = document.querySelector('#resnet-svg text[x="350"][y="48"]');
+  if (svgTitle && svgSub) {
+    if (type === 'basic') {
+      svgTitle.textContent = '残差块 (Residual Block) — Basic Block';
+      svgSub.textContent = 'y = F(x) + x → ReLU(y)';
+    } else {
+      svgTitle.textContent = '残差块 (Residual Block) — Bottleneck Block';
+      svgSub.textContent = 'y = F(x) + x → ReLU(y)  [1×1→3×3→1×1]';
+    }
+  }
+}
+
+// Initialize
+updateGradientDemo();
+</script>
 
 </body>
 </html>
