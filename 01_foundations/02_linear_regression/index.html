@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>线性回归 — ML History</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/base.css">
+<style>
+.math-display {
+  font-family: 'Cambria Math', 'Latin Modern Math', serif;
+  font-size: 16px;
+  color: var(--text-secondary);
+  background: var(--bg-marketing);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 24px 28px;
+  margin: 16px 0;
+  overflow-x: auto;
+  line-height: 2.2;
+  letter-spacing: 0.02em;
+}
+.math-label {
+  font-size: 11px;
+  color: var(--text-quaternary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  margin-bottom: 12px;
+  font-family: var(--font-sans);
+}
+.comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin: 20px 0;
+}
+.comparison-panel {
+  background: var(--bg-surface);
+  padding: 24px;
+}
+.comparison-panel h4 {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--brand-accent);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.comparison-panel p {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  line-height: 1.7;
+}
+.architecture-diagram {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-standard);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 2;
+  margin: 16px 0;
+  overflow-x: auto;
+  white-space: pre;
+}
+@media (max-width: 768px) {
+  .comparison-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <div class="nav-logo-icon">M</div>
+      ML History
+    </a>
+    <div class="nav-links">
+      <a href="../index.html">全部模型</a>
+      <a href="01_foundations/index.html">第一阶段 · 奠基时代</a>
+      <span class="nav-badge">1809</span>
+    </div>
+  </div>
+</nav>
+
+<main class="container">
+
+  <section class="hero">
+    <div class="hero-eyebrow">第一阶段 · 奠基时代</div>
+    <h1>线性回归</h1>
+    <p class="hero-subtitle">线性回归是最经典、最简单的监督学习算法之一。早在19世纪，高斯和勒让德就独立发展了最小二乘法（Least Squares Method），用于天体轨道计算。 **当时的问题**： - 科学家需要拟合实验数据，找到变量之间的线性关系 - 没有系统的机器学习理论，主要是数学统计方法 - 计算能力有限，需要高效的算法</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">年份</span>
+        <span class="hero-meta-value">1809</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">类型</span>
+        <span class="hero-meta-value">回归</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">框架</span>
+        <span class="hero-meta-value">NumPy</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">测试</span>
+        <span class="hero-meta-value">✓</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="stats-grid">
+    <div class="stat-cell"><span class="stat-value">1809</span><span class="stat-label">提出年份</span></div>
+    <div class="stat-cell"><span class="stat-value">回归</span><span class="stat-label">模型类型</span></div>
+    <div class="stat-cell"><span class="stat-value">NumPy</span><span class="stat-label">实现框架</span></div>
+    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
+  </div>
+
+  <section class="section">
+    <div class="section-label">历史背景</div>
+    <div class="section-title">从问题到突破</div>
+    <div class="section-body">
+      <p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">线性回归是最经典、最简单的监督学习算法之一。早在19世纪，高斯和勒让德就独立发展了最小二乘法（Least Squares Method），用于天体轨道计算。</p>
+
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">**当时的问题**：</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 科学家需要拟合实验数据，找到变量之间的线性关系</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 没有系统的机器学习理论，主要是数学统计方法</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 计算能力有限，需要高效的算法</li>
+
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">**核心突破**：</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 最小二乘法提供了求解线性回归的解析解</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 为后续所有回归问题奠定了基础</li>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">数学原理</div>
+    <div class="section-title">公式与代码一一对应</div>
+    <div class="section-body">
+      <p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">#</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">代码实现</div>
+    <div class="section-title">model.py 核心逻辑</div>
+    <div class="section-body"><p>纯NumPy实现，关键模块手写。</p></div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-lang">Python · model.py</span>
+      </div>
+      <div class="code-body"><pre>class LinearRegression:
+    """线性回归模型。
+
+    使用最小二乘法求解，支持解析解和梯度下降两种方法。
+    """
+
+    def __init__(self, learning_rate=0.01, max_iter=1000, tol=1e-6):
+        """初始化线性回归模型。
+
+        Args:
+            learning_rate: 学习率（梯度下降使用）。
+            max_iter: 最大迭代次数（梯度下降使用）。
+            tol: 收敛容差。
+        """
+        self.learning_rate = learning_rate
+        self.max_iter = max_iter
+        self.tol = tol
+        self.weights = None
+        self.bias = None
+        self.history = None
+
+    def _fit_closed_form(self, X, y):
+        """使用正规方程求解。
+
+        解析解：w = (X^T X)^(-1) X^T y
+
+        Args:
+            X: 特征矩阵，添加偏置列。
+            y: 目标变量。
+        """
+        XTX = X.T @ X
+
+        if np.linalg.det(XTX) == 0:
+            self.weights = np.linalg.pinv(XTX) @ X.T @ y
+        else:
+            self.weights = np.linalg.inv(XTX) @ X.T @ y
+
+        self.bias = self.weights[0]
+        self.weights = self.weights[1:]
+</pre></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">训练演示</div>
+    <div class="section-title">train.py 运行脚本</div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-lang">Python · train.py</span>
+      </div>
+      <div class="code-body"><pre>def demo_basic():
+    print("=" * 50)
+    print("基础演示：简单线性关系")
+    print("=" * 50)
+    np.random.seed(42)
+    X = np.random.rand(100, 1) * 10
+    y = 3 * X.squeeze() + 2 + np.random.randn(100) * 0.5
+    model = LinearRegression()
+    model.fit(X, y)
+    r2 = model.score(X, y)
+    print(f"真实关系: y = 3x + 2")
+    print(f"学习到的关系: y = {model.weights[0]:.3f}x + {model.bias:.3f}")
+    print(f"R²分数: {r2:.4f}")
+
+def demo_gradient_descent():
+    print("=" * 50)
+    print("梯度下降演示")
+    print("=" * 50)
+    np.random.seed(42)
+    X = np.random.rand(100, 2) * 10
+    y = 2 * X[:, 0] + 3 * X[:, 1] + 1 + np.random.randn(100) * 0.5
+    model = LinearRegression(learning_rate=0.01, max_iter=1000)
+    model.fit(X, y, method="gradient_descent")
+    print(f"学习到的权重: {model.weights}")
+    print(f"学习到的偏置: {model.bias:.3f}")</pre></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">局限性</div>
+    <div class="section-title">为什么它不够好</div>
+    <div class="section-body">
+      <p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1. **只能捕捉线性关系**：无法处理非线性问题</p>
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2. **对异常值敏感**：MSE损失函数会被异常值影响</p>
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">3. **假设特征独立**：忽略了特征之间的相关性</p>
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">4. **需要特征缩放**：不同量纲的特征会影响收敛速度</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">历史影响</div>
+    <div class="section-title">启发了什么</div>
+    <div class="section-body">
+      <p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">线性回归直接启发了：</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 逻辑回归（二分类）</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 岭回归和Lasso回归（正则化）</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 广义线性模型</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 后续所有回归方法的理论基础</li>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">学习心得</div>
+    <div class="section-title">从实践中学习</div>
+
+    <div class="notes-card">
+      <h4>学到的知识</h4>
+      <ul><p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1. **最小二乘法**：线性回归的标准解法</p>
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2. **两种求解方法**：解析解（正规方程）和梯度下降</p>
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">3. **特征缩放的重要性**：不同量纲的特征会影响收敛速度</p>
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">4. **R²分数**：衡量回归模型性能的标准指标</p></ul>
+    </div>
+
+    <div class="notes-card">
+      <h4>思考题答案</h4>
+      <ul><p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1. **为什么需要特征缩放？**</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 不同量纲的特征会导致梯度下降收敛缓慢</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 解析解不受影响，但数值稳定性可能受影响</li>
+
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2. **正则化如何改善线性回归？**</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 岭回归（L2）：防止过拟合，处理共线性</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ Lasso回归（L1）：特征选择，产生稀疏解</li>
+
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">3. **岭回归和Lasso回归有什么区别？**</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 岭回归：L2正则化，权重缩小但不为零</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ Lasso回归：L1正则化，可以将某些权重压缩为零</li></ul>
+    </div>
+  </section>
+
+  <div class="nav-footer">
+    <a href="../../01_foundations/01_mp_neuron/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">MP神经元</span></a>
+    <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
+    <a href="../../01_foundations/03_logistic_regression/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">逻辑回归</span></a>
+  </div>
+
+</main>
+
+</body>
+</html>

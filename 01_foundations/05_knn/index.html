@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>k近邻（k-NN） — ML History</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/base.css">
+<style>
+.math-display {
+  font-family: 'Cambria Math', 'Latin Modern Math', serif;
+  font-size: 16px;
+  color: var(--text-secondary);
+  background: var(--bg-marketing);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 24px 28px;
+  margin: 16px 0;
+  overflow-x: auto;
+  line-height: 2.2;
+  letter-spacing: 0.02em;
+}
+.math-label {
+  font-size: 11px;
+  color: var(--text-quaternary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  margin-bottom: 12px;
+  font-family: var(--font-sans);
+}
+.comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin: 20px 0;
+}
+.comparison-panel {
+  background: var(--bg-surface);
+  padding: 24px;
+}
+.comparison-panel h4 {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--brand-accent);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.comparison-panel p {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  line-height: 1.7;
+}
+.architecture-diagram {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-standard);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 2;
+  margin: 16px 0;
+  overflow-x: auto;
+  white-space: pre;
+}
+@media (max-width: 768px) {
+  .comparison-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <div class="nav-logo-icon">M</div>
+      ML History
+    </a>
+    <div class="nav-links">
+      <a href="../index.html">全部模型</a>
+      <a href="01_foundations/index.html">第一阶段 · 奠基时代</a>
+      <span class="nav-badge">1951</span>
+    </div>
+  </div>
+</nav>
+
+<main class="container">
+
+  <section class="hero">
+    <div class="hero-eyebrow">第一阶段 · 奠基时代</div>
+    <h1>k近邻（k-NN）</h1>
+    <p class="hero-subtitle">k近邻是最简单的机器学习算法之一，最早由Evelyn Fix和JD Hodges于1951年提出。它是一种基于实例的学习算法，没有明确的训练过程。 **核心思想**： - 近朱者赤，近墨者黑 - 相似的事物应该有相似的输出 常用距离： - 欧氏距离：$d(\mathbf{x}, \mathbf{y}) = \sqrt{\sum_{i=1}^{n}(x_i - y_i)^2}$</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">年份</span>
+        <span class="hero-meta-value">1951</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">类型</span>
+        <span class="hero-meta-value">实例学习</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">框架</span>
+        <span class="hero-meta-value">NumPy</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">测试</span>
+        <span class="hero-meta-value">✓</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="stats-grid">
+    <div class="stat-cell"><span class="stat-value">1951</span><span class="stat-label">提出年份</span></div>
+    <div class="stat-cell"><span class="stat-value">实例学习</span><span class="stat-label">模型类型</span></div>
+    <div class="stat-cell"><span class="stat-value">NumPy</span><span class="stat-label">实现框架</span></div>
+    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
+  </div>
+
+  <section class="section">
+    <div class="section-label">历史背景</div>
+    <div class="section-title">从问题到突破</div>
+    <div class="section-body">
+      <p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">k近邻是最简单的机器学习算法之一，最早由Evelyn Fix和JD Hodges于1951年提出。它是一种基于实例的学习算法，没有明确的训练过程。</p>
+
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">**核心思想**：</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 近朱者赤，近墨者黑</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 相似的事物应该有相似的输出</li>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">数学原理</div>
+    <div class="section-title">公式与代码一一对应</div>
+    <div class="section-body">
+      <p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">#</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">代码实现</div>
+    <div class="section-title">model.py 核心逻辑</div>
+    <div class="section-body"><p>纯NumPy实现，关键模块手写。</p></div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-lang">Python · model.py</span>
+      </div>
+      <div class="code-body"><pre>class KNN:
+    """k近邻分类器。"""
+    def __init__(self, k=3, distance='euclidean'):
+        self.k = k
+        self.distance = distance
+        self.X_train = None
+        self.y_train = None
+
+    def fit(self, X, y):
+        self.X_train = np.array(X)
+        self.y_train = np.array(y)
+        return self
+
+    def _distance(self, x1, x2):
+        if self.distance == 'euclidean':
+            return np.sqrt(np.sum((x1 - x2) ** 2))
+        elif self.distance == 'manhattan':
+            return np.sum(np.abs(x1 - x2))
+        else:
+            raise ValueError(f"不支持的距离度量: {self.distance}")
+
+    def predict(self, X):
+        return np.array([self._predict_one(x) for x in X])
+
+    def _predict_one(self, x):
+        distances = [self._distance(x, x_train) for x_train in self.X_train]
+        k_indices = np.argsort(distances)[:self.k]
+        k_nearest_labels = self.y_train[k_indices]
+        most_common = Counter(k_nearest_labels).most_common(1)
+        return most_common[0][0]
+
+    def score(self, X, y):
+        return np.mean(self.predict(X) == y)</pre></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">训练演示</div>
+    <div class="section-title">train.py 运行脚本</div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-lang">Python · train.py</span>
+      </div>
+      <div class="code-body"><pre>def demo():
+    print("=" * 50)
+    print("k近邻演示")
+    print("=" * 50)
+    X, y = load_iris_data()
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+    X_train_std, X_test_std, _, _ = standardize(X_train, X_test)
+    model = KNN(k=3)
+    model.fit(X_train_std, y_train)
+    print(f"准确率: {model.score(X_test_std, y_test):.4f}")
+
+if __name__ == "__main__":
+    demo()</pre></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">局限性</div>
+    <div class="section-title">为什么它不够好</div>
+    <div class="section-body">
+      <p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1. 计算成本高：预测时需要计算与所有训练样本的距离</p>
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2. 对高维数据效果差：维度灾难</p>
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">3. 需要选择超参数k</p>
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">4. 对噪声敏感</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">历史影响</div>
+    <div class="section-title">启发了什么</div>
+    <div class="section-body">
+      <li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 简单的基准方法</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 模板匹配的基础</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 后续发展出多种变体</li>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">学习心得</div>
+    <div class="section-title">从实践中学习</div>
+
+    <div class="notes-card">
+      <h4>学到的知识</h4>
+      <ul><p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1. 没有显式训练过程，直接存储训练数据</p>
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2. k值选择很重要：太小对噪声敏感，太大会平滑边界</p>
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">3. 距离度量影响结果</p></ul>
+    </div>
+
+    <div class="notes-card">
+      <h4>思考题答案</h4>
+      <ul><p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1. **k值如何选择？**</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 通常取奇数避免平局</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 通过交叉验证选择</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 经验法则：k ≈ sqrt(n)</li>
+
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2. **距离度量如何选择？**</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 欧氏距离：最常用的默认选择</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 曼哈顿距离：高维空间更稳定</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 根据数据特性选择</li></ul>
+    </div>
+  </section>
+
+  <div class="nav-footer">
+    <a href="../../01_foundations/04_perceptron/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">感知机</span></a>
+    <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
+    <a href="../../01_foundations/06_kmeans/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">k-Means聚类</span></a>
+  </div>
+
+</main>
+
+</body>
+</html>

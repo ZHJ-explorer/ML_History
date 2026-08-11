@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAN — ML History</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/base.css">
+<style>
+.math-display {
+  font-family: 'Cambria Math', 'Latin Modern Math', serif;
+  font-size: 16px;
+  color: var(--text-secondary);
+  background: var(--bg-marketing);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 24px 28px;
+  margin: 16px 0;
+  overflow-x: auto;
+  line-height: 2.2;
+  letter-spacing: 0.02em;
+}
+.math-label {
+  font-size: 11px;
+  color: var(--text-quaternary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  margin-bottom: 12px;
+  font-family: var(--font-sans);
+}
+.comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin: 20px 0;
+}
+.comparison-panel {
+  background: var(--bg-surface);
+  padding: 24px;
+}
+.comparison-panel h4 {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--brand-accent);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.comparison-panel p {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  line-height: 1.7;
+}
+.architecture-diagram {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-standard);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 2;
+  margin: 16px 0;
+  overflow-x: auto;
+  white-space: pre;
+}
+@media (max-width: 768px) {
+  .comparison-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <div class="nav-logo-icon">M</div>
+      ML History
+    </a>
+    <div class="nav-links">
+      <a href="../index.html">全部模型</a>
+      <a href="03_deep_learning_revival/index.html">第三阶段 · 深度学习复兴</a>
+      <span class="nav-badge">2014</span>
+    </div>
+  </div>
+</nav>
+
+<main class="container">
+
+  <section class="hero">
+    <div class="hero-eyebrow">第三阶段 · 深度学习复兴</div>
+    <h1>GAN</h1>
+    <p class="hero-subtitle">2014年，Goodfellow等人提出了GAN（Generative Adversarial Networks），开创了生成模型的新范式。GAN通过生成器和判别器的对抗训练，能够生成逼真的数据。 **当时的问题**： - 传统生成模型（如VAE）生成的样本模糊 - 缺乏有效的生成模型训练方法 **核心突破**：</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">年份</span>
+        <span class="hero-meta-value">2014</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">类型</span>
+        <span class="hero-meta-value">生成对抗网络</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">框架</span>
+        <span class="hero-meta-value">PyTorch</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">测试</span>
+        <span class="hero-meta-value">—</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="stats-grid">
+    <div class="stat-cell"><span class="stat-value">2014</span><span class="stat-label">提出年份</span></div>
+    <div class="stat-cell"><span class="stat-value">生成对抗网络</span><span class="stat-label">模型类型</span></div>
+    <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
+    <div class="stat-cell"><span class="stat-value">—</span><span class="stat-label">有测试</span></div>
+  </div>
+
+  <section class="section">
+    <div class="section-label">历史背景</div>
+    <div class="section-title">从问题到突破</div>
+    <div class="section-body">
+      <p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2014年，Goodfellow等人提出了GAN（Generative Adversarial Networks），开创了生成模型的新范式。GAN通过生成器和判别器的对抗训练，能够生成逼真的数据。</p>
+
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">**当时的问题**：</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 传统生成模型（如VAE）生成的样本模糊</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 缺乏有效的生成模型训练方法</li>
+
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">**核心突破**：</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 对抗训练框架</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 无需显式概率密度估计</li>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">数学原理</div>
+    <div class="section-title">公式与代码一一对应</div>
+    <div class="section-body">
+      <p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">#</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">代码实现</div>
+    <div class="section-title">model.py 核心逻辑</div>
+    <div class="section-body"><p>纯PyTorch实现，关键模块手写。</p></div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-lang">Python · model.py</span>
+      </div>
+      <div class="code-body"><pre>class Generator(nn.Module):
+    """生成器：将随机噪声映射到数据空间。"""
+    
+    def __init__(self, latent_dim, img_dim):
+        super().__init__()
+        self.latent_dim = latent_dim
+        self.model = nn.Sequential(
+            nn.Linear(latent_dim, 128),
+            nn.ReLU(),
+            nn.Linear(128, 256),
+            nn.ReLU(),
+            nn.Linear(256, img_dim),
+            nn.Tanh()
+        )
+    
+    def forward(self, z):
+        """前向传播。
+        
+        Args:
+            z: 随机噪声，shape (batch, latent_dim)
+            
+        Returns:
+            生成样本，shape (batch, img_dim)
+        """
+        return self.model(z)
+
+
+class Discriminator(nn.Module):
+    """判别器：区分真实样本和生成样本。"""
+    
+    def __init__(self, img_dim):
+        super().__init__()
+        self.model = nn.Sequential(
+            nn.Linear(img_dim, 256),
+            nn.LeakyReLU(0.2, inplace=True),
+            nn.Linear(256, 128),
+            nn.LeakyReLU(0.2, inplace=True),
+            nn.Linear(128, 1),
+            nn.Sigmoid()
+        )</pre></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">训练演示</div>
+    <div class="section-title">train.py 运行脚本</div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-lang">Python · train.py</span>
+      </div>
+      <div class="code-body"><pre>def demo():
+    """演示GAN训练。"""
+    print("=" * 50)
+    print("GAN演示：生成简单数据")
+    print("=" * 50)
+    
+    torch.manual_seed(42)
+    
+    # 超参数
+    latent_dim = 10
+    img_dim = 20  # 输出维度
+    epochs = 50
+    lr = 0.001
+    
+    # 创建简单数据：随机数据
+    np.random.seed(42)
+    real_data = torch.FloatTensor(np.random.randn(200, img_dim))  # (200, 20)
+    
+    # 构建模型
+    gan = GAN(latent_dim, img_dim)
+    optimizer_g = torch.optim.Adam(gan.generator.parameters(), lr=lr)
+    optimizer_d = torch.optim.Adam(gan.discriminator.parameters(), lr=lr)
+    
+    # 训练
+    print(f"训练 {epochs} 个epoch...")</pre></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">局限性</div>
+    <div class="section-title">为什么它不够好</div>
+    <div class="section-body">
+      <p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1. 训练不稳定</p>
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2. 模式崩溃</p>
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">3. 评估困难</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">历史影响</div>
+    <div class="section-title">启发了什么</div>
+    <div class="section-body">
+      <li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 开启了生成模型的新时代</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 应用于图像生成、超分辨率等</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 启发了StyleGAN、Diffusion Model等</li>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">学习心得</div>
+    <div class="section-title">从实践中学习</div>
+
+    <div class="notes-card">
+      <h4>学到的知识</h4>
+      <ul><p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1. GAN由生成器和判别器组成</p>
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2. 对抗训练是核心思想</p>
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">3. 生成器学习生成逼真数据，判别器学习区分真假</p></ul>
+    </div>
+
+    <div class="notes-card">
+      <h4>思考题答案</h4>
+      <ul><p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1. **为什么GAN训练不稳定？**</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 生成器和判别器同时优化导致非平稳博弈</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 梯度消失问题（判别器太强时）</li>
+
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2. **模式崩溃是什么？如何避免？**</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 生成器只生成少数几种样本</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 避免方法：使用最小二乘GAN、WGAN等变体</li>
+
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">3. **GAN和VAE各有什么优缺点？**</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ GAN：生成质量高，但训练不稳定</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ VAE：训练稳定，但生成样本模糊</li></ul>
+    </div>
+  </section>
+
+  <div class="nav-footer">
+    <a href="../../03_deep_learning_revival/05_word2vec/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">Word2Vec</span></a>
+    <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
+    <a href="../../04_deep_learning_boom/01_resnet/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">ResNet</span></a>
+  </div>
+
+</main>
+
+</body>
+</html>

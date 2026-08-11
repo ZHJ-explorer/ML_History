@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPT-1 — ML History</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/base.css">
+<style>
+.math-display {
+  font-family: 'Cambria Math', 'Latin Modern Math', serif;
+  font-size: 16px;
+  color: var(--text-secondary);
+  background: var(--bg-marketing);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 24px 28px;
+  margin: 16px 0;
+  overflow-x: auto;
+  line-height: 2.2;
+  letter-spacing: 0.02em;
+}
+.math-label {
+  font-size: 11px;
+  color: var(--text-quaternary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  margin-bottom: 12px;
+  font-family: var(--font-sans);
+}
+.comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin: 20px 0;
+}
+.comparison-panel {
+  background: var(--bg-surface);
+  padding: 24px;
+}
+.comparison-panel h4 {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--brand-accent);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.comparison-panel p {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  line-height: 1.7;
+}
+.architecture-diagram {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-standard);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 2;
+  margin: 16px 0;
+  overflow-x: auto;
+  white-space: pre;
+}
+@media (max-width: 768px) {
+  .comparison-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <div class="nav-logo-icon">M</div>
+      ML History
+    </a>
+    <div class="nav-links">
+      <a href="../index.html">全部模型</a>
+      <a href="04_deep_learning_boom/index.html">第四阶段 · 深度学习爆发</a>
+      <span class="nav-badge">2018</span>
+    </div>
+  </div>
+</nav>
+
+<main class="container">
+
+  <section class="hero">
+    <div class="hero-eyebrow">第四阶段 · 深度学习爆发</div>
+    <h1>GPT-1</h1>
+    <p class="hero-subtitle"></p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">年份</span>
+        <span class="hero-meta-value">2018</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">类型</span>
+        <span class="hero-meta-value">单向语言模型</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">框架</span>
+        <span class="hero-meta-value">PyTorch</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">测试</span>
+        <span class="hero-meta-value">✓</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="stats-grid">
+    <div class="stat-cell"><span class="stat-value">2018</span><span class="stat-label">提出年份</span></div>
+    <div class="stat-cell"><span class="stat-value">单向语言模型</span><span class="stat-label">模型类型</span></div>
+    <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
+    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
+  </div>
+
+  <section class="section">
+    <div class="section-label">历史背景</div>
+    <div class="section-title">从问题到突破</div>
+    <div class="section-body">
+      <p>暂无内容</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">数学原理</div>
+    <div class="section-title">公式与代码一一对应</div>
+    <div class="section-body">
+      <p>暂无内容</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">代码实现</div>
+    <div class="section-title">model.py 核心逻辑</div>
+    <div class="section-body"><p>纯PyTorch实现，关键模块手写。</p></div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-lang">Python · model.py</span>
+      </div>
+      <div class="code-body"><pre>class GPT1(nn.Module):
+    """GPT-1语言模型，单向解码器架构，用于文本生成任务。"""
+
+    def __init__(self, vocab_size=50257, d_model=768, num_heads=12, num_layers=12, max_seq_len=1024):
+        """初始化GPT-1模型。
+
+        Args:
+            vocab_size: 词表大小，默认为50257（GPT-2词表）。
+            d_model: 模型维度，默认为768。
+            num_heads: 注意力头数，默认为12。
+            num_layers: 解码器层数，默认为12。
+            max_seq_len: 最大序列长度，默认为1024。
+        """
+        super().__init__()
+        self.token_embedding = nn.Embedding(vocab_size, d_model)
+        self.position_embedding = nn.Embedding(max_seq_len, d_model)
+        
+        # 使用TransformerEncoder
+        encoder_layer = nn.TransformerEncoderLayer(
+            d_model=d_model, 
+            nhead=num_heads, 
+            dim_feedforward=3072, 
+            dropout=0.1
+        )
+        self.transformer_encoder = nn.TransformerEncoder(encoder_layer, num_layers=num_layers)
+        
+        self.ln_final = nn.LayerNorm(d_model)
+        self.head = nn.Linear(d_model, vocab_size, bias=False)
+    
+    def forward(self, input_ids, attention_mask=None):
+        """执行前向传播。
+
+        Args:
+            input_ids: 输入token ID张量，形状为(batch_size, seq_len)。
+            attention_mask: 注意力掩码，默认为None。
+
+        Returns:
+            输出logits，形状为(batch_size, seq_len, vocab_size)。
+        """
+        batch_size, seq_len = input_ids.size()</pre></div>
+    </div>
+  </section>
+
+  
+
+  <section class="section">
+    <div class="section-label">局限性</div>
+    <div class="section-title">为什么它不够好</div>
+    <div class="section-body">
+      <p>暂无内容</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">历史影响</div>
+    <div class="section-title">启发了什么</div>
+    <div class="section-body">
+      <p>暂无内容</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">学习心得</div>
+    <div class="section-title">从实践中学习</div>
+
+    <div class="notes-card">
+      <h4>学到的知识</h4>
+      <ul><p>暂无内容</p></ul>
+    </div>
+
+    <div class="notes-card">
+      <h4>思考题答案</h4>
+      <ul><p>暂无内容</p></ul>
+    </div>
+  </section>
+
+  <div class="nav-footer">
+    <a href="../../04_deep_learning_boom/05_bert/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">BERT</span></a>
+    <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
+    <a href="../../05_large_model_era/01_scaling_law/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">缩放定律</span></a>
+  </div>
+
+</main>
+
+</body>
+</html>

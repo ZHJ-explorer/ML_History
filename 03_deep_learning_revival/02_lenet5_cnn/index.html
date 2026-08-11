@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LeNet-5 CNN — ML History</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/base.css">
+<style>
+.math-display {
+  font-family: 'Cambria Math', 'Latin Modern Math', serif;
+  font-size: 16px;
+  color: var(--text-secondary);
+  background: var(--bg-marketing);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 24px 28px;
+  margin: 16px 0;
+  overflow-x: auto;
+  line-height: 2.2;
+  letter-spacing: 0.02em;
+}
+.math-label {
+  font-size: 11px;
+  color: var(--text-quaternary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  margin-bottom: 12px;
+  font-family: var(--font-sans);
+}
+.comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin: 20px 0;
+}
+.comparison-panel {
+  background: var(--bg-surface);
+  padding: 24px;
+}
+.comparison-panel h4 {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--brand-accent);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.comparison-panel p {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  line-height: 1.7;
+}
+.architecture-diagram {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-standard);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 2;
+  margin: 16px 0;
+  overflow-x: auto;
+  white-space: pre;
+}
+@media (max-width: 768px) {
+  .comparison-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <div class="nav-logo-icon">M</div>
+      ML History
+    </a>
+    <div class="nav-links">
+      <a href="../index.html">全部模型</a>
+      <a href="03_deep_learning_revival/index.html">第三阶段 · 深度学习复兴</a>
+      <span class="nav-badge">1998</span>
+    </div>
+  </div>
+</nav>
+
+<main class="container">
+
+  <section class="hero">
+    <div class="hero-eyebrow">第三阶段 · 深度学习复兴</div>
+    <h1>LeNet-5 CNN</h1>
+    <p class="hero-subtitle">1998年，Yann LeCun等在论文《Gradient-based learning applied to document recognition》中提出LeNet-5， 这是最早成功的卷积神经网络之一，用于手写数字识别。 **核心创新**： - 卷积层：局部连接 + 权值共享 - 池化层：空间降采样，增加平移不变性</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">年份</span>
+        <span class="hero-meta-value">1998</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">类型</span>
+        <span class="hero-meta-value">卷积神经网络</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">框架</span>
+        <span class="hero-meta-value">NumPy</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">测试</span>
+        <span class="hero-meta-value">—</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="stats-grid">
+    <div class="stat-cell"><span class="stat-value">1998</span><span class="stat-label">提出年份</span></div>
+    <div class="stat-cell"><span class="stat-value">卷积神经网络</span><span class="stat-label">模型类型</span></div>
+    <div class="stat-cell"><span class="stat-value">NumPy</span><span class="stat-label">实现框架</span></div>
+    <div class="stat-cell"><span class="stat-value">—</span><span class="stat-label">有测试</span></div>
+  </div>
+
+  <section class="section">
+    <div class="section-label">历史背景</div>
+    <div class="section-title">从问题到突破</div>
+    <div class="section-body">
+      <p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1998年，Yann LeCun等在论文《Gradient-based learning applied to document recognition》中提出LeNet-5，</p>
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">这是最早成功的卷积神经网络之一，用于手写数字识别。</p>
+
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">**核心创新**：</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 卷积层：局部连接 + 权值共享</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 池化层：空间降采样，增加平移不变性</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 层次化特征提取</li>
+
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">**当时背景**：</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 深度学习尚未复兴</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 训练数据有限（MNIST）</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 计算能力较弱</li>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">数学原理</div>
+    <div class="section-title">公式与代码一一对应</div>
+    <div class="section-body">
+      <p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">#</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">代码实现</div>
+    <div class="section-title">model.py 核心逻辑</div>
+    <div class="section-body"><p>纯NumPy实现，关键模块手写。</p></div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-lang">Python · model.py</span>
+      </div>
+      <div class="code-body"><pre>class ManualConv2D(nn.Module):
+    """手动实现二维卷积层（向量化版本）。
+
+    公式：
+        output[b, o, i, j] = sum_{c,m,n} input[b, c, i+m, j+n] * weight[o, c, m, n] + bias[o]
+
+    Args:
+        in_channels: 输入通道数。
+        out_channels: 输出通道数。
+        kernel_size: 卷积核大小。
+        stride: 步长。
+        padding: 填充。
+    """
+
+    def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0):
+        super().__init__()
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+        self.kernel_size = kernel_size
+        self.stride = stride
+        self.padding = padding
+        self.weight = nn.Parameter(torch.randn(out_channels, in_channels, kernel_size, kernel_size) * 0.01)
+        self.bias = nn.Parameter(torch.zeros(out_channels))
+
+    def forward(self, x):
+        """前向传播（向量化卷积）。
+
+        Args:
+            x: 输入张量，shape (B, C, H, W)。
+
+        Returns:
+            卷积输出，shape (B, out_channels, H', W')。
+        """
+        B, C, H, W = x.shape
+        k = self.kernel_size
+        s = self.stride
+        p = self.padding
+
+        # 填充
+        if p &gt; 0:</pre></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">训练演示</div>
+    <div class="section-title">train.py 运行脚本</div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-lang">Python · train.py</span>
+      </div>
+      <div class="code-body"><pre>def demo():
+    """训练并评估LeNet-5模型。"""
+    set_seed(42)
+    device = torch.device('cpu')
+
+    print("=" * 50)
+    print("LeNet-5 卷积神经网络演示")
+    print("=" * 50)
+
+    # 加载数据
+    print("\n[1] 加载MNIST数据集...")
+    X, y = load_mnist_data()
+    # 归一化到[0, 1]
+    X = X / 255.0
+    # 重塑为 28x28 图像 (N, 1, 28, 28)
+    X = X.reshape(-1, 1, 28, 28)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+    # 转换为Tensor
+    X_train = torch.FloatTensor(X_train)  # (N, 1, 28, 28)
+    X_test = torch.FloatTensor(X_test)
+    y_train = torch.LongTensor(y_train)
+    y_test = torch.LongTensor(y_test)
+
+    train_loader = DataLoader(TensorDataset(X_train, y_train), batch_size=128, shuffle=True)</pre></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">局限性</div>
+    <div class="section-title">为什么它不够好</div>
+    <div class="section-body">
+      <p>暂无内容</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">历史影响</div>
+    <div class="section-title">启发了什么</div>
+    <div class="section-body">
+      <li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 开创了卷积神经网络的研究方向</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 启发了后续LeNet系列、AlexNet、VGG等</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 权值共享思想成为CNN核心</li>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">学习心得</div>
+    <div class="section-title">从实践中学习</div>
+
+    <div class="notes-card">
+      <h4>学到的知识</h4>
+      <ul><p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1. 卷积层实现：手动遍历每个输出位置，对输入进行局部加权求和</p>
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2. 池化层实现：对窗口内元素取平均值进行降采样</p>
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">3. 卷积的关键是权值共享，大大减少了参数量</p>
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">4. 池化层增加了模型的平移不变性</p></ul>
+    </div>
+
+    <div class="notes-card">
+      <h4>思考题答案</h4>
+      <ul><p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1. **为什么卷积层需要权值共享？**</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 大幅减少参数量</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 保持空间局部性</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 增强模型的泛化能力</li>
+
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2. **池化层的作用是什么？**</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 降低特征图空间维度</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 提供平移不变性</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 防止过拟合</li>
+
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">3. **LeNet-5与现代ResNet有什么本质区别？**</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 深度不同：LeNet-5只有7层，ResNet可达152+层</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 激活函数：LeNet-5用sigmoid/tanh，现代用ReLU</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 训练方法：LeNet-5用SGD，现代用Adam+BatchNorm</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 残差连接：ResNet引入了skip connection解决梯度消失</li></ul>
+    </div>
+  </section>
+
+  <div class="nav-footer">
+    <a href="../../03_deep_learning_revival/01_dbn/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">深度信念网络（DBN）</span></a>
+    <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
+    <a href="../../03_deep_learning_revival/03_rnn/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">循环神经网络（RNN）</span></a>
+  </div>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深度信念网络（DBN） — ML History</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/base.css">
+<style>
+.math-display {
+  font-family: 'Cambria Math', 'Latin Modern Math', serif;
+  font-size: 16px;
+  color: var(--text-secondary);
+  background: var(--bg-marketing);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 24px 28px;
+  margin: 16px 0;
+  overflow-x: auto;
+  line-height: 2.2;
+  letter-spacing: 0.02em;
+}
+.math-label {
+  font-size: 11px;
+  color: var(--text-quaternary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  margin-bottom: 12px;
+  font-family: var(--font-sans);
+}
+.comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin: 20px 0;
+}
+.comparison-panel {
+  background: var(--bg-surface);
+  padding: 24px;
+}
+.comparison-panel h4 {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--brand-accent);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.comparison-panel p {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  line-height: 1.7;
+}
+.architecture-diagram {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-standard);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 2;
+  margin: 16px 0;
+  overflow-x: auto;
+  white-space: pre;
+}
+@media (max-width: 768px) {
+  .comparison-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <div class="nav-logo-icon">M</div>
+      ML History
+    </a>
+    <div class="nav-links">
+      <a href="../index.html">全部模型</a>
+      <a href="03_deep_learning_revival/index.html">第三阶段 · 深度学习复兴</a>
+      <span class="nav-badge">2006</span>
+    </div>
+  </div>
+</nav>
+
+<main class="container">
+
+  <section class="hero">
+    <div class="hero-eyebrow">第三阶段 · 深度学习复兴</div>
+    <h1>深度信念网络（DBN）</h1>
+    <p class="hero-subtitle">2006年，Hinton等人发表了"Deep Belief Networks are Universal Learning Machines"，标志着深度学习复兴的开始。DBN由多个受限玻尔兹曼机（RBM）堆叠而成，采用无监督逐层预训练+有监督微调的策略。 **当时的问题**： - 深层网络难以训练，梯度消失问题严重</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">年份</span>
+        <span class="hero-meta-value">2006</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">类型</span>
+        <span class="hero-meta-value">深度生成模型</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">框架</span>
+        <span class="hero-meta-value">NumPy</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">测试</span>
+        <span class="hero-meta-value">—</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="stats-grid">
+    <div class="stat-cell"><span class="stat-value">2006</span><span class="stat-label">提出年份</span></div>
+    <div class="stat-cell"><span class="stat-value">深度生成模型</span><span class="stat-label">模型类型</span></div>
+    <div class="stat-cell"><span class="stat-value">NumPy</span><span class="stat-label">实现框架</span></div>
+    <div class="stat-cell"><span class="stat-value">—</span><span class="stat-label">有测试</span></div>
+  </div>
+
+  <section class="section">
+    <div class="section-label">历史背景</div>
+    <div class="section-title">从问题到突破</div>
+    <div class="section-body">
+      <p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2006年，Hinton等人发表了"Deep Belief Networks are Universal Learning Machines"，标志着深度学习复兴的开始。DBN由多个受限玻尔兹曼机（RBM）堆叠而成，采用无监督逐层预训练+有监督微调的策略。</p>
+
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">**当时的问题**：</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 深层网络难以训练，梯度消失问题严重</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 缺乏有效的无监督预训练方法</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 计算能力逐渐提升</li>
+
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">**核心突破**：</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 逐层贪心预训练</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 无监督特征学习</li>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">数学原理</div>
+    <div class="section-title">公式与代码一一对应</div>
+    <div class="section-body">
+      <p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">#</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">代码实现</div>
+    <div class="section-title">model.py 核心逻辑</div>
+    <div class="section-body"><p>纯NumPy实现，关键模块手写。</p></div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-lang">Python · model.py</span>
+      </div>
+      <div class="code-body"><pre>class RBM(nn.Module):
+    """受限玻尔兹曼机。"""
+    def __init__(self, n_visible, n_hidden):
+        super().__init__()
+        self.n_visible = n_visible
+        self.n_hidden = n_hidden
+        self.w = nn.Parameter(torch.randn(n_visible, n_hidden) * 0.01)
+        self.hb = nn.Parameter(torch.zeros(n_hidden))
+        self.vb = nn.Parameter(torch.zeros(n_visible))
+
+    def forward(self, v):
+        h_prob = torch.sigmoid(torch.matmul(v, self.w) + self.hb)
+        h = torch.bernoulli(h_prob)
+        v_prob = torch.sigmoid(torch.matmul(h, self.w.t()) + self.vb)
+        return v_prob, h_prob
+
+    def train_step(self, v, lr=0.01):
+        # 正相
+        h_prob_pos = torch.sigmoid(torch.matmul(v, self.w) + self.hb)
+        h_pos = torch.bernoulli(h_prob_pos)
+
+        # 负相（k=1 CD）
+        v_neg, h_prob_neg = self(v)
+        h_neg = torch.bernoulli(h_prob_neg)
+
+        # 更新
+        self.w.data += lr * (torch.matmul(v.t(), h_prob_pos) - torch.matmul(v_neg.t(), h_neg)) / v.size(0)
+        self.hb.data += lr * (h_prob_pos.mean(0) - h_neg.mean(0))
+        self.vb.data += lr * (v_neg.mean(0) - v_neg.mean(0))
+        return self
+
+
+class DBN(nn.Module):
+    """深度信念网络。"""
+    def __init__(self, layer_sizes):
+        super().__init__()
+        self.rbms = nn.ModuleList()
+        for i in range(len(layer_sizes) - 1):
+            self.rbms.append(RBM(layer_sizes[i], layer_sizes[i + 1]))
+</pre></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">训练演示</div>
+    <div class="section-title">train.py 运行脚本</div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-lang">Python · train.py</span>
+      </div>
+      <div class="code-body"><pre>def demo():
+    print("=" * 50)
+    print("DBN演示")
+    print("=" * 50)
+    
+    X, y = load_iris_data()
+    X = X / X.max()  # 归一化
+    
+    # 构建DBN
+    model = DBN(layer_sizes=[4, 10, 5])
+    model.pretrain(torch.FloatTensor(X), epochs=10, lr=0.01)
+    
+    print("DBN预训练完成")
+    print(f"特征维度: {X.shape[1]} -&gt; 10 -&gt; 5")
+
+
+if __name__ == "__main__":
+    demo()</pre></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">局限性</div>
+    <div class="section-title">为什么它不够好</div>
+    <div class="section-body">
+      <p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1. 计算成本高</p>
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2. 后被更高效的方法取代（如ReLU+Dropout）</p>
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">3. 对超参数敏感</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">历史影响</div>
+    <div class="section-title">启发了什么</div>
+    <div class="section-body">
+      <li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 开启了深度学习复兴</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 启发了自编码器、深度残差网络等</li>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">学习心得</div>
+    <div class="section-title">从实践中学习</div>
+
+    <div class="notes-card">
+      <h4>学到的知识</h4>
+      <ul><p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1. DBN由多个RBM堆叠而成</p>
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2. 逐层贪心预训练解决了深层网络训练难题</p>
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">3. 无监督预训练+有监督微调是早期深度学习的核心策略</p></ul>
+    </div>
+
+    <div class="notes-card">
+      <h4>思考题答案</h4>
+      <ul><p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1. **为什么DBN需要逐层预训练？**</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 避免梯度消失</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 每层学习数据的层次化特征表示</li>
+
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2. **对比散度（CD）的原理是什么？**</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 用k步Gibbs采样近似梯度</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ CD-1：用一次采样近似数据分布</li>
+
+<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">3. **DBN与现代深度学习的关系是什么？**</p>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ DBN启发了深度网络的训练方法</li>
+<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 现代深度学习更多使用ReLU+Dropout+BatchNorm</li></ul>
+    </div>
+  </section>
+
+  <div class="nav-footer">
+    <a href="../../02_statistical_learning/07_gbdt/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">GBDT</span></a>
+    <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
+    <a href="../../03_deep_learning_revival/02_lenet5_cnn/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">LeNet-5 CNN</span></a>
+  </div>
+
+</main>
+
+</body>
+</html>
