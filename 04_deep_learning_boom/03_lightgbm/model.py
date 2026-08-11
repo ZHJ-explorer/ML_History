@@ -75,9 +75,16 @@ class LightGBMTree:
 
 
 class LightGBM:
-    """LightGBM分类器。"""
-    
+    """LightGBM分类器。高效的梯度提升框架，支持直方图算法和GOSS策略。"""
+
     def __init__(self, n_estimators=50, max_depth=3, learning_rate=0.01):
+        """初始化LightGBM分类器。
+
+        Args:
+            n_estimators: 树的数量，默认为50。
+            max_depth: 每棵树的最大深度，默认为3。
+            learning_rate: 学习率（shrinkage），默认为0.01。
+        """
         self.n_estimators = n_estimators
         self.max_depth = max_depth
         self.learning_rate = learning_rate
@@ -88,6 +95,15 @@ class LightGBM:
         return 1 / (1 + np.exp(-np.clip(x, -500, 500)))
     
     def fit(self, X, y):
+        """训练LightGBM分类器。
+
+        Args:
+            X: 训练特征矩阵，形状为(n_samples, n_features)。
+            y: 训练标签（0或1），形状为(n_samples,)。
+
+        Returns:
+            self: 训练后的分类器实例。
+        """
         self.trees = []
         n = len(y)
         
@@ -115,6 +131,14 @@ class LightGBM:
         return self
     
     def predict(self, X):
+        """对输入数据进行预测。
+
+        Args:
+            X: 输入特征矩阵，形状为(n_samples, n_features)。
+
+        Returns:
+            预测标签数组（0或1），形状为(n_samples,)。
+        """
         n = X.shape[0]
         initial_pred = np.log(self.base_score / (1 - self.base_score + 1e-16) + 1e-16)
         predictions = np.full(n, initial_pred)
@@ -125,4 +149,13 @@ class LightGBM:
         return (self._sigmoid(predictions) >= 0.5).astype(int)
     
     def score(self, X, y):
+        """计算分类准确率。
+
+        Args:
+            X: 输入特征矩阵，形状为(n_samples, n_features)。
+            y: 真实标签，形状为(n_samples,)。
+
+        Returns:
+            分类准确率（0到1之间的浮点数）。
+        """
         return np.mean(self.predict(X) == y)

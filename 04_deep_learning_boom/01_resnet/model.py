@@ -4,10 +4,17 @@ import torch.nn as nn
 
 
 class BasicBlock(nn.Module):
-    """ResNet基础块。"""
+    """ResNet基础块，包含残差连接。"""
     expansion = 1
-    
+
     def __init__(self, in_channels, out_channels, stride=1):
+        """初始化BasicBlock。
+
+        Args:
+            in_channels: 输入通道数。
+            out_channels: 输出通道数。
+            stride: 卷积步长，默认为1。
+        """
         super().__init__()
         self.conv1 = nn.Conv2d(in_channels, out_channels, 3, stride, 1, bias=False)
         self.bn1 = nn.BatchNorm2d(out_channels)
@@ -30,9 +37,16 @@ class BasicBlock(nn.Module):
 
 
 class ResNet(nn.Module):
-    """ResNet模型。"""
-    
+    """ResNet残差网络，通过残差连接解决深度网络退化问题。"""
+
     def __init__(self, block, num_blocks, num_classes=10):
+        """初始化ResNet模型。
+
+        Args:
+            block: 基本块类型（BasicBlock或Bottleneck）。
+            num_blocks: 每个层的块数量列表，如[2,2,2,2]。
+            num_classes: 分类类别数，默认为10。
+        """
         super().__init__()
         self.in_channels = 64
         

@@ -5,20 +5,22 @@ import torch.nn.functional as F
 
 
 class GPT1(nn.Module):
-    """GPT-1语言模型。"""
+    """GPT-1语言模型（简化版）。"""
     
     def __init__(self, vocab_size=50257, d_model=768, num_heads=12, num_layers=12, max_seq_len=1024):
         super().__init__()
         self.token_embedding = nn.Embedding(vocab_size, d_model)
         self.position_embedding = nn.Embedding(max_seq_len, d_model)
         
-        # 使用DecoderLayer需要self-attention，简化为EncoderLayer
-        self.layers = nn.ModuleList([
-            nn.TransformerEncoderLayer(d_model=d_model, nhead=num_heads, dim_feedforward=3072, dropout=0.1)
-            for _ in range(num_layers)
-        ])
+        # 使用TransformerEncoder
+        encoder_layer = nn.TransformerEncoderLayer(
+            d_model=d_model, 
+            nhead=num_heads, 
+            dim_feedforward=3072, 
+            dropout=0.1
+        )
+        self.transformer_encoder = nn.TransformerEncoder(encoder_layer, num_layers=num_layers)
         
-        self.encoder = nn.TransformerEncoder(self.layers, num_layers=num_layers)
         self.ln_final = nn.LayerNorm(d_model)
         self.head = nn.Linear(d_model, vocab_size, bias=False)
     
@@ -33,8 +35,8 @@ class GPT1(nn.Module):
         # 叠加
         x = token_embeddings + position_embeddings
         
-        # 编码器层（自注意力）
-        x = self.encoder(x)
+        # Transformer编码
+        x = self.transformer_encoder(x)
         
         # 最终层
         x = self.ln_final(x)
