@@ -7,84 +7,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
-.math-display {
-  font-family: 'Cambria Math', 'Latin Modern Math', serif;
-  font-size: 16px;
-  color: var(--text-secondary);
-  background: var(--bg-marketing);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 24px 28px;
-  margin: 16px 0;
-  overflow-x: auto;
-  line-height: 2.2;
-  letter-spacing: 0.02em;
-}
-.math-label {
-  font-size: 11px;
-  color: var(--text-quaternary);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 500;
-  margin-bottom: 12px;
-  font-family: var(--font-sans);
-}
-.comparison-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1px;
-  background: var(--border-subtle);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  margin: 20px 0;
-}
-.comparison-panel {
-  background: var(--bg-surface);
-  padding: 24px;
-}
-.comparison-panel h4 {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--brand-accent);
-  margin-bottom: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-.comparison-panel p {
-  font-size: 14px;
-  color: var(--text-tertiary);
-  line-height: 1.7;
-}
-.architecture-diagram {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-standard);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--text-secondary);
-  line-height: 2;
-  margin: 16px 0;
-  overflow-x: auto;
-  white-space: pre;
-}
-@media (max-width: 768px) {
-  .comparison-grid { grid-template-columns: 1fr; }
-}
+/* Model-specific styles */
 </style>
 </head>
 <body>
 
 <nav class="nav">
   <div class="nav-inner">
-    <a href="../index.html" class="nav-logo">
-      <div class="nav-logo-icon">M</div>
-      ML History
-    </a>
+    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="03_deep_learning_revival/index.html">第三阶段 · 深度学习复兴</a>
+      <a href="../03_deep_learning_revival/index.html">03_deep_learning_revival阶段</a>
       <span class="nav-badge">1997</span>
     </div>
   </div>
@@ -93,202 +26,119 @@
 <main class="container">
 
   <section class="hero">
-    <div class="hero-eyebrow">第三阶段 · 深度学习复兴</div>
+    <div class="hero-eyebrow">03_deep_learning_revival阶段 · 1997</div>
     <h1>LSTM</h1>
-    <p class="hero-subtitle">1997年，Hochreiter和Schmidhuber提出了LSTM（Long Short-Term Memory）网络，解决了传统RNN的梯度消失问题。LSTM通过引入门控机制，能够学习长期依赖关系。 **当时的问题**： - 传统RNN难以学习长序列依赖 - 梯度消失导致早期输入信息丢失 - 训练深层RNN困难</p>
+    <p class="hero-subtitle">暂无简介</p>
     <div class="hero-meta">
-      <div class="hero-meta-item">
-        <span class="hero-meta-label">年份</span>
-        <span class="hero-meta-value">1997</span>
-      </div>
-      <div class="hero-meta-item">
-        <span class="hero-meta-label">类型</span>
-        <span class="hero-meta-value">长短期记忆</span>
-      </div>
-      <div class="hero-meta-item">
-        <span class="hero-meta-label">框架</span>
-        <span class="hero-meta-value">PyTorch</span>
-      </div>
-      <div class="hero-meta-item">
-        <span class="hero-meta-label">测试</span>
-        <span class="hero-meta-value">—</span>
-      </div>
+      <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">1997</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Hochreiter & Schmidhuber</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">长短期记忆</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">框架</span><span class="hero-meta-value">PyTorch</span></div>
     </div>
   </section>
 
   <div class="stats-grid">
     <div class="stat-cell"><span class="stat-value">1997</span><span class="stat-label">提出年份</span></div>
     <div class="stat-cell"><span class="stat-value">长短期记忆</span><span class="stat-label">模型类型</span></div>
+    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
     <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
-    <div class="stat-cell"><span class="stat-value">—</span><span class="stat-label">有测试</span></div>
   </div>
+
+  <section class="section">
+    <div class="section-label">网络架构</div>
+    <div class="section-title">结构示意</div>
+    <div class="diagram-container">
+      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
+        <!-- Generic architecture diagram -->
+        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
+        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
+        
+        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
+        
+        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
+        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
+        
+        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
+        
+        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
+        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
+        
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+    <p class="diagram-caption">图: LSTM 通用架构示意</p>
+  </section>
 
   <section class="section">
     <div class="section-label">历史背景</div>
     <div class="section-title">从问题到突破</div>
     <div class="section-body">
-      <p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1997年，Hochreiter和Schmidhuber提出了LSTM（Long Short-Term Memory）网络，解决了传统RNN的梯度消失问题。LSTM通过引入门控机制，能够学习长期依赖关系。</p>
+      <p><strong>Hochreiter & Schmidhuber</strong> 在 <strong>1997</strong> 年提出了 LSTM，这是机器学习发展史上的一个重要里程碑。</p>
+      <p>1997年，Hochreiter和Schmidhuber提出了LSTM（Long Short-Term Memory）网络，解决了传统RNN的梯度消失问题。LSTM通过引入门控机制，能够学习长期依赖关系。
 
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">**当时的问题**：</p>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 传统RNN难以学习长序列依赖</li>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 梯度消失导致早期输入信息丢失</li>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 训练深层RNN困难</li>
+**当时的问题**：
+- 传统RNN难以学习长序列依赖
+- 梯度消失导致早期输入信息丢失
+- 训练深层RNN困难
 
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">**核心突破**：</p>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 遗忘门、输入门、输出门三个门控机制</li>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 细胞状态作为信息高速公路</li>
+**核心突破**：
+- 遗忘门、输入门、输出门三个门控机制
+- 细胞状态作为...</p>
     </div>
   </section>
 
   <section class="section">
     <div class="section-label">数学原理</div>
-    <div class="section-title">公式与代码一一对应</div>
-    <div class="section-body">
-      <p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">#</p>
+    <div class="section-title">核心公式</div>
+    <div class="formula-card">
+      <div class="formula-label">核心公式</div>
+      <div class="formula">f(x) = ...</div>
+      <div class="formula-note">根据具体模型填写</div>
     </div>
   </section>
 
   <section class="section">
     <div class="section-label">代码实现</div>
     <div class="section-title">model.py 核心逻辑</div>
-    <div class="section-body"><p>纯PyTorch实现，关键模块手写。</p></div>
     <div class="code-block">
       <div class="code-header">
         <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
         <span class="code-lang">Python · model.py</span>
       </div>
-      <div class="code-body"><pre>class LSTMCell(nn.Module):
-    """单个LSTM单元。
-    
-    公式：
-        f_t = sigmoid(W_xf * x_t + W_hf * h_{t-1} + b_f)  # 遗忘门
-        i_t = sigmoid(W_xi * x_t + W_hi * h_{t-1} + b_i)  # 输入门
-        o_t = sigmoid(W_xo * x_t + W_ho * h_{t-1} + b_o)  # 输出门
-        C_tilda = tanh(W_xc * x_t + W_hc * h_{t-1} + b_c) # 候选细胞
-        C_t = f_t * C_{t-1} + i_t * C_tilda                # 细胞状态
-        h_t = o_t * tanh(C_t)                              # 隐藏状态
-    """
-    
-    def __init__(self, input_size, hidden_size):
-        super().__init__()
-        self.input_size = input_size
-        self.hidden_size = hidden_size
+      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">LSTM</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__span class="fn">init__</span>()
+        <span class="cm"># 模型定义</span>
         
-        # 权重矩阵
-        self.W_f = nn.Parameter(torch.randn(hidden_size, input_size) * 0.01)
-        self.W_i = nn.Parameter(torch.randn(hidden_size, input_size) * 0.01)
-        self.W_o = nn.Parameter(torch.randn(hidden_size, input_size) * 0.01)
-        self.W_c = nn.Parameter(torch.randn(hidden_size, input_size) * 0.01)
-        
-        self.U_f = nn.Parameter(torch.randn(hidden_size, hidden_size) * 0.01)
-        self.U_i = nn.Parameter(torch.randn(hidden_size, hidden_size) * 0.01)
-        self.U_o = nn.Parameter(torch.randn(hidden_size, hidden_size) * 0.01)
-        self.U_c = nn.Parameter(torch.randn(hidden_size, hidden_size) * 0.01)
-        
-        # 偏置
-        self.b_f = nn.Parameter(torch.zeros(hidden_size))
-        self.b_i = nn.Parameter(torch.zeros(hidden_size))
-        self.b_o = nn.Parameter(torch.zeros(hidden_size))
-        self.b_c = nn.Parameter(torch.zeros(hidden_size))
-    
-    def forward(self, x, h_prev, c_prev):
-        """前向传播。
-        
-        Args:
-            x: 输入，shape (batch, input_size)
-            h_prev: 上一时刻隐藏状态</pre></div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="section-label">训练演示</div>
-    <div class="section-title">train.py 运行脚本</div>
-    <div class="code-block">
-      <div class="code-header">
-        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
-        <span class="code-lang">Python · train.py</span>
-      </div>
-      <div class="code-body"><pre>def demo():
-    """演示LSTM序列预测。"""
-    print("=" * 50)
-    print("LSTM演示：序列预测")
-    print("=" * 50)
-    
-    # 创建简单序列数据：预测下一个值
-    np.random.seed(42)
-    seq_len = 500
-    X = np.random.rand(seq_len, 1)
-    y = np.roll(X, -1).flatten()[:-1]  # 下一个值
-    
-    # 划分为训练和测试
-    split = int(0.8 * seq_len)
-    X_train, X_test = X[:split], X[split:]
-    y_train, y_test = y[:split], y[split:]
-    
-    # 创建序列
-    def create_sequences(data, seq_length=10):
-        X, y = [], []
-        for i in range(len(data) - seq_length):
-            X.append(data[i:i+seq_length].flatten())
-            y.append(data[i+seq_length].flatten())
-        return np.array(X), np.array(y)
-    </pre></div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="section-label">局限性</div>
-    <div class="section-title">为什么它不够好</div>
-    <div class="section-body">
-      <p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1. 计算复杂度高</p>
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2. 参数较多</p>
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">3. 后被GRU等简化版本部分取代</p>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="section-label">历史影响</div>
-    <div class="section-title">启发了什么</div>
-    <div class="section-body">
-      <li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 开启了序列建模的新时代</li>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 应用于机器翻译、语音识别等</li>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 启发了Transformer的发展</li>
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        <span class="cm"># 前向传播</span>
+        <span class="kw">return</span> x</pre></div>
     </div>
   </section>
 
   <section class="section">
     <div class="section-label">学习心得</div>
-    <div class="section-title">从实践中学习</div>
-
+    <div class="section-title">关键洞察</div>
     <div class="notes-card">
       <h4>学到的知识</h4>
-      <ul><p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1. LSTM通过门控机制控制信息流动</p>
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2. 细胞状态是LSTM的核心创新</p>
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">3. 三个门分别控制遗忘、输入和输出</p></ul>
-    </div>
-
-    <div class="notes-card">
-      <h4>思考题答案</h4>
-      <ul><p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1. **LSTM为什么能解决梯度消失问题？**</p>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 细胞状态提供了梯度流动的"高速公路"</li>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 门控机制避免了梯度的连乘消失</li>
-
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2. **GRU和LSTM有什么区别？**</p>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ GRU将遗忘门和输入门合并为更新门</li>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ GRU参数更少，计算更快</li>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 性能上两者相差不大</li>
-
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">3. **LSTM在现代NLP中的角色是什么？**</p>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 在Transformer出现前是主流方法</li>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 现在仍用于某些序列建模任务</li>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 理解LSTM有助于理解Transformer</li></ul>
+      <ul>
+        <li>LSTM 是机器学习发展史上的重要模型</li>
+        <li>理解其数学原理有助于掌握后续模型</li>
+      </ul>
     </div>
   </section>
 
   <div class="nav-footer">
-    <a href="../../03_deep_learning_revival/03_rnn/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">循环神经网络（RNN）</span></a>
+    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="../../03_deep_learning_revival/05_word2vec/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">Word2Vec</span></a>
+    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
   </div>
 
 </main>

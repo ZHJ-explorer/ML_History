@@ -7,85 +7,132 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
-.gen-output { background: var(--bg); border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--text-secondary); line-height: 1.8; min-height: 80px; white-space: pre-wrap; }
-.gen-token { color: var(--accent); font-weight: 500; }
-.prompt-input { background: var(--bg); border: 1px solid var(--border-strong); color: var(--text); padding: 10px 14px; border-radius: var(--radius); font-size: 14px; font-family: var(--font-mono); width: 100%; margin-bottom: 12px; }
-.btn-gen { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: var(--radius); font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.15s; }
-.btn-gen:hover { background: #828fff; }
+/* Model-specific styles */
 </style>
 </head>
 <body>
-<nav class="nav"><div class="nav-inner"><a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a><div class="nav-links"><a href="../index.html">全部模型</a><a href="../04_deep_learning_boom/index.html">第四阶段</a><span class="nav-badge">2018</span></div></div></nav>
-<main class="container">
-  <section class="hero"><div class="hero-eyebrow">第四阶段 · 深度学习爆发</div><h1>GPT-1</h1><p class="hero-subtitle">OpenAI提出的首个通用语言模型，采用纯解码器架构和单向注意力，开创了"预训练+微调"的生成式预训练范式，为ChatGPT等后续模型奠定基础。</p><div class="hero-meta"><div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">2018</span></div><div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">OpenAI</span></div><div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">单向语言模型</span></div><div class="hero-meta-item"><span class="hero-meta-label">参数</span><span class="hero-meta-value">117M</span></div></div></section>
-  <div class="stats-grid"><div class="stat-cell"><span class="stat-value">117M</span><span class="stat-label">参数量</span></div><div class="stat-cell"><span class="stat-value">12</span><span class="stat-label">Transformer层</span></div><div class="stat-cell"><span class="stat-value">12</span><span class="stat-label">注意力头</span></div><div class="stat-cell"><span class="stat-value">768</span><span class="stat-label">隐藏维度</span></div></div>
-  <section class="section"><div class="section-label">网络架构</div><div class="section-title">单向自回归Transformer解码器</div><div class="diagram-container"><svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:600px;">
-    <defs><marker id="arr2" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--text-muted)"/></marker></defs>
-    <!-- Encoder (not used in GPT-1) -->
-    <rect x="20" y="30" width="120" height="50" rx="8" fill="var(--bg-elevated)" stroke="var(--text-faint)" stroke-width="1" stroke-dasharray="4,4"/><text x="80" y="52" text-anchor="middle" fill="var(--text-faint)" font-size="11">Encoder</text><text x="80" y="68" text-anchor="middle" fill="var(--text-faint)" font-size="10">(不使用)</text>
-    <!-- Decoder layers -->
-    <rect x="200" y="30" width="100" height="40" rx="6" fill="var(--bg-surface)" stroke="var(--accent)" stroke-width="1.5"/><text x="250" y="53" text-anchor="middle" fill="var(--accent)" font-size="11">Layer 1</text>
-    <rect x="200" y="85" width="100" height="40" rx="6" fill="var(--bg-surface)" stroke="var(--accent)" stroke-width="1.5"/><text x="250" y="108" text-anchor="middle" fill="var(--accent)" font-size="11">Layer 2</text>
-    <rect x="200" y="140" width="100" height="40" rx="6" fill="var(--bg-surface)" stroke="var(--accent)" stroke-width="1.5"/><text x="250" y="163" text-anchor="middle" fill="var(--accent)" font-size="11">Layer 3</text>
-    <text x="250" y="195" text-anchor="middle" fill="var(--text-faint)" font-size="10">... × 12层</text>
-    <!-- Causal mask visualization -->
-    <rect x="360" y="30" width="220" height="160" rx="8" fill="var(--bg-surface)" stroke="var(--border-strong)"/>
-    <text x="470" y="48" text-anchor="middle" fill="var(--text-muted)" font-size="10">Causal Attention Mask</text>
-    <g font-size="10" font-family="JetBrains Mono" text-anchor="middle">
-      <text x="380" y="72" fill="var(--accent)">●</text><text x="410" y="72" fill="var(--text-faint)">×</text><text x="440" y="72" fill="var(--text-faint)">×</text><text x="470" y="72" fill="var(--text-faint)">×</text><text x="500" y="72" fill="var(--text-faint)">×</text>
-      <text x="380" y="92" fill="var(--accent)">●</text><text x="410" y="92" fill="var(--accent)">●</text><text x="440" y="92" fill="var(--text-faint)">×</text><text x="470" y="92" fill="var(--text-faint)">×</text><text x="500" y="92" fill="var(--text-faint)">×</text>
-      <text x="380" y="112" fill="var(--accent)">●</text><text x="410" y="112" fill="var(--accent)">●</text><text x="440" y="112" fill="var(--accent)">●</text><text x="470" y="112" fill="var(--text-faint)">×</text><text x="500" y="112" fill="var(--text-faint)">×</text>
-      <text x="380" y="132" fill="var(--accent)">●</text><text x="410" y="132" fill="var(--accent)">●</text><text x="440" y="132" fill="var(--accent)">●</text><text x="470" y="132" fill="var(--accent)">●</text><text x="500" y="132" fill="var(--text-faint)">×</text>
-      <text x="380" y="152" fill="var(--accent)">●</text><text x="410" y="152" fill="var(--accent)">●</text><text x="440" y="152" fill="var(--accent)">●</text><text x="470" y="152" fill="var(--accent)">●</text><text x="500" y="152" fill="var(--accent)">●</text>
-    </g>
-    <text x="370" y="175" fill="var(--text-faint)" font-size="9">t=0 t=1 t=2 t=3 t=4</text>
-    <!-- Output -->
-    <rect x="200" y="220" width="100" height="30" rx="6" fill="rgba(16,185,129,0.15)" stroke="var(--green)"/><text x="250" y="240" text-anchor="middle" fill="var(--green)" font-size="11">P(next token)</text>
-    <!-- Arrows -->
-    <line x1="300" y1="50" x2="360" y2="50" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr2)"/>
-    <line x1="250" y1="70" x2="250" y2="85" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#arr2)"/>
-    <line x1="250" y1="125" x2="250" y2="140" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#arr2)"/>
-    <line x1="250" y1="180" x2="250" y2="220" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#arr2)"/>
-  </svg></div><p class="diagram-caption">图: GPT-1单向架构 — 每个token只能看到左侧历史（causal mask）</p></section>
-  <section class="section"><div class="section-label">预训练策略</div><div class="section-title">无监督语言建模</div><div class="formula-card"><div class="formula-label">最大化似然</div><div class="formula">max Σ log P(w_t | w_1, ..., w_{t-1}; θ)</div><div class="formula-note">给定前缀，预测下一个词的概率分布——纯自回归生成</div></div><div class="comparison-grid"><div class="comparison-panel"><h4>GPT vs BERT</h4><p><strong>GPT-1:</strong> 单向注意力，适合生成任务<br><strong>BERT:</strong> 双向注意力，适合理解任务</p></div><div class="comparison-panel"><h4>单向 vs 双向</h4><p>单向：每个词只能看到左边上下文<br>双向：每个词可以看到左右全部上下文</p></div></div></section>
-  <section class="section"><div class="section-label">代码实现</div><div class="section-title">model.py 核心结构</div><div class="code-block"><div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-lang">Python · model.py</span></div><div class="code-body"><pre><span class="kw">class</span> <span class="cls">GPT1</span>(nn.Module):
-    <span class="kw">def</span> <span class="fn">__init__</span>(self, vocab_size=<span class="num">50257</span>, d_model=<span class="num">768</span>,
-                 num_heads=<span class="num">12</span>, num_layers=<span class="num">12</span>):
-        self.token_emb = nn.<span class="fn">Embedding</span>(vocab_size, d_model)
-        self.pos_emb = nn.<span class="fn">Embedding</span>(max_seq_len, d_model)
-        decoder_layer = nn.<span class="fn">TransformerDecoderLayer</span>(...)
-        self.decoder = nn.<span class="fn">TransformerDecoder</span>(decoder_layer, num_layers)
-        self.head = nn.<span class="fn">Linear</span>(d_model, vocab_size)
 
-    <span class="kw">def</span> <span class="fn">forward</span>(self, input_ids):
-        x = self.token_emb(input_ids) + self.pos_emb(positions)
-        <span class="kw">return</span> self.<span class="fn">head</span>(self.decoder(x))</pre></div></div></section>
-  <section class="section"><div class="section-label">交互式演示</div><div class="section-title">自回归文本生成</div><div class="demo-container"><div class="demo-title">输入提示，体验GPT-1的单向生成</div><input class="prompt-input" id="prompt-input" value="机器学习是" placeholder="输入提示词..."><button class="btn-gen" onclick="runGPT()">生成</button><div class="gen-output" id="gen-output">点击"生成"查看自回归过程...</div></div></section>
-  <section class="section"><div class="section-label">历史局限</div><div class="section-title">为什么它不够好</div><div class="section-body"><ul><li>单向注意力无法利用完整上下文</li><li>参数量较小（117M），表达力有限</li><li>缺乏任务特定的微调策略</li><li>生成质量不稳定</li></ul></div></section>
-  <div class="nav-footer"><a href="../04_deep_learning_boom/05_bert/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">BERT</span></a><span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span><a href="../05_large_model_era/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">大模型时代</span></a></div>
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
+    <div class="nav-links">
+      <a href="../index.html">全部模型</a>
+      <a href="../04_deep_learning_boom/index.html">04_deep_learning_boom阶段</a>
+      <span class="nav-badge">2018</span>
+    </div>
+  </div>
+</nav>
+
+<main class="container">
+
+  <section class="hero">
+    <div class="hero-eyebrow">04_deep_learning_boom阶段 · 2018</div>
+    <h1>GPT-1</h1>
+    <p class="hero-subtitle">暂无简介</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">2018</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">OpenAI</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">单向语言模型</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">框架</span><span class="hero-meta-value">PyTorch</span></div>
+    </div>
+  </section>
+
+  <div class="stats-grid">
+    <div class="stat-cell"><span class="stat-value">2018</span><span class="stat-label">提出年份</span></div>
+    <div class="stat-cell"><span class="stat-value">单向语言模型</span><span class="stat-label">模型类型</span></div>
+    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
+    <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
+  </div>
+
+  <section class="section">
+    <div class="section-label">网络架构</div>
+    <div class="section-title">结构示意</div>
+    <div class="diagram-container">
+      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
+        <!-- Generic architecture diagram -->
+        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
+        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
+        
+        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
+        
+        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
+        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
+        
+        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
+        
+        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
+        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
+        
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+    <p class="diagram-caption">图: GPT-1 通用架构示意</p>
+  </section>
+
+  <section class="section">
+    <div class="section-label">历史背景</div>
+    <div class="section-title">从问题到突破</div>
+    <div class="section-body">
+      <p><strong>OpenAI</strong> 在 <strong>2018</strong> 年提出了 GPT-1，这是机器学习发展史上的一个重要里程碑。</p>
+      <p></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">数学原理</div>
+    <div class="section-title">核心公式</div>
+    <div class="formula-card">
+      <div class="formula-label">核心公式</div>
+      <div class="formula">f(x) = ...</div>
+      <div class="formula-note">根据具体模型填写</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">代码实现</div>
+    <div class="section-title">model.py 核心逻辑</div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-lang">Python · model.py</span>
+      </div>
+      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">GPT-1</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__span class="fn">init__</span>()
+        <span class="cm"># 模型定义</span>
+        
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        <span class="cm"># 前向传播</span>
+        <span class="kw">return</span> x</pre></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">学习心得</div>
+    <div class="section-title">关键洞察</div>
+    <div class="notes-card">
+      <h4>学到的知识</h4>
+      <ul>
+        <li>GPT-1 是机器学习发展史上的重要模型</li>
+        <li>理解其数学原理有助于掌握后续模型</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="nav-footer">
+    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
+    <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
+    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
+  </div>
+
 </main>
-<script>
-const continuations = {
-  '机器学习是': ['一种人工智能分支', '计算机科学的分支', '让机器模拟人类智能的领域', '深度学习的重要组成部分'],
-  '深度学习': ['是机器学习的一个子领域', '使用多层神经网络', '近年来发展最迅速的AI方向', '可以自动学习特征表示'],
-  '自然语言处理': ['让计算机理解和生成人类语言', 'NLP的核心任务', '包括机器翻译和情感分析', 'Transformer彻底改变了这个领域']
-};
-function runGPT() {
-  const prompt = document.getElementById('prompt-input').value;
-  const outputs = continuations[prompt] || ['这是一个可能的续写...', '模型正在生成文本...'];
-  let output = `<span class="gen-token">${prompt}</span>`;
-  let i = 0;
-  function addToken() {
-    if (i < outputs.length) {
-      output += `<span class="gen-token">${outputs[i]}</span> `;
-      i++;
-      document.getElementById('gen-output').innerHTML = output;
-      setTimeout(addToken, 400);
-    }
-  }
-  document.getElementById('gen-output').innerHTML = output;
-  addToken();
-}
-</script>
+
 </body>
 </html>

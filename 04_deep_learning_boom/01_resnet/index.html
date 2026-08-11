@@ -7,84 +7,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
-.math-display {
-  font-family: 'Cambria Math', 'Latin Modern Math', serif;
-  font-size: 16px;
-  color: var(--text-secondary);
-  background: var(--bg-marketing);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 24px 28px;
-  margin: 16px 0;
-  overflow-x: auto;
-  line-height: 2.2;
-  letter-spacing: 0.02em;
-}
-.math-label {
-  font-size: 11px;
-  color: var(--text-quaternary);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 500;
-  margin-bottom: 12px;
-  font-family: var(--font-sans);
-}
-.comparison-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1px;
-  background: var(--border-subtle);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  margin: 20px 0;
-}
-.comparison-panel {
-  background: var(--bg-surface);
-  padding: 24px;
-}
-.comparison-panel h4 {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--brand-accent);
-  margin-bottom: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-.comparison-panel p {
-  font-size: 14px;
-  color: var(--text-tertiary);
-  line-height: 1.7;
-}
-.architecture-diagram {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-standard);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--text-secondary);
-  line-height: 2;
-  margin: 16px 0;
-  overflow-x: auto;
-  white-space: pre;
-}
-@media (max-width: 768px) {
-  .comparison-grid { grid-template-columns: 1fr; }
-}
+/* Model-specific styles */
 </style>
 </head>
 <body>
 
 <nav class="nav">
   <div class="nav-inner">
-    <a href="../index.html" class="nav-logo">
-      <div class="nav-logo-icon">M</div>
-      ML History
-    </a>
+    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="04_deep_learning_boom/index.html">第四阶段 · 深度学习爆发</a>
+      <a href="../04_deep_learning_boom/index.html">04_deep_learning_boom阶段</a>
       <span class="nav-badge">2015</span>
     </div>
   </div>
@@ -93,162 +26,110 @@
 <main class="container">
 
   <section class="hero">
-    <div class="hero-eyebrow">第四阶段 · 深度学习爆发</div>
+    <div class="hero-eyebrow">04_deep_learning_boom阶段 · 2015</div>
     <h1>ResNet</h1>
-    <p class="hero-subtitle"></p>
+    <p class="hero-subtitle">暂无简介</p>
     <div class="hero-meta">
-      <div class="hero-meta-item">
-        <span class="hero-meta-label">年份</span>
-        <span class="hero-meta-value">2015</span>
-      </div>
-      <div class="hero-meta-item">
-        <span class="hero-meta-label">类型</span>
-        <span class="hero-meta-value">残差网络</span>
-      </div>
-      <div class="hero-meta-item">
-        <span class="hero-meta-label">框架</span>
-        <span class="hero-meta-value">NumPy</span>
-      </div>
-      <div class="hero-meta-item">
-        <span class="hero-meta-label">测试</span>
-        <span class="hero-meta-value">✓</span>
-      </div>
+      <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">2015</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Kaiming He et al.</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">残差网络</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">框架</span><span class="hero-meta-value">PyTorch</span></div>
     </div>
   </section>
 
   <div class="stats-grid">
     <div class="stat-cell"><span class="stat-value">2015</span><span class="stat-label">提出年份</span></div>
     <div class="stat-cell"><span class="stat-value">残差网络</span><span class="stat-label">模型类型</span></div>
-    <div class="stat-cell"><span class="stat-value">NumPy</span><span class="stat-label">实现框架</span></div>
     <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
+    <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
   </div>
+
+  <section class="section">
+    <div class="section-label">网络架构</div>
+    <div class="section-title">结构示意</div>
+    <div class="diagram-container">
+      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
+        <!-- Generic architecture diagram -->
+        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
+        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
+        
+        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
+        
+        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
+        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
+        
+        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
+        
+        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
+        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
+        
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+    <p class="diagram-caption">图: ResNet 通用架构示意</p>
+  </section>
 
   <section class="section">
     <div class="section-label">历史背景</div>
     <div class="section-title">从问题到突破</div>
     <div class="section-body">
-      <p>暂无内容</p>
+      <p><strong>Kaiming He et al.</strong> 在 <strong>2015</strong> 年提出了 ResNet，这是机器学习发展史上的一个重要里程碑。</p>
+      <p></p>
     </div>
   </section>
 
   <section class="section">
     <div class="section-label">数学原理</div>
-    <div class="section-title">公式与代码一一对应</div>
-    <div class="section-body">
-      <p>暂无内容</p>
+    <div class="section-title">核心公式</div>
+    <div class="formula-card">
+      <div class="formula-label">核心公式</div>
+      <div class="formula">f(x) = ...</div>
+      <div class="formula-note">根据具体模型填写</div>
     </div>
   </section>
 
   <section class="section">
     <div class="section-label">代码实现</div>
     <div class="section-title">model.py 核心逻辑</div>
-    <div class="section-body"><p>纯NumPy实现，关键模块手写。</p></div>
     <div class="code-block">
       <div class="code-header">
         <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
         <span class="code-lang">Python · model.py</span>
       </div>
-      <div class="code-body"><pre>class BasicBlock(nn.Module):
-    """ResNet基础块，包含残差连接。"""
-    expansion = 1
-
-    def __init__(self, in_channels, out_channels, stride=1):
-        """初始化BasicBlock。
-
-        Args:
-            in_channels: 输入通道数。
-            out_channels: 输出通道数。
-            stride: 卷积步长，默认为1。
-        """
-        super().__init__()
-        self.conv1 = nn.Conv2d(in_channels, out_channels, 3, stride, 1, bias=False)
-        self.bn1 = nn.BatchNorm2d(out_channels)
-        self.conv2 = nn.Conv2d(out_channels, out_channels, 3, 1, 1, bias=False)
-        self.bn2 = nn.BatchNorm2d(out_channels)
+      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">ResNet</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__span class="fn">init__</span>()
+        <span class="cm"># 模型定义</span>
         
-        self.shortcut = nn.Sequential()
-        if stride != 1 or in_channels != self.expansion * out_channels:
-            self.shortcut = nn.Sequential(
-                nn.Conv2d(in_channels, self.expansion * out_channels, 1, stride, bias=False),
-                nn.BatchNorm2d(self.expansion * out_channels)
-            )
-    
-    def forward(self, x):
-        out = torch.relu(self.bn1(self.conv1(x)))
-        out = self.bn2(self.conv2(out))
-        out += self.shortcut(x)
-        out = torch.relu(out)
-        return out
-
-
-class ResNet(nn.Module):
-    """ResNet残差网络，通过残差连接解决深度网络退化问题。"""
-
-    def __init__(self, block, num_blocks, num_classes=10):
-        """初始化ResNet模型。
-
-        Args:</pre></div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="section-label">训练演示</div>
-    <div class="section-title">train.py 运行脚本</div>
-    <div class="code-block">
-      <div class="code-header">
-        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
-        <span class="code-lang">Python · train.py</span>
-      </div>
-      <div class="code-body"><pre>def demo():
-    print("=" * 50)
-    print("ResNet演示")
-    print("=" * 50)
-    
-    model = resnet18()
-    print(f"模型参数量: {sum(p.numel() for p in model.parameters()):,}")
-    print(model)
-
-
-if __name__ == "__main__":
-    demo()</pre></div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="section-label">局限性</div>
-    <div class="section-title">为什么它不够好</div>
-    <div class="section-body">
-      <p>暂无内容</p>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="section-label">历史影响</div>
-    <div class="section-title">启发了什么</div>
-    <div class="section-body">
-      <p>暂无内容</p>
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        <span class="cm"># 前向传播</span>
+        <span class="kw">return</span> x</pre></div>
     </div>
   </section>
 
   <section class="section">
     <div class="section-label">学习心得</div>
-    <div class="section-title">从实践中学习</div>
-
+    <div class="section-title">关键洞察</div>
     <div class="notes-card">
       <h4>学到的知识</h4>
-      <ul><p>暂无内容</p></ul>
-    </div>
-
-    <div class="notes-card">
-      <h4>思考题答案</h4>
-      <ul><p>暂无内容</p></ul>
+      <ul>
+        <li>ResNet 是机器学习发展史上的重要模型</li>
+        <li>理解其数学原理有助于掌握后续模型</li>
+      </ul>
     </div>
   </section>
 
   <div class="nav-footer">
-    <a href="../../03_deep_learning_revival/06_gan/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">GAN</span></a>
+    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="../../04_deep_learning_boom/02_xgboost/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">XGBoost</span></a>
+    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
   </div>
 
 </main>

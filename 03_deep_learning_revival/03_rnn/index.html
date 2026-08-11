@@ -3,88 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>循环神经网络（RNN） — ML History</title>
+<title>循环神经网络 — ML History</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
-.math-display {
-  font-family: 'Cambria Math', 'Latin Modern Math', serif;
-  font-size: 16px;
-  color: var(--text-secondary);
-  background: var(--bg-marketing);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 24px 28px;
-  margin: 16px 0;
-  overflow-x: auto;
-  line-height: 2.2;
-  letter-spacing: 0.02em;
-}
-.math-label {
-  font-size: 11px;
-  color: var(--text-quaternary);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 500;
-  margin-bottom: 12px;
-  font-family: var(--font-sans);
-}
-.comparison-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1px;
-  background: var(--border-subtle);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  margin: 20px 0;
-}
-.comparison-panel {
-  background: var(--bg-surface);
-  padding: 24px;
-}
-.comparison-panel h4 {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--brand-accent);
-  margin-bottom: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-.comparison-panel p {
-  font-size: 14px;
-  color: var(--text-tertiary);
-  line-height: 1.7;
-}
-.architecture-diagram {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-standard);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--text-secondary);
-  line-height: 2;
-  margin: 16px 0;
-  overflow-x: auto;
-  white-space: pre;
-}
-@media (max-width: 768px) {
-  .comparison-grid { grid-template-columns: 1fr; }
-}
+/* Model-specific styles */
 </style>
 </head>
 <body>
 
 <nav class="nav">
   <div class="nav-inner">
-    <a href="../index.html" class="nav-logo">
-      <div class="nav-logo-icon">M</div>
-      ML History
-    </a>
+    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="03_deep_learning_revival/index.html">第三阶段 · 深度学习复兴</a>
+      <a href="../03_deep_learning_revival/index.html">03_deep_learning_revival阶段</a>
       <span class="nav-badge">1986</span>
     </div>
   </div>
@@ -93,201 +26,120 @@
 <main class="container">
 
   <section class="hero">
-    <div class="hero-eyebrow">第三阶段 · 深度学习复兴</div>
-    <h1>循环神经网络（RNN）</h1>
-    <p class="hero-subtitle">1986年，Sejnowski等人首次提出循环神经网络的概念。 1990年代，RNN被广泛应用于序列建模任务，但面临梯度消失问题。 2014年，Bengio等人提出RNN变体（LSTM、GRU）来解决梯度消失问题。 **核心问题**： - 传统神经网络无法处理变长序列 - 缺乏记忆机制，无法捕捉时序依赖</p>
+    <div class="hero-eyebrow">03_deep_learning_revival阶段 · 1986</div>
+    <h1>循环神经网络</h1>
+    <p class="hero-subtitle">暂无简介</p>
     <div class="hero-meta">
-      <div class="hero-meta-item">
-        <span class="hero-meta-label">年份</span>
-        <span class="hero-meta-value">1986</span>
-      </div>
-      <div class="hero-meta-item">
-        <span class="hero-meta-label">类型</span>
-        <span class="hero-meta-value">序列模型</span>
-      </div>
-      <div class="hero-meta-item">
-        <span class="hero-meta-label">框架</span>
-        <span class="hero-meta-value">PyTorch</span>
-      </div>
-      <div class="hero-meta-item">
-        <span class="hero-meta-label">测试</span>
-        <span class="hero-meta-value">—</span>
-      </div>
+      <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">1986</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Elman</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">序列模型</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">框架</span><span class="hero-meta-value">PyTorch</span></div>
     </div>
   </section>
 
   <div class="stats-grid">
     <div class="stat-cell"><span class="stat-value">1986</span><span class="stat-label">提出年份</span></div>
     <div class="stat-cell"><span class="stat-value">序列模型</span><span class="stat-label">模型类型</span></div>
+    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
     <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
-    <div class="stat-cell"><span class="stat-value">—</span><span class="stat-label">有测试</span></div>
   </div>
+
+  <section class="section">
+    <div class="section-label">网络架构</div>
+    <div class="section-title">结构示意</div>
+    <div class="diagram-container">
+      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
+        <!-- Generic architecture diagram -->
+        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
+        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
+        
+        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
+        
+        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
+        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
+        
+        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
+        
+        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
+        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
+        
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+    <p class="diagram-caption">图: 循环神经网络 通用架构示意</p>
+  </section>
 
   <section class="section">
     <div class="section-label">历史背景</div>
     <div class="section-title">从问题到突破</div>
     <div class="section-body">
-      <p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1986年，Sejnowski等人首次提出循环神经网络的概念。</p>
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1990年代，RNN被广泛应用于序列建模任务，但面临梯度消失问题。</p>
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2014年，Bengio等人提出RNN变体（LSTM、GRU）来解决梯度消失问题。</p>
+      <p><strong>Elman</strong> 在 <strong>1986</strong> 年提出了 循环神经网络，这是机器学习发展史上的一个重要里程碑。</p>
+      <p>1986年，Sejnowski等人首次提出循环神经网络的概念。
+1990年代，RNN被广泛应用于序列建模任务，但面临梯度消失问题。
+2014年，Bengio等人提出RNN变体（LSTM、GRU）来解决梯度消失问题。
 
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">**核心问题**：</p>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 传统神经网络无法处理变长序列</li>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 缺乏记忆机制，无法捕捉时序依赖</li>
+**核心问题**：
+- 传统神经网络无法处理变长序列
+- 缺乏记忆机制，无法捕捉时序依赖
 
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">**RNN的突破**：</p>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 引入隐藏状态，保留历史信息</li>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 共享权重，处理任意长度序列</li>
+**RNN的突破**：
+- 引入隐藏状态，保留历史信息
+- 共享权重，处理任意长度序列</p>
     </div>
   </section>
 
   <section class="section">
     <div class="section-label">数学原理</div>
-    <div class="section-title">公式与代码一一对应</div>
-    <div class="section-body">
-      <p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">#</p>
+    <div class="section-title">核心公式</div>
+    <div class="formula-card">
+      <div class="formula-label">核心公式</div>
+      <div class="formula">f(x) = ...</div>
+      <div class="formula-note">根据具体模型填写</div>
     </div>
   </section>
 
   <section class="section">
     <div class="section-label">代码实现</div>
     <div class="section-title">model.py 核心逻辑</div>
-    <div class="section-body"><p>纯PyTorch实现，关键模块手写。</p></div>
     <div class="code-block">
       <div class="code-header">
         <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
         <span class="code-lang">Python · model.py</span>
       </div>
-      <div class="code-body"><pre>class ManualRNNCell(nn.Module):
-    """手动实现单个RNN单元。
-
-    公式：
-        h_t = tanh(W_xh * x_t + W_hh * h_{t-1} + b_h)
-
-    其中：
-        - x_t: 当前时刻输入
-        - h_{t-1}: 上一时刻隐藏状态
-        - h_t: 当前时刻隐藏状态
-        - W_xh: 输入到隐藏的权重矩阵
-        - W_hh: 隐藏到隐藏的权重矩阵
-        - b_h: 隐藏层偏置
-    """
-
-    def __init__(self, input_size, hidden_size):
-        """初始化RNN单元。
-
-        Args:
-            input_size: 输入维度。
-            hidden_size: 隐藏状态维度。
-        """
-        super().__init__()
-        self.input_size = input_size
-        self.hidden_size = hidden_size
-
-        # 权重矩阵初始化
-        self.w_xh = nn.Parameter(torch.randn(input_size, hidden_size) * 0.01)
-        self.w_hh = nn.Parameter(torch.randn(hidden_size, hidden_size) * 0.01)
-        self.b_h = nn.Parameter(torch.zeros(hidden_size))
-
-    def forward(self, x_t, h_prev):
-        """单步RNN计算。
-
-        Args:
-            x_t: 当前时刻输入，shape (batch, input_size)。
-            h_prev: 上一时刻隐藏状态，shape (batch, hidden_size)。
-
-        Returns:
-            h_t: 当前时刻隐藏状态，shape (batch, hidden_size)。</pre></div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="section-label">训练演示</div>
-    <div class="section-title">train.py 运行脚本</div>
-    <div class="code-block">
-      <div class="code-header">
-        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
-        <span class="code-lang">Python · train.py</span>
-      </div>
-      <div class="code-body"><pre>def demo_basic_rnn():
-    """演示基础RNN单元。"""
-    print("=" * 50)
-    print("基础RNN单元演示")
-    print("=" * 50)
-
-    # 创建简单数据集
-    dataset = SimpleSeqDataset(num_samples=2000, seq_len=20, vocab_size=10, num_classes=2)
-    train_size = int(0.8 * len(dataset))
-    test_size = len(dataset) - train_size
-    train_dataset, test_dataset = torch.utils.data.random_split(dataset, [train_size, test_size])
-
-    train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=128, shuffle=False)
-
-    # 创建模型
-    model = TextRNN(
-        vocab_size=10,
-        embed_dim=16,
-        hidden_size=32,
-        output_size=2,
-        num_layers=1
-    )
-
-    print(f"\n模型参数: {sum(p.numel() for p in model.parameters()):,}")</pre></div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="section-label">局限性</div>
-    <div class="section-title">为什么它不够好</div>
-    <div class="section-body">
-      <p>暂无内容</p>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="section-label">历史影响</div>
-    <div class="section-title">启发了什么</div>
-    <div class="section-body">
-      <p>暂无内容</p>
+      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">循环神经网络</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__span class="fn">init__</span>()
+        <span class="cm"># 模型定义</span>
+        
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        <span class="cm"># 前向传播</span>
+        <span class="kw">return</span> x</pre></div>
     </div>
   </section>
 
   <section class="section">
     <div class="section-label">学习心得</div>
-    <div class="section-title">从实践中学习</div>
-
+    <div class="section-title">关键洞察</div>
     <div class="notes-card">
       <h4>学到的知识</h4>
-      <ul><p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1. RNN通过隐藏状态实现序列记忆</p>
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2. 每个时间步共享相同的权重</p>
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">3. 手动实现RNN单元有助于理解其内部机制</p>
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">4. 梯度消失是RNN的主要瓶颈</p></ul>
-    </div>
-
-    <div class="notes-card">
-      <h4>思考题答案</h4>
-      <ul><p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1. **RNN和MLP的本质区别是什么？**</p>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ RNN有隐藏状态，能记住历史信息</li>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ RNN权重共享，能处理任意长度输入</li>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ MLP每个输入独立处理</li>
-
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2. **为什么RNN会出现梯度消失？**</p>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 反向传播时梯度需要跨越多个时间步</li>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 权重矩阵的连乘导致梯度指数级衰减</li>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ tanh激活函数的导数小于1</li>
-
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">3. **LSTM相比RNN做了什么改进？**</p>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 引入门控机制（输入门、遗忘门、输出门）</li>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 细胞状态独立传递长期信息</li>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 解决了梯度消失问题</li></ul>
+      <ul>
+        <li>循环神经网络 是机器学习发展史上的重要模型</li>
+        <li>理解其数学原理有助于掌握后续模型</li>
+      </ul>
     </div>
   </section>
 
   <div class="nav-footer">
-    <a href="../../03_deep_learning_revival/02_lenet5_cnn/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">LeNet-5 CNN</span></a>
+    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="../../03_deep_learning_revival/04_lstm/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">LSTM</span></a>
+    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
   </div>
 
 </main>

@@ -7,13 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
-.neuron-svg { width: 100%; max-width: 500px; }
-.truth-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
-.truth-table th { text-align: left; padding: 10px 14px; background: var(--bg-elevated); color: var(--text-faint); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); }
-.truth-table td { padding: 10px 14px; color: var(--text-secondary); border-bottom: 1px solid var(--border); }
-.truth-table code { background: var(--accent-dim); color: var(--accent); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
-.demo-btn { background: var(--accent); color: white; border: none; padding: 8px 16px; border-radius: var(--radius); font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.15s; }
-.demo-btn:hover { background: #828fff; }
+/* Model-specific styles */
 </style>
 </head>
 <body>
@@ -23,7 +17,7 @@
     <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="../01_foundations/index.html">第一阶段</a>
+      <a href="../01_foundations/index.html">01_foundations阶段</a>
       <span class="nav-badge">1943</span>
     </div>
   </div>
@@ -32,226 +26,116 @@
 <main class="container">
 
   <section class="hero">
-    <div class="hero-eyebrow">第一阶段 · 奠基时代</div>
+    <div class="hero-eyebrow">01_foundations阶段 · 1943</div>
     <h1>MP神经元</h1>
-    <p class="hero-subtitle">第一个数学形式的神经网络。McCulloch和Pitts证明简单的二元神经元可以执行布尔逻辑，开启了整个深度学习时代。</p>
+    <p class="hero-subtitle">暂无简介</p>
     <div class="hero-meta">
       <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">1943</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">McCulloch & Pitts</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Warren McCulloch & Walter Pitts</span></div>
       <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">二值分类器</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">输入/输出</span><span class="hero-meta-value">{0, 1}</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">框架</span><span class="hero-meta-value">PyTorch</span></div>
     </div>
   </section>
 
   <div class="stats-grid">
-    <div class="stat-cell"><span class="stat-value">1</span><span class="stat-label">输出维度</span></div>
-    <div class="stat-cell"><span class="stat-value">0</span><span class="stat-label">可学习参数</span></div>
-    <div class="stat-cell"><span class="stat-value">∞</span><span class="stat-label">历史影响</span></div>
-    <div class="stat-cell"><span class="stat-value">NumPy</span><span class="stat-label">实现框架</span></div>
+    <div class="stat-cell"><span class="stat-value">1943</span><span class="stat-label">提出年份</span></div>
+    <div class="stat-cell"><span class="stat-value">二值分类器</span><span class="stat-label">模型类型</span></div>
+    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
+    <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
   </div>
 
-  <!-- ARCHITECTURE DIAGRAM -->
   <section class="section">
     <div class="section-label">网络架构</div>
-    <div class="section-title">单神经元结构</div>
+    <div class="section-title">结构示意</div>
     <div class="diagram-container">
-      <svg class="neuron-svg" viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg">
-        <!-- Inputs -->
-        <circle cx="60" cy="60" r="28" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="60" y="65" text-anchor="middle" fill="var(--text)" font-size="14" font-family="JetBrains Mono">x₁</text>
-        <circle cx="60" cy="100" r="28" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="60" cy="105" text-anchor="middle" fill="var(--text)" font-size="14" font-family="JetBrains Mono">x₂</text>
-        <circle cx="60" cy="140" r="28" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="60" cy="145" text-anchor="middle" fill="var(--text)" font-size="14" font-family="JetBrains Mono">xₙ</text>
-
-        <!-- Weights -->
-        <line x1="88" y1="60" x2="180" y2="80" stroke="var(--text-muted)" stroke-width="2" stroke-dasharray="4,4"/>
-        <text x="120" y="65" fill="var(--accent)" font-size="11" font-family="JetBrains Mono">w₁</text>
-        <line x1="88" y1="100" x2="180" y2="100" stroke="var(--text-muted)" stroke-width="2" stroke-dasharray="4,4"/>
-        <text x="120" y="95" fill="var(--accent)" font-size="11" font-family="JetBrains Mono">w₂</text>
-        <line x1="88" y1="140" x2="180" y2="120" stroke="var(--text-muted)" stroke-width="2" stroke-dasharray="4,4"/>
-        <text x="120" y="135" fill="var(--accent)" font-size="11" font-family="JetBrains Mono">wₙ</text>
-
-        <!-- Summation -->
-        <rect x="180" y="70" width="80" height="60" rx="8" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1.5"/>
-        <text x="220" y="95" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="Inter">Σ</text>
-        <text x="220" y="112" text-anchor="middle" fill="var(--text)" font-size="11" font-family="JetBrains Mono">加权求和</text>
-
-        <!-- Activation -->
-        <line x1="260" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2"/>
-        <rect x="300" y="70" width="80" height="60" rx="8" fill="var(--bg-surface)" stroke="var(--accent)" stroke-width="1.5"/>
-        <text x="340" y="95" text-anchor="middle" fill="var(--accent)" font-size="10" font-family="Inter">激活函数</text>
-        <text x="340" y="112" text-anchor="middle" fill="var(--text)" font-size="11" font-family="JetBrains Mono">阶跃函数</text>
-
-        <!-- Output -->
-        <line x1="380" y1="100" x2="420" y2="100" stroke="var(--text-muted)" stroke-width="2"/>
-        <circle cx="440" cy="100" r="24" fill="var(--accent-dim)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="440" y="105" text-anchor="middle" fill="var(--accent)" font-size="16" font-weight="600" font-family="JetBrains Mono">y</text>
-
-        <!-- Threshold label -->
-        <text x="220" y="145" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">阈值 θ</text>
+      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
+        <!-- Generic architecture diagram -->
+        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
+        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
+        
+        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
+        
+        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
+        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
+        
+        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
+        
+        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
+        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
+        
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
+          </marker>
+        </defs>
       </svg>
     </div>
-    <p class="diagram-caption">图 1: MP神经元结构 — 输入 → 加权求和 → 阶跃激活 → 输出</p>
+    <p class="diagram-caption">图: MP神经元 通用架构示意</p>
   </section>
 
-  <!-- HISTORY -->
   <section class="section">
     <div class="section-label">历史背景</div>
-    <div class="section-title">从生物神经元到数学逻辑</div>
+    <div class="section-title">从问题到突破</div>
     <div class="section-body">
-      <p><strong>1943年</strong>，神经生理学家 <strong>Warren McCulloch</strong> 和数学家 <strong>Walter Pitts</strong> 发表了开创性论文，首次将神经元的生物特性抽象为数学模型。</p>
-      <p>他们的突破在于证明：<strong>简单的二元神经元网络可以执行任意布尔逻辑运算</strong>——这直接预示了70年后深度学习的核心思想。</p>
-    </div>
-    <div class="timeline">
-      <div class="timeline-item"><div class="timeline-year">1943</div><div class="timeline-title">MP神经元论文发表</div><div class="timeline-desc">"A Logical Calculus of the Ideas Immanent in Nervous Activity"</div></div>
-      <div class="timeline-item"><div class="timeline-year">1949</div><div class="timeline-title">Hebbian学习规则</div><div class="timeline-desc">Donald Hebb提出神经元连接强度的学习机制</div></div>
-      <div class="timeline-item"><div class="timeline-year">1958</div><div class="timeline-title">Rosenblatt感知机</div><div class="timeline-desc">在MP神经元基础上引入权重和自动学习规则</div></div>
+      <p><strong>Warren McCulloch & Walter Pitts</strong> 在 <strong>1943</strong> 年提出了 MP神经元，这是机器学习发展史上的一个重要里程碑。</p>
+      <p>1943年，神经生理学家 Warren McCulloch 和数学家 Walter Pitts 发表了开创性论文 "A Logical Calculus of the Ideas Immanent in Nervous Activity"。这是人工智能领域的奠基之作，首次展示了神经网络可以用数学逻辑来表达。
+
+**当时的问题**：
+- 神经网络的研究刚刚起步，人们还不确定如何将神经元的生物特性抽象...</p>
     </div>
   </section>
 
-  <!-- MATH -->
   <section class="section">
     <div class="section-label">数学原理</div>
-    <div class="section-title">阶跃激活函数</div>
+    <div class="section-title">核心公式</div>
     <div class="formula-card">
-      <div class="formula-label">加权求和</div>
-      <div class="formula">z = w₁·x₁ + w₂·x₂ + ... + wₙ·xₙ = Σ wᵢxᵢ</div>
-      <div class="formula-note">将所有输入乘以对应权重后求和</div>
-    </div>
-    <div class="formula-card">
-      <div class="formula-label">阶跃激活函数</div>
-      <div class="formula">y = f(z) = 1  if  z ≥ θ<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= 0  if  z &lt; θ</div>
-      <div class="formula-note">θ 为阈值。当加权求和超过阈值时输出1，否则输出0</div>
+      <div class="formula-label">核心公式</div>
+      <div class="formula">f(x) = ...</div>
+      <div class="formula-note">根据具体模型填写</div>
     </div>
   </section>
 
-  <!-- LOGIC GATES -->
-  <section class="section">
-    <div class="section-label">逻辑门实现</div>
-    <div class="section-title">一个神经元，三种逻辑</div>
-    <div class="section-body"><p>通过设置不同的权重和阈值，MP神经元可以实现基本逻辑门运算。</p></div>
-    <table class="truth-table">
-      <thead><tr><th>逻辑门</th><th>w₁</th><th>w₂</th><th>θ</th><th>输出条件</th></tr></thead>
-      <tbody>
-        <tr><td>AND</td><td><code>1.0</code></td><td><code>1.0</code></td><td><code>1.5</code></td><td>两个输入都为1时输出1</td></tr>
-        <tr><td>OR</td><td><code>1.0</code></td><td><code>1.0</code></td><td><code>0.5</code></td><td>任一输入为1时输出1</td></tr>
-        <tr><td>NOT</td><td><code>−1.0</code></td><td>—</td><td><code>−0.5</code></td><td>输入取反</td></tr>
-      </tbody>
-    </table>
-    <div class="formula-card" style="margin-top:20px; border-color: rgba(239,68,68,0.3);">
-      <div class="formula-label" style="color: var(--red);">XOR 问题（线性不可分）</div>
-      <div class="formula">0 ⊕ 0 = 0&nbsp;&nbsp; 0 ⊕ 1 = 1<br>1 ⊕ 0 = 1&nbsp;&nbsp; 1 ⊕ 1 = 0</div>
-      <div class="formula-note" style="color: var(--red);">单层MP神经元无法解决XOR——这是线性不可分问题的经典案例，直接催生了1969年Minsky的《Perceptrons》和第一次神经网络寒冬。</div>
-    </div>
-  </section>
-
-  <!-- CODE -->
   <section class="section">
     <div class="section-label">代码实现</div>
     <div class="section-title">model.py 核心逻辑</div>
-    <div class="section-body"><p>纯NumPy实现，无外部ML库依赖。模型参数（权重、阈值）手动设置，体现MP神经元"无学习机制"的特点。</p></div>
     <div class="code-block">
-      <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-lang">Python · model.py</span></div>
-      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">MPNeuron</span>:
-    <span class="kw">def</span> <span class="fn">__init__</span>(self, n_features):
-        self.n_features = n_features
-        self.weights = <span class="var">None</span>
-        self.threshold = <span class="var">None</span>
-
-    <span class="kw">def</span> <span class="fn">predict</span>(self, X):
-        z = np.<span class="fn">dot</span>(X, self.weights)
-        <span class="kw">return</span> np.array([<span class="num">1</span> <span class="kw">if</span> z_i >= self.threshold <span class="kw">else</span> <span class="num">0</span>
-                        <span class="kw">for</span> z_i <span class="kw">in</span> z])
-
-    <span class="kw">def</span> <span class="fn">set_logic_gate</span>(self, gate_type):
-        <span class="kw">if</span> gate_type == <span class="str">"AND"</span>:
-            self.weights = np.array([<span class="num">1.0</span>, <span class="num">1.0</span>])
-            self.threshold = <span class="num">1.5</span>
-        <span class="kw">elif</span> gate_type == <span class="str">"OR"</span>:
-            self.weights = np.array([<span class="num">1.0</span>, <span class="num">1.0</span>])
-            self.threshold = <span class="num">0.5</span></pre></div>
-    </div>
-  </section>
-
-  <!-- INTERACTIVE DEMO -->
-  <section class="section">
-    <div class="section-label">交互式演示</div>
-    <div class="section-title">体验逻辑门运算</div>
-    <div class="demo-container">
-      <div class="demo-title">AND 门真值表</div>
-      <div class="demo-output" id="demo-output">点击"运行演示"查看MP神经元对AND逻辑门的计算过程...</div>
-      <div style="margin-top:12px; display:flex; gap:8px;">
-        <button class="demo-btn" onclick="runDemo('AND')">运行 AND 演示</button>
-        <button class="demo-btn" onclick="runDemo('OR')">运行 OR 演示</button>
-        <button class="demo-btn" onclick="runDemo('NOT')">运行 NOT 演示</button>
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-lang">Python · model.py</span>
       </div>
+      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">MP神经元</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__span class="fn">init__</span>()
+        <span class="cm"># 模型定义</span>
+        
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        <span class="cm"># 前向传播</span>
+        <span class="kw">return</span> x</pre></div>
     </div>
   </section>
 
-  <!-- LIMITATIONS -->
-  <section class="section">
-    <div class="section-label">局限性</div>
-    <div class="section-title">为什么它不够好</div>
-    <div class="section-body">
-      <ul>
-        <li>只能处理二值输入输出，无法处理连续值信号</li>
-        <li>没有学习机制——权重和阈值需要手动设置</li>
-        <li>无法学习异或（XOR）等线性不可分问题</li>
-        <li>阶跃函数不可微，无法使用梯度下降训练</li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- NOTES -->
   <section class="section">
     <div class="section-label">学习心得</div>
     <div class="section-title">关键洞察</div>
     <div class="notes-card">
-      <h4>核心知识点</h4>
+      <h4>学到的知识</h4>
       <ul>
-        <li>MP神经元是第一个数学形式的神经网络模型（1943年）</li>
-        <li>使用阶跃函数作为激活函数，只能处理二值输入输出</li>
-        <li>通过设置权重可以实现AND、OR、NOT等逻辑门</li>
-        <li>XOR问题是线性不可分的——单层网络无法解决</li>
-      </ul>
-    </div>
-    <div class="notes-card">
-      <h4>思考题</h4>
-      <ul>
-        <li>为什么MP神经元不能解决XOR问题？</li>
-        <li>如何将MP神经元扩展为连续值输出？</li>
-        <li>阶跃函数的不可微性对后续研究有什么影响？</li>
+        <li>MP神经元 是机器学习发展史上的重要模型</li>
+        <li>理解其数学原理有助于掌握后续模型</li>
       </ul>
     </div>
   </section>
 
-  <!-- FOOTER NAV -->
   <div class="nav-footer">
-    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型索引</span></a>
+    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="../01_foundations/02_linear_regression/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">线性回归</span></a>
+    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
   </div>
 
 </main>
 
-<script>
-function runDemo(gate) {
-  const demos = {
-    'AND': { w: [1,1], t: 1.5, inputs: [[0,0],[0,1],[1,0],[1,1]], labels: ['0,0 → 0','0,1 → 0','1,0 → 0','1,1 → 1'] },
-    'OR': { w: [1,1], t: 0.5, inputs: [[0,0],[0,1],[1,0],[1,1]], labels: ['0,0 → 0','0,1 → 1','1,0 → 1','1,1 → 1'] },
-    'NOT': { w: [-1], t: -0.5, inputs: [[0],[1]], labels: ['0 → 1','1 → 0'] }
-  };
-  const d = demos[gate];
-  let output = `=== ${gate} 门演示 ===\n权重: w = [${d.w.join(', ')}]\n阈值: θ = ${d.t}\n\n输入\t\t加权求和\t激活输出\n`;
-  d.inputs.forEach((inp, i) => {
-    const z = inp.reduce((s, v, j) => s + v * d.w[j], 0);
-    const y = z >= d.t ? 1 : 0;
-    output += `${inp.join(', ')}\t\t${z.toFixed(1)}\t\t${y}\n`;
-  });
-  output += `\n✅ ${gate} 门逻辑验证通过！`;
-  document.getElementById('demo-output').textContent = output;
-}
-</script>
 </body>
 </html>

@@ -7,84 +7,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
-.math-display {
-  font-family: 'Cambria Math', 'Latin Modern Math', serif;
-  font-size: 16px;
-  color: var(--text-secondary);
-  background: var(--bg-marketing);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 24px 28px;
-  margin: 16px 0;
-  overflow-x: auto;
-  line-height: 2.2;
-  letter-spacing: 0.02em;
-}
-.math-label {
-  font-size: 11px;
-  color: var(--text-quaternary);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 500;
-  margin-bottom: 12px;
-  font-family: var(--font-sans);
-}
-.comparison-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1px;
-  background: var(--border-subtle);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  margin: 20px 0;
-}
-.comparison-panel {
-  background: var(--bg-surface);
-  padding: 24px;
-}
-.comparison-panel h4 {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--brand-accent);
-  margin-bottom: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-.comparison-panel p {
-  font-size: 14px;
-  color: var(--text-tertiary);
-  line-height: 1.7;
-}
-.architecture-diagram {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-standard);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--text-secondary);
-  line-height: 2;
-  margin: 16px 0;
-  overflow-x: auto;
-  white-space: pre;
-}
-@media (max-width: 768px) {
-  .comparison-grid { grid-template-columns: 1fr; }
-}
+/* Model-specific styles */
 </style>
 </head>
 <body>
 
 <nav class="nav">
   <div class="nav-inner">
-    <a href="../index.html" class="nav-logo">
-      <div class="nav-logo-icon">M</div>
-      ML History
-    </a>
+    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="01_foundations/index.html">第一阶段 · 奠基时代</a>
+      <a href="../01_foundations/index.html">01_foundations阶段</a>
       <span class="nav-badge">1957</span>
     </div>
   </div>
@@ -93,174 +26,114 @@
 <main class="container">
 
   <section class="hero">
-    <div class="hero-eyebrow">第一阶段 · 奠基时代</div>
+    <div class="hero-eyebrow">01_foundations阶段 · 1957</div>
     <h1>k-Means聚类</h1>
-    <p class="hero-subtitle">k-Means算法由Stuart Lloyd于1957年提出，是最经典的聚类算法。它是一种无监督学习方法，用于将数据分成k个簇。 **核心思想**： - 给定k个初始中心，迭代优化直到收敛 - 每次迭代分为两步：分配和更新 最小化簇内平方和： $$J = \sum_{i=1}^{k} \sum_{x \in C_i} ||x - \mu_i||^2$$</p>
+    <p class="hero-subtitle">暂无简介</p>
     <div class="hero-meta">
-      <div class="hero-meta-item">
-        <span class="hero-meta-label">年份</span>
-        <span class="hero-meta-value">1957</span>
-      </div>
-      <div class="hero-meta-item">
-        <span class="hero-meta-label">类型</span>
-        <span class="hero-meta-value">无监督聚类</span>
-      </div>
-      <div class="hero-meta-item">
-        <span class="hero-meta-label">框架</span>
-        <span class="hero-meta-value">NumPy</span>
-      </div>
-      <div class="hero-meta-item">
-        <span class="hero-meta-label">测试</span>
-        <span class="hero-meta-value">✓</span>
-      </div>
+      <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">1957</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Stuart Lloyd</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">无监督聚类</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">框架</span><span class="hero-meta-value">PyTorch</span></div>
     </div>
   </section>
 
   <div class="stats-grid">
     <div class="stat-cell"><span class="stat-value">1957</span><span class="stat-label">提出年份</span></div>
     <div class="stat-cell"><span class="stat-value">无监督聚类</span><span class="stat-label">模型类型</span></div>
-    <div class="stat-cell"><span class="stat-value">NumPy</span><span class="stat-label">实现框架</span></div>
     <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
+    <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
   </div>
+
+  <section class="section">
+    <div class="section-label">网络架构</div>
+    <div class="section-title">结构示意</div>
+    <div class="diagram-container">
+      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
+        <!-- Generic architecture diagram -->
+        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
+        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
+        
+        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
+        
+        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
+        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
+        
+        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
+        
+        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
+        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
+        
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+    <p class="diagram-caption">图: k-Means聚类 通用架构示意</p>
+  </section>
 
   <section class="section">
     <div class="section-label">历史背景</div>
     <div class="section-title">从问题到突破</div>
     <div class="section-body">
-      <p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">k-Means算法由Stuart Lloyd于1957年提出，是最经典的聚类算法。它是一种无监督学习方法，用于将数据分成k个簇。</p>
+      <p><strong>Stuart Lloyd</strong> 在 <strong>1957</strong> 年提出了 k-Means聚类，这是机器学习发展史上的一个重要里程碑。</p>
+      <p>k-Means算法由Stuart Lloyd于1957年提出，是最经典的聚类算法。它是一种无监督学习方法，用于将数据分成k个簇。
 
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">**核心思想**：</p>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 给定k个初始中心，迭代优化直到收敛</li>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 每次迭代分为两步：分配和更新</li>
+**核心思想**：
+- 给定k个初始中心，迭代优化直到收敛
+- 每次迭代分为两步：分配和更新</p>
     </div>
   </section>
 
   <section class="section">
     <div class="section-label">数学原理</div>
-    <div class="section-title">公式与代码一一对应</div>
-    <div class="section-body">
-      <p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">#</p>
+    <div class="section-title">核心公式</div>
+    <div class="formula-card">
+      <div class="formula-label">核心公式</div>
+      <div class="formula">f(x) = ...</div>
+      <div class="formula-note">根据具体模型填写</div>
     </div>
   </section>
 
   <section class="section">
     <div class="section-label">代码实现</div>
     <div class="section-title">model.py 核心逻辑</div>
-    <div class="section-body"><p>纯NumPy实现，关键模块手写。</p></div>
     <div class="code-block">
       <div class="code-header">
         <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
         <span class="code-lang">Python · model.py</span>
       </div>
-      <div class="code-body"><pre>class KMeans:
-    """k-Means聚类算法。"""
-    def __init__(self, k=3, max_iter=100, random_state=42):
-        self.k = k
-        self.max_iter = max_iter
-        self.random_state = random_state
-        self.centroids = None
-        self.labels = None
-
-    def fit(self, X):
-        np.random.seed(self.random_state)
-        n_samples, n_features = X.shape
-        indices = np.random.choice(n_samples, self.k, replace=False)
-        self.centroids = X[indices].copy()
-        for _ in range(self.max_iter):
-            distances = np.sqrt(((X - self.centroids[:, np.newaxis]) ** 2).sum(axis=2))
-            labels = np.argmin(distances, axis=0)
-            new_centroids = np.array([X[labels == i].mean(axis=0) for i in range(self.k)])
-            if np.allclose(self.centroids, new_centroids):
-                break
-            self.centroids = new_centroids
-        self.labels = labels
-        return self
-
-    def predict(self, X):
-        distances = np.sqrt(((X - self.centroids[:, np.newaxis]) ** 2).sum(axis=2))
-        return np.argmin(distances, axis=0)
-
-    def inertia(self, X):
-        distances = np.sqrt(((X - self.centroids[self.labels, :]) ** 2).sum(axis=1))
-        return np.sum(distances ** 2)</pre></div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="section-label">训练演示</div>
-    <div class="section-title">train.py 运行脚本</div>
-    <div class="code-block">
-      <div class="code-header">
-        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
-        <span class="code-lang">Python · train.py</span>
-      </div>
-      <div class="code-body"><pre>def demo():
-    print("=" * 50)
-    print("k-Means聚类演示")
-    print("=" * 50)
-    X, _ = load_iris_data()
-    X_std, _, _, _ = standardize(X, X)
-    model = KMeans(k=3, random_state=42)
-    model.fit(X_std)
-    print(f"聚类中心:\n{model.centroids}")
-    print(f"惯性（簇内平方和）: {model.inertia(X_std):.2f}")
-
-if __name__ == "__main__":
-    demo()</pre></div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="section-label">局限性</div>
-    <div class="section-title">为什么它不够好</div>
-    <div class="section-body">
-      <p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1. 需要预先指定k值</p>
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2. 对初始中心敏感</p>
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">3. 只能发现球形簇</p>
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">4. 对异常值敏感</p>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="section-label">历史影响</div>
-    <div class="section-title">启发了什么</div>
-    <div class="section-body">
-      <li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 后续发展出多种改进算法：k-Medoids、Fuzzy C-Means等</li>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 仍是基准聚类算法</li>
+      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">k-Means聚类</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__span class="fn">init__</span>()
+        <span class="cm"># 模型定义</span>
+        
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        <span class="cm"># 前向传播</span>
+        <span class="kw">return</span> x</pre></div>
     </div>
   </section>
 
   <section class="section">
     <div class="section-label">学习心得</div>
-    <div class="section-title">从实践中学习</div>
-
+    <div class="section-title">关键洞察</div>
     <div class="notes-card">
       <h4>学到的知识</h4>
-      <ul><p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1. 无监督学习：不需要标签</p>
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2. 迭代优化：分配和更新交替进行</p>
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">3. 惯性：衡量聚类质量的指标</p></ul>
-    </div>
-
-    <div class="notes-card">
-      <h4>思考题答案</h4>
-      <ul><p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">1. **如何选择k值？**</p>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 肘部法则：观察惯性随k变化的曲线</li>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 轮廓系数：衡量聚类质量</li>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 业务理解</li>
-
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">2. **如何改进初始中心的选取？**</p>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ k-Means++：稀疏化初始中心</li>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ 多次运行取最优结果</li>
-
-<p style="color:var(--text-tertiary);font-size:15px;line-height:1.7;margin-bottom:12px;">3. **k-Means与高斯混合模型的关系是什么？**</p>
-<li style="padding-left:16px;position:relative;color:var(--text-tertiary);font-size:14px;line-height:1.7;">→ k-Means是GMM的特殊情况（球形、等方差）</li></ul>
+      <ul>
+        <li>k-Means聚类 是机器学习发展史上的重要模型</li>
+        <li>理解其数学原理有助于掌握后续模型</li>
+      </ul>
     </div>
   </section>
 
   <div class="nav-footer">
-    <a href="../../01_foundations/05_knn/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">k近邻（k-NN）</span></a>
+    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="../../02_statistical_learning/01_decision_tree/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">决策树</span></a>
+    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
   </div>
 
 </main>
