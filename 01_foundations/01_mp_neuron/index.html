@@ -4,10 +4,52 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MP神经元 — ML History</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
-/* Model-specific styles */
+/* Interactive demo enhancements */
+.demo-controls { display: grid; gap: 20px; }
+.demo-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.demo-row label { font-size: 13px; color: var(--text-muted); min-width: 80px; }
+.demo-row input[type="range"] { flex: 1; min-width: 120px; }
+.demo-row .val { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent); min-width: 48px; text-align: right; }
+.gate-selector { display: flex; gap: 8px; margin: 16px 0; }
+.gate-btn {
+  padding: 8px 20px; border-radius: var(--radius); border: 1px solid var(--border-strong);
+  background: var(--bg-surface); color: var(--text-muted); font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all 0.15s;
+}
+.gate-btn:hover { border-color: var(--accent); color: var(--text); }
+.gate-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+.input-toggles { display: flex; gap: 12px; align-items: center; }
+.toggle-btn {
+  width: 40px; height: 40px; border-radius: var(--radius); border: 1px solid var(--border-strong);
+  background: var(--bg); color: var(--text-muted); font-size: 16px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s; font-family: 'JetBrains Mono', monospace;
+}
+.toggle-btn:hover { border-color: var(--accent); }
+.toggle-btn.on { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+.output-display {
+  display: flex; align-items: center; gap: 16px; padding: 16px 20px;
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+  font-family: 'JetBrains Mono', monospace;
+}
+.output-label { font-size: 13px; color: var(--text-faint); }
+.output-value { font-size: 28px; font-weight: 600; }
+.output-value.one { color: var(--green); }
+.output-value.zero { color: var(--text-faint); }
+.calc-detail { font-size: 12px; color: var(--text-faint); margin-top: 8px; }
+.truth-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+.truth-table th, .truth-table td {
+  padding: 8px 12px; text-align: center; border: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace; font-size: 13px;
+}
+.truth-table th { background: var(--bg-elevated); color: var(--text-muted); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
+.truth-table td { color: var(--text-secondary); }
+.truth-table tr.active-row { background: var(--accent-dim); }
+.truth-table .out-one { color: var(--green); font-weight: 600; }
+.truth-table .out-zero { color: var(--text-faint); }
+svg .node-circle { transition: all 0.3s; }
+svg .weight-label { transition: fill 0.3s; }
 </style>
 </head>
 <body>
@@ -25,117 +67,384 @@
 
 <main class="container">
 
+  <!-- HERO -->
   <section class="hero">
     <div class="hero-eyebrow">01_foundations阶段 · 1943</div>
     <h1>MP神经元</h1>
-    <p class="hero-subtitle">暂无简介</p>
-    <div class="hero-meta">
-      <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">1943</span></div>
+    <p class="hero-subtitle">McCulloch-Pitts神经元——人工智能史上的第一个数学形式化神经网络模型，证明了简单的二元神经元可以执行布尔逻辑运算，奠定了后续所有神经网络研究的基础。</p>
+    <div class="pill-row">
+      <span class="pill pill-accent">二值分类器</span>
+      <span class="pill pill-green">阶跃函数</span>
+      <span class="pill pill-orange">逻辑门</span>
+      <span class="pill pill-red">XOR不可解</span>
+    </div>
+    <div class="hero-meta" style="margin-top:20px;">
+      <div class="hero-meta-item"><span class="hero-meta-label">提出年份</span><span class="hero-meta-value">1943</span></div>
       <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Warren McCulloch & Walter Pitts</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">二值分类器</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">框架</span><span class="hero-meta-value">PyTorch</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">论文</span><span class="hero-meta-value">A Logical Calculus...</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">实现框架</span><span class="hero-meta-value">Python (NumPy)</span></div>
     </div>
   </section>
 
+  <!-- STATS GRID -->
   <div class="stats-grid">
     <div class="stat-cell"><span class="stat-value">1943</span><span class="stat-label">提出年份</span></div>
-    <div class="stat-cell"><span class="stat-value">二值分类器</span><span class="stat-label">模型类型</span></div>
-    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
-    <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
+    <div class="stat-cell"><span class="stat-value">2输入</span><span class="stat-label">典型输入</span></div>
+    <div class="stat-cell"><span class="stat-value">{0,1}</span><span class="stat-label">输出域</span></div>
+    <div class="stat-cell"><span class="stat-value">阶跃</span><span class="stat-label">激活函数</span></div>
   </div>
 
+  <!-- SVG DIAGRAM -->
   <section class="section">
     <div class="section-label">网络架构</div>
-    <div class="section-title">结构示意</div>
+    <div class="section-title">MP神经元结构示意</div>
     <div class="diagram-container">
-      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
-        <!-- Generic architecture diagram -->
-        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
-        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
-        
-        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
-        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
-        
-        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
-        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
-        
+      <svg id="mp-svg" viewBox="0 0 560 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;">
         <defs>
-          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-            <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
+          <marker id="arrow-m" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L7,3 z" fill="var(--text-muted)"/>
           </marker>
+          <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
         </defs>
+
+        <!-- Input nodes -->
+        <circle id="node-x1" cx="60" cy="80" r="28" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2" class="node-circle"/>
+        <text x="60" y="76" text-anchor="middle" fill="var(--text)" font-size="14" font-weight="600" font-family="JetBrains Mono">x₁</text>
+        <text x="60" y="96" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter">输入 1</text>
+
+        <circle id="node-x2" cx="60" cy="200" r="28" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2" class="node-circle"/>
+        <text x="60" y="196" text-anchor="middle" fill="var(--text)" font-size="14" font-weight="600" font-family="JetBrains Mono">x₂</text>
+        <text x="60" y="216" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter">输入 2</text>
+
+        <!-- Weight labels -->
+        <text id="w1-label" x="130" y="68" fill="var(--green)" font-size="12" font-weight="600" font-family="JetBrains Mono" class="weight-label">w₁=1</text>
+        <text id="w2-label" x="130" y="228" fill="var(--green)" font-size="12" font-weight="600" font-family="JetBrains Mono" class="weight-label">w₂=1</text>
+
+        <!-- Connection lines -->
+        <line id="line-w1" x1="88" y1="80" x2="220" y2="110" stroke="var(--green)" stroke-width="2" marker-end="url(#arrow-m)" opacity="0.8"/>
+        <line id="line-w2" x1="88" y1="200" x2="220" y2="190" stroke="var(--green)" stroke-width="2" marker-end="url(#arrow-m)" opacity="0.8"/>
+
+        <!-- Neuron body -->
+        <rect x="220" y="90" width="120" height="120" rx="16" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2" filter="url(#glow)"/>
+        <text x="280" y="130" text-anchor="middle" fill="var(--text)" font-size="13" font-weight="600" font-family="Inter">神经元</text>
+        <text x="280" y="150" text-anchor="middle" fill="var(--text-muted)" font-size="11" font-family="JetBrains Mono">Σ wᵢxᵢ − θ</text>
+        <text id="theta-label" x="280" y="175" text-anchor="middle" fill="var(--orange)" font-size="11" font-family="JetBrains Mono">θ = 1.5</text>
+        <text x="280" y="195" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter">阶跃激活</text>
+
+        <!-- Output arrow -->
+        <line x1="340" y1="150" x2="420" y2="150" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow-m)"/>
+
+        <!-- Output node -->
+        <circle id="node-out" cx="460" cy="150" r="28" fill="var(--bg-elevated)" stroke="var(--green)" stroke-width="2"/>
+        <text id="output-text" x="460" y="156" text-anchor="middle" fill="var(--green)" font-size="18" font-weight="700" font-family="JetBrains Mono">0</text>
+        <text x="460" y="190" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter">输出 y</text>
       </svg>
     </div>
-    <p class="diagram-caption">图: MP神经元 通用架构示意</p>
+    <p class="diagram-caption">图：MP神经元将加权输入与阈值比较，通过阶跃函数输出二元结果</p>
   </section>
 
+  <!-- HISTORY TIMELINE -->
   <section class="section">
     <div class="section-label">历史背景</div>
     <div class="section-title">从问题到突破</div>
-    <div class="section-body">
-      <p><strong>Warren McCulloch & Walter Pitts</strong> 在 <strong>1943</strong> 年提出了 MP神经元，这是机器学习发展史上的一个重要里程碑。</p>
-      <p>1943年，神经生理学家 Warren McCulloch 和数学家 Walter Pitts 发表了开创性论文 "A Logical Calculus of the Ideas Immanent in Nervous Activity"。这是人工智能领域的奠基之作，首次展示了神经网络可以用数学逻辑来表达。
-
-**当时的问题**：
-- 神经网络的研究刚刚起步，人们还不确定如何将神经元的生物特性抽象...</p>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">1936</div>
+        <div class="timeline-title">图灵机提出</div>
+        <div class="timeline-desc">计算理论飞速发展，为神经网络的形式化奠定基础。</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">1943</div>
+        <div class="timeline-title">MP论文发表</div>
+        <div class="timeline-desc">McCulloch & Pitts 发表《A Logical Calculus of the Ideas Immanent in Nervous Activity》，首次将神经元抽象为数学逻辑模型。</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">核心突破</div>
+        <div class="timeline-title">证明简单神经元可执行布尔逻辑</div>
+        <div class="timeline-desc">通过设置不同权重和阈值，MP神经元可实现AND、OR、NOT等基本逻辑门运算。</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">1957</div>
+        <div class="timeline-title">感知机诞生</div>
+        <div class="timeline-desc">Rosenblatt 在MP神经元基础上引入学习机制，提出感知机模型。</div>
+      </div>
+    </div>
+    <div class="section-body" style="margin-top:16px;">
+      <p><strong>当时面临的问题：</strong></p>
+      <ul>
+        <li>神经网络研究刚起步，人们不确定如何将神经元生物特性抽象为数学模型</li>
+        <li>没有计算机能运行复杂的神经网络模型</li>
+        <li>计算理论处于快速发展期，图灵机刚刚提出不久</li>
+      </ul>
     </div>
   </section>
 
+  <!-- FORMULA CARDS -->
   <section class="section">
     <div class="section-label">数学原理</div>
     <div class="section-title">核心公式</div>
+
     <div class="formula-card">
-      <div class="formula-label">核心公式</div>
-      <div class="formula">f(x) = ...</div>
-      <div class="formula-note">根据具体模型填写</div>
+      <div class="formula-label">加权求和</div>
+      <div class="formula">z = Σ wᵢxᵢ = w₁·x₁ + w₂·x₂ + ... + wₙ·xₙ</div>
+      <div class="formula-note">输入 xᵢ ∈ {0, 1}，权重 wᵢ ∈ ℝ</div>
+    </div>
+
+    <div class="formula-card">
+      <div class="formula-label">阶跃激活函数</div>
+      <div class="formula">y = f(z) = { 1  if z ≥ θ
+                  { 0  if z < θ</div>
+      <div class="formula-note">f 是阶跃函数（step function），输出 y ∈ {0, 1}</div>
+    </div>
+
+    <div class="formula-card">
+      <div class="formula-label">逻辑门参数</div>
+      <div class="formula">
+AND: w₁=1, w₂=1, θ=1.5  → y=1 仅当 x₁=1 且 x₂=1<br>
+OR:  w₁=1, w₂=1, θ=0.5  → y=1 当 x₁=1 或 x₂=1<br>
+NOT: w₁=-1,   θ=-0.5    → y=1 当 x₁=0
+      </div>
+      <div class="formula-note">通过调整权重和阈值，同一模型结构可实现不同逻辑运算</div>
     </div>
   </section>
 
+  <!-- CODE BLOCK -->
   <section class="section">
     <div class="section-label">代码实现</div>
-    <div class="section-title">model.py 核心逻辑</div>
+    <div class="section-title">Python 核心逻辑</div>
     <div class="code-block">
       <div class="code-header">
         <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
-        <span class="code-lang">Python · model.py</span>
+        <span class="code-lang">Python · mp_neuron.py</span>
       </div>
-      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">MP神经元</span>(nn.Module):
-    <span class="kw">def</span> <span class="fn">__init__</span>(self):
-        super().__span class="fn">init__</span>()
-        <span class="cm"># 模型定义</span>
-        
-    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
-        <span class="cm"># 前向传播</span>
-        <span class="kw">return</span> x</pre></div>
+      <div class="code-body"><pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="kw">class</span> <span class=\"cls\">MPNeuron</span>:
+    <span class=\"kw\">def</span> <span class=\"fn\">__init__</span>(self, weights, threshold):
+        self.weights = np.array(weights)
+        self.threshold = threshold
+
+    <span class=\"kw\">def</span> <span class=\"fn\">forward</span>(self, x):
+        <span class=\"cm\"># 加权求和</span>
+        z = np.<span class=\"fn\">dot</span>(self.weights, x)
+        <span class=\"cm\"># 阶跃激活</span>
+        <span class=\"kw\">return</span> <span class=\"num\">1</span> <span class=\"kw\">if</span> z >= self.threshold <span class=\"kw\">else</span> <span class=\"num\">0</span>
+
+<span class=\"cm\"># AND门: w=[1,1], θ=1.5</span>
+and_gate = <span class=\"cls\">MPNeuron</span>([<span class=\"num\">1</span>, <span class=\"num\">1</span>], <span class=\"num\">1.5</span>)
+<span class=\"fn\">print</span>(and_gate.<span class=\"fn\">forward</span>([<span class=\"num\">1</span>, <span class=\"num\">1</span>]))  <span class=\"cm\"># → 1</span>
+<span class=\"fn\">print</span>(and_gate.<span class=\"fn\">forward</span>([<span class=\"num\">1</span>, <span class=\"num\">0</span>]))  <span class=\"cm\"># → 0</span></pre>
     </div>
   </section>
 
+  <!-- INTERACTIVE DEMO -->
+  <section class="section">
+    <div class="section-label">交互演示</div>
+    <div class="section-title">实验台</div>
+    <div class="demo-container">
+      <div class="demo-title">调整权重与阈值，观察逻辑门输出</div>
+
+      <div class="gate-selector">
+        <button class="gate-btn active" onclick="setGate('AND')">AND</button>
+        <button class="gate-btn" onclick="setGate('OR')">OR</button>
+        <button class="gate-btn" onclick="setGate('NOT')">NOT</button>
+        <button class="gate-btn" onclick="setCustom()">自定义</button>
+      </div>
+
+      <div class="demo-controls">
+        <div class="demo-row">
+          <label>w₁ (权重1)</label>
+          <input type="range" id="w1" class="demo-slider" min="-3" max="3" step="0.5" value="1" oninput="updateDemo()">
+          <span class="val" id="w1-val">1.0</span>
+        </div>
+        <div class="demo-row" id="x2-row">
+          <label>w₂ (权重2)</label>
+          <input type="range" id="w2" class="demo-slider" min="-3" max="3" step="0.5" value="1" oninput="updateDemo()">
+          <span class="val" id="w2-val">1.0</span>
+        </div>
+        <div class="demo-row">
+          <label>θ (阈值)</label>
+          <input type="range" id="theta" class="demo-slider" min="-3" max="3" step="0.5" value="1.5" oninput="updateDemo()">
+          <span class="val" id="theta-val">1.5</span>
+        </div>
+        <div class="demo-row">
+          <label>x₁ 输入</label>
+          <div class="input-toggles">
+            <button class="toggle-btn" id="btn-x1-0" onclick="setInput(0,0)">0</button>
+            <button class="toggle-btn on" id="btn-x1-1" onclick="setInput(0,1)">1</button>
+          </div>
+          <label style="margin-left:16px;">x₂ 输入</label>
+          <div class="input-toggles">
+            <button class="toggle-btn" id="btn-x2-0" onclick="setInput(1,0)">0</button>
+            <button class="toggle-btn on" id="btn-x2-1" onclick="setInput(1,1)">1</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;">
+        <div class="output-display">
+          <span class="output-label">输出 y =</span>
+          <span class="output-value one" id="output-val">1</span>
+          <span class="calc-detail" id="calc-detail">z = 1×1 + 1×1 = 2.0 ≥ θ(1.5) → 1</span>
+        </div>
+      </div>
+
+      <table class="truth-table" id="truth-table">
+        <thead>
+          <tr><th>x₁</th><th>x₂</th><th>w₁x₁</th><th>w₂x₂</th><th>z = Σ</th><th>θ</th><th>y</th></tr>
+        </thead>
+        <tbody id="truth-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- LIMITATIONS & IMPACT -->
+  <section class="section">
+    <div class="section-label">历史意义</div>
+    <div class="section-title">局限性与影响</div>
+    <div class="comparison-grid">
+      <div class="comparison-panel">
+        <h4>历史局限</h4>
+        <p>• 只能处理二值输入输出，实际神经元是连续值的<br>
+           • 没有学习机制，权重和阈值需手动设置<br>
+           • 无法学习异或（XOR）——线性不可分问题<br>
+           • 阶跃函数不可微，无法使用梯度下降训练</p>
+      </div>
+      <div class="comparison-panel">
+        <h4>历史影响</h4>
+        <p>• 直接启发了 Rosenblatt 的感知机（1957）<br>
+           • 奠定了所有人工神经网络研究的基础<br>
+           • 开启了神经网络与逻辑学的结合研究<br>
+           • 证明了数学形式化表达神经活动是可行的</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTES -->
   <section class="section">
     <div class="section-label">学习心得</div>
     <div class="section-title">关键洞察</div>
     <div class="notes-card">
       <h4>学到的知识</h4>
       <ul>
-        <li>MP神经元 是机器学习发展史上的重要模型</li>
-        <li>理解其数学原理有助于掌握后续模型</li>
+        <li>MP神经元是第一个数学形式的神经网络模型</li>
+        <li>只能处理 0 和 1 的二值输入输出</li>
+        <li>可以通过设置权重实现 AND、OR、NOT 等逻辑门</li>
+        <li>单层MP神经元无法解决 XOR 问题（线性不可分）</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>思考题答案</h4>
+      <ul>
+        <li><strong>为什么不能解决XOR？</strong> XOR是线性不可分问题，单层感知机只能学习线性分类器</li>
+        <li><strong>如何扩展为连续值输出？</strong> 使用阶跃函数的连续近似，如sigmoid函数</li>
+        <li><strong>阶跃函数不可微的影响？</strong> 无法使用梯度下降训练，这是感知机需要解决的问题</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>下一步</h4>
+      <ul>
+        <li>了解感知机的改进：Rosenblatt的感知机</li>
+        <li>学习线性回归和逻辑回归</li>
       </ul>
     </div>
   </section>
 
+  <!-- FOOTER NAV -->
   <div class="nav-footer">
     <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
-    <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
+    <span class="nav-footer-center"><a href="../index.html">ML History</a> · <a href="../01_foundations/index.html">01_foundations阶段</a></span>
+    <a href="../02_perceptron/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">感知机 (Perceptron)</span></a>
   </div>
 
 </main>
+
+<script>
+const gates = {
+  AND: { w1: 1, w2: 1, theta: 1.5, showX2: true },
+  OR:  { w1: 1, w2: 1, theta: 0.5, showX2: true },
+  NOT: { w1: -1, w2: 0, theta: -0.5, showX2: false }
+};
+
+let currentGate = 'AND';
+let inputs = [1, 1];
+
+function setGate(name) {
+  currentGate = name;
+  document.querySelectorAll('.gate-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  const g = gates[name];
+  document.getElementById('w1').value = g.w1;
+  document.getElementById('w2').value = g.w2;
+  document.getElementById('theta').value = g.theta;
+  document.getElementById('x2-row').style.display = g.showX2 ? 'flex' : 'none';
+  inputs = [1, 1];
+  updateDemo();
+}
+
+function setCustom() {
+  currentGate = 'CUSTOM';
+  document.querySelectorAll('.gate-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('x2-row').style.display = 'flex';
+}
+
+function setInput(idx, val) {
+  inputs[idx] = val;
+  document.getElementById(`btn-x${idx+1}-${inputs[idx] ? '1' : '0'}`).classList.add('on');
+  document.getElementById(`btn-x${idx+1}-${inputs[idx] ? '0' : '1'}`).classList.remove('on');
+  updateDemo();
+}
+
+function updateDemo() {
+  const w1 = parseFloat(document.getElementById('w1').value);
+  const w2 = parseFloat(document.getElementById('w2').value);
+  const theta = parseFloat(document.getElementById('theta').value);
+
+  document.getElementById('w1-val').textContent = w1.toFixed(1);
+  document.getElementById('w2-val').textContent = w2.toFixed(1);
+  document.getElementById('theta-val').textContent = theta.toFixed(1);
+
+  const z = w1 * inputs[0] + w2 * inputs[1];
+  const y = z >= theta ? 1 : 0;
+
+  const outEl = document.getElementById('output-val');
+  outEl.textContent = y;
+  outEl.className = 'output-value ' + (y ? 'one' : 'zero');
+
+  document.getElementById('calc-detail').textContent =
+    `z = ${w1.toFixed(1)}×${inputs[0]} + ${w2.toFixed(1)}×${inputs[1]} = ${z.toFixed(1)} ${y ? '≥' : '<'} θ(${theta.toFixed(1)}) → ${y}`;
+
+  // Update SVG
+  document.getElementById('w1-label').textContent = `w₁=${w1.toFixed(1)}`;
+  document.getElementById('w2-label').textContent = `w₂=${w2.toFixed(1)}`;
+  document.getElementById('theta-label').textContent = `θ = ${theta.toFixed(1)}`;
+  document.getElementById('output-text').textContent = y;
+  document.getElementById('output-text').setAttribute('fill', y ? 'var(--green)' : 'var(--text-faint)');
+  document.getElementById('node-out').setAttribute('stroke', y ? 'var(--green)' : 'var(--border-strong)');
+
+  // Update truth table
+  buildTruthTable(w1, w2, theta);
+}
+
+function buildTruthTable(w1, w2, theta) {
+  const tbody = document.getElementById('truth-body');
+  tbody.innerHTML = '';
+  const pairs = [[0,0],[0,1],[1,0],[1,1]];
+  pairs.forEach(([x1, x2]) => {
+    const z = w1 * x1 + w2 * x2;
+    const y = z >= theta ? 1 : 0;
+    const isActive = x1 === inputs[0] && x2 === inputs[1];
+    const tr = document.createElement('tr');
+    if (isActive) tr.className = 'active-row';
+    tr.innerHTML = `<td>${x1}</td><td>${x2}</td><td>${(w1*x1).toFixed(1)}</td><td>${(w2*x2).toFixed(1)}</td><td>${z.toFixed(1)}</td><td>${theta.toFixed(1)}</td><td class="${y ? 'out-one' : 'out-zero'}">${y}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// Init
+updateDemo();
+</script>
 
 </body>
 </html>
