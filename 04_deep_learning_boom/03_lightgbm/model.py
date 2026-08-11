@@ -31,7 +31,7 @@ class LightGBMTree:
                 left_mask = feature_values <= bins[i]
                 right_mask = ~left_mask
                 
-                if np.sum(left_mask) < 5 or np.sum(right_mask) < 5:
+                if np.sum(left_mask) < 2 or np.sum(right_mask) < 2:
                     continue
                 
                 left_g = np.sum(g[left_mask])
@@ -49,7 +49,7 @@ class LightGBMTree:
             return {'leaf': True, 'value': np.sum(g) / (np.sum(h) + 1e-16)}
         
         left_mask = X[:, best_split['feature']] <= best_split['threshold']
-        node = {'feature': best_split['feature'], 'threshold': best_split['threshold'], 'children': {}}
+        node = {'feature': best_split['feature'], 'threshold': best_split['threshold']}
         node['left'] = self._build_tree(X[left_mask], g[left_mask], h[left_mask], depth + 1)
         node['right'] = self._build_tree(X[~left_mask], g[~left_mask], h[~left_mask], depth + 1)
         
@@ -76,6 +76,7 @@ class LightGBM:
         self.max_depth = max_depth
         self.learning_rate = learning_rate
         self.trees = []
+        self.base_score = 0.5
     
     def _sigmoid(self, x):
         return 1 / (1 + np.exp(-np.clip(x, -500, 500)))
@@ -83,12 +84,15 @@ class LightGBM:
     def fit(self, X, y):
         self.trees = []
         n = len(y)
-        predictions = np.zeros(n)
+        pos = np.sum(y == 1)
+        neg = np.sum(y == 0)
+        self.base_score = pos / (pos + neg + 1e-16)
+        predictions = np.log(self.base_score / (1 - self.base_score + 1e-16)) * np.ones(n)
         
         for _ in range(self.n_estimators):
             probabilities = self._sigmoid(predictions)
             gradients = probabilities - y
-            hessians = probabilities * (1 - probabilities)
+            hessians = probabilities * (1 - probabilities) + 1e-16
             
             tree = LightGBMTree(max_depth=self.max_depth)
             tree.fit(X, gradients, hessians)
@@ -100,7 +104,7 @@ class LightGBM:
     
     def predict(self, X):
         n = X.shape[0]
-        predictions = np.zeros(n)
+        predictions = np.log(self.base_score / (1 - self.base_score + 1e-16)) * np.ones(n)
         
         for tree in self.trees:
             predictions += self.learning_rate * tree.predict(X)

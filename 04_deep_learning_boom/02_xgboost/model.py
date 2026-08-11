@@ -12,16 +12,12 @@ class XGBoostTree:
         self.leaf_value = None
     
     def fit(self, X, gradients, hessians):
-        """构建树。"""
         self.tree = self._build_tree(X, gradients, hessians, depth=0)
         return self
     
     def _build_tree(self, X, g, h, depth):
-        node = {'children': {}}
-        
         if depth >= self.max_depth or len(np.unique(g)) <= 1:
-            self.leaf_value = np.sum(g) / (np.sum(h) + 1e-16)
-            return {'leaf': True, 'value': self.leaf_value}
+            return {'leaf': True, 'value': np.sum(g) / (np.sum(h) + 1e-16)}
         
         best_gain = -1
         best_split = None
@@ -32,7 +28,7 @@ class XGBoostTree:
                 left_mask = X[:, feature] <= threshold
                 right_mask = ~left_mask
                 
-                if np.sum(left_mask) < 5 or np.sum(right_mask) < 5:
+                if np.sum(left_mask) < 2 or np.sum(right_mask) < 2:
                     continue
                 
                 left_g = np.sum(g[left_mask])
@@ -47,12 +43,10 @@ class XGBoostTree:
                     best_split = {'feature': feature, 'threshold': threshold}
         
         if best_split is None:
-            self.leaf_value = np.sum(g) / (np.sum(h) + 1e-16)
-            return {'leaf': True, 'value': self.leaf_value}
+            return {'leaf': True, 'value': np.sum(g) / (np.sum(h) + 1e-16)}
         
         left_mask = X[:, best_split['feature']] <= best_split['threshold']
-        node['feature'] = best_split['feature']
-        node['threshold'] = best_split['threshold']
+        node = {'feature': best_split['feature'], 'threshold': best_split['threshold']}
         node['left'] = self._build_tree(X[left_mask], g[left_mask], h[left_mask], depth + 1)
         node['right'] = self._build_tree(X[~left_mask], g[~left_mask], h[~left_mask], depth + 1)
         
@@ -79,6 +73,7 @@ class XGBoost:
         self.max_depth = max_depth
         self.learning_rate = learning_rate
         self.trees = []
+        self.base_score = 0.5
     
     def _sigmoid(self, x):
         return 1 / (1 + np.exp(-np.clip(x, -500, 500)))
@@ -86,12 +81,16 @@ class XGBoost:
     def fit(self, X, y):
         self.trees = []
         n = len(y)
-        predictions = np.zeros(n)
+        # 初始预测取对数几率
+        pos = np.sum(y == 1)
+        neg = np.sum(y == 0)
+        self.base_score = pos / (pos + neg + 1e-16)
+        predictions = np.log(self.base_score / (1 - self.base_score + 1e-16)) * np.ones(n)
         
         for _ in range(self.n_estimators):
             probabilities = self._sigmoid(predictions)
             gradients = probabilities - y
-            hessians = probabilities * (1 - probabilities)
+            hessians = probabilities * (1 - probabilities) + 1e-16
             
             tree = XGBoostTree(max_depth=self.max_depth)
             tree.fit(X, gradients, hessians)
@@ -103,7 +102,7 @@ class XGBoost:
     
     def predict(self, X):
         n = X.shape[0]
-        predictions = np.zeros(n)
+        predictions = np.log(self.base_score / (1 - self.base_score + 1e-16)) * np.ones(n)
         
         for tree in self.trees:
             predictions += self.learning_rate * tree.predict(X)
