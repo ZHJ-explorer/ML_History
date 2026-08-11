@@ -7,7 +7,41 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/base.css">
 <style>
-/* Model-specific styles */
+#scaling-canvas {
+  width: 100%;
+  height: 300px;
+  background: var(--bg);
+  border-radius: var(--radius);
+  cursor: crosshair;
+}
+.param-control {
+  margin: 16px 0;
+}
+.param-control label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.param-control input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+.prediction-box {
+  background: var(--accent-dim);
+  border: 1px solid rgba(113,112,255,0.3);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-top: 16px;
+  text-align: center;
+}
+.prediction-value {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--accent);
+  font-family: 'JetBrains Mono', monospace;
+}
 </style>
 </head>
 <body>
@@ -17,7 +51,7 @@
     <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="../05_large_model_era/index.html">05_large_model_era阶段</a>
+      <a href="../05_large_model_era/index.html">大模型时代</a>
       <span class="nav-badge">2020</span>
     </div>
   </div>
@@ -26,91 +60,115 @@
 <main class="container">
 
   <section class="hero">
-    <div class="hero-eyebrow">05_large_model_era阶段 · 2020</div>
+    <div class="hero-eyebrow">第五阶段 · 大模型时代</div>
     <h1>缩放定律</h1>
-    <p class="hero-subtitle">暂无简介</p>
+    <p class="hero-subtitle">Kaplan et al. (2020) 发现：深度学习模型的性能与参数规模、数据量之间存在简单的幂律关系。这一发现指导了GPT-3、PaLM等超大模型的设计。</p>
     <div class="hero-meta">
       <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">2020</span></div>
       <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Kaplan et al.</span></div>
       <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">经验规律</span></div>
-      <div class="hero-meta-item"><span class="hero-meta-label">框架</span><span class="hero-meta-value">PyTorch</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">核心公式</span><span class="hero-meta-value">L = a·N^(-α) + L_∞</span></div>
     </div>
   </section>
 
   <div class="stats-grid">
-    <div class="stat-cell"><span class="stat-value">2020</span><span class="stat-label">提出年份</span></div>
-    <div class="stat-cell"><span class="stat-value">经验规律</span><span class="stat-label">模型类型</span></div>
-    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
-    <div class="stat-cell"><span class="stat-value">PyTorch</span><span class="stat-label">实现框架</span></div>
+    <div class="stat-cell"><span class="stat-value">N^(-α)</span><span class="stat-label">参数缩放律</span></div>
+    <div class="stat-cell"><span class="stat-value">D^(-β)</span><span class="stat-label">数据缩放律</span></div>
+    <div class="stat-cell"><span class="stat-value">幂律</span><span class="stat-label">拟合关系</span></div>
+    <div class="stat-cell"><span class="stat-value">GPT-3</span><span class="stat-label">应用实例</span></div>
   </div>
 
   <section class="section">
-    <div class="section-label">网络架构</div>
-    <div class="section-title">结构示意</div>
-    <div class="diagram-container">
-      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;">
-        <!-- Generic architecture diagram -->
-        <rect x="20" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="60" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输入层</text>
-        <text x="60" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Input</text>
-        
-        <line x1="100" y1="100" x2="160" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="160" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="200" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">隐藏层</text>
-        <text x="200" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Hidden</text>
-        
-        <line x1="240" y1="100" x2="300" y2="100" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow)"/>
-        
-        <rect x="300" y="60" width="80" height="80" rx="8" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="340" y="90" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">输出层</text>
-        <text x="340" y="110" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">Output</text>
-        
-        <defs>
-          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-            <path d="M0,0 L0,6 L9,3 z" fill="var(--text-muted)"/>
-          </marker>
-        </defs>
-      </svg>
+    <div class="section-label">核心思想</div>
+    <div class="section-title">性能可预测的幂律关系</div>
+    <div class="section-body">
+      <p>缩放定律指出，深度学习模型的性能（通常用损失函数L衡量）与参数量N和数据量D之间存在简单的幂律关系：</p>
+      <div class="formula-card">
+        <div class="formula-label">核心公式</div>
+        <div class="formula">L(N, D) = a · N<sup>-α</sup> + b · D<sup>-β</sup> + L<sub>∞</sub></div>
+        <div class="formula-note">其中 a, α, b, β, L<sub>∞</sub> 为拟合参数。这意味着通过增加参数和数据，可以 predictable 地提升模型性能。</div>
+      </div>
+      <p>这一发现的意义在于：在训练更大模型之前，就可以预测需要多少参数和数据才能达到目标性能。这极大地降低了大模型设计的试错成本。</p>
     </div>
-    <p class="diagram-caption">图: 缩放定律 通用架构示意</p>
+  </section>
+
+  <section class="section">
+    <div class="section-label">交互式演示</div>
+    <div class="section-title">探索参数规模与损失的关系</div>
+    <div class="diagram-container">
+      <canvas id="scaling-canvas"></canvas>
+    </div>
+    <div class="param-control">
+      <label>α (参数衰减率): <span id="alpha-val">0.076</span></label>
+      <input type="range" id="alpha-slider" min="0.01" max="0.2" step="0.01" value="0.076">
+    </div>
+    <div class="param-control">
+      <label>基准损失 a: <span id="a-val">1.0</span></label>
+      <input type="range" id="a-slider" min="0.5" max="3.0" step="0.1" value="1.0">
+    </div>
+    <div class="prediction-box">
+      <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">当前预测损失</div>
+      <div class="prediction-value" id="prediction-result">0.35</div>
+      <div style="font-size: 12px; color: var(--text-faint); margin-top: 8px;">在 1B 参数下的预测结果</div>
+    </div>
   </section>
 
   <section class="section">
     <div class="section-label">历史背景</div>
-    <div class="section-title">从问题到突破</div>
+    <div class="section-title">从经验到科学</div>
     <div class="section-body">
-      <p><strong>Kaplan et al.</strong> 在 <strong>2020</strong> 年提出了 缩放定律，这是机器学习发展史上的一个重要里程碑。</p>
-      <p></p>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="section-label">数学原理</div>
-    <div class="section-title">核心公式</div>
-    <div class="formula-card">
-      <div class="formula-label">核心公式</div>
-      <div class="formula">f(x) = ...</div>
-      <div class="formula-note">根据具体模型填写</div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-year">2018</div>
+          <div class="timeline-title">GPT-1 发布</div>
+          <div class="timeline-desc">第一个大规模预训练语言模型，展示了 scale 的重要性</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">2020</div>
+          <div class="timeline-title">Scaling Laws 论文</div>
+          <div class="timeline-desc">Kaplan et al. 系统研究了参数规模与性能的关系，发现幂律规律</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">2020</div>
+          <div class="timeline-title">GPT-3 发布</div>
+          <div class="timeline-desc">1750亿参数，按照缩放定律成功预测性能</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">2022</div>
+          <div class="timeline-title">Chinchilla 提出</div>
+          <div class="timeline-desc">提出了更优化的计算-数据平衡策略</div>
+        </div>
+      </div>
     </div>
   </section>
 
   <section class="section">
     <div class="section-label">代码实现</div>
-    <div class="section-title">model.py 核心逻辑</div>
+    <div class="section-title">ScalingLaw 类</div>
     <div class="code-block">
       <div class="code-header">
         <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
         <span class="code-lang">Python · model.py</span>
       </div>
-      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">缩放定律</span>(nn.Module):
+      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">ScalingLaw</span>:
+    <span class="str">"""缩放定律：预测模型性能与参数规模的关系"""</span>
+    
     <span class="kw">def</span> <span class="fn">__init__</span>(self):
-        super().__span class="fn">init__</span>()
-        <span class="cm"># 模型定义</span>
-        
-    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
-        <span class="cm"># 前向传播</span>
-        <span class="kw">return</span> x</pre></div>
+        self.a = <span class="var">None</span>
+        self.alpha = <span class="var">None</span>
+        self.L_infinity = <span class="var">None</span>
+    
+    <span class="kw">def</span> <span class="fn">fit</span>(self, N, L):
+        <span class="cm"># 对数变换后线性拟合</span>
+        log_N = np.<span class="fn">log</span>(N)
+        log_L = np.<span class="fn">log</span>(L - np.<span class="fn">min</span>(L) + <span class="num">1e-10</span>)
+        coeffs = np.<span class="fn">polyfit</span>(log_N, log_L, <span class="num">1</span>)
+        self.alpha = -coeffs[<span class="num">0</span>]
+        self.a = np.<span class="fn">exp</span>(coeffs[<span class="num">1</span>])
+        self.L_infinity = np.<span class="fn">min</span>(L) * <span class="num">0.5</span>
+    
+    <span class="kw">def</span> <span class="fn">predict</span>(self, N):
+        <span class="kw">return</span> self.a * N**(-self.alpha) + self.L_infinity</pre></div>
     </div>
   </section>
 
@@ -120,19 +178,115 @@
     <div class="notes-card">
       <h4>学到的知识</h4>
       <ul>
-        <li>缩放定律 是机器学习发展史上的重要模型</li>
-        <li>理解其数学原理有助于掌握后续模型</li>
+        <li>缩放定律揭示了模型性能与参数规模的简单幂律关系</li>
+        <li>可以通过小规模实验预测大模型性能，大幅降低试错成本</li>
+        <li>参数和数据应该按特定比例增加才能获得最佳效率</li>
+      </ul>
+    </div>
+    <div class="notes-card">
+      <h4>思考题答案</h4>
+      <ul>
+        <li><strong>为什么大模型需要更多数据？</strong> - 缩放定律表明 L ~ N^(-α) * D^(-β)，参数和数据都需要增加</li>
+        <li><strong>缩放定律的局限性？</strong> - 在极端规模下可能出现饱和或突变</li>
       </ul>
     </div>
   </section>
 
   <div class="nav-footer">
-    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
+    <a href="../04_deep_learning_boom/06_gpt/index.html" class="nav-footer-prev">
+      <span class="nav-footer-label">← 上一个</span>
+      <span class="nav-footer-title">GPT-1</span>
+    </a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="#" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
+    <a href="../05_large_model_era/02_diffusion_model/index.html" class="nav-footer-next" style="text-align:right;">
+      <span class="nav-footer-label">下一个 →</span>
+      <span class="nav-footer-title">扩散模型</span>
+    </a>
   </div>
 
 </main>
+
+<script>
+const canvas = document.getElementById('scaling-canvas');
+const ctx = canvas.getContext('2d');
+const alphaSlider = document.getElementById('alpha-slider');
+const aSlider = document.getElementById('a-slider');
+const alphaVal = document.getElementById('alpha-val');
+const aVal = document.getElementById('a-val');
+const predictionResult = document.getElementById('prediction-result');
+
+function resizeCanvas() {
+  canvas.width = canvas.offsetWidth * 2;
+  canvas.height = canvas.offsetHeight * 2;
+  ctx.scale(2, 2);
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function drawGraph() {
+  const w = canvas.offsetWidth;
+  const h = canvas.offsetHeight;
+  const pad = 40;
+  
+  ctx.clearRect(0, 0, w, h);
+  
+  const alpha = parseFloat(alphaSlider.value);
+  const a = parseFloat(aSlider.value);
+  const L_inf = 0.1;
+  
+  alphaVal.textContent = alpha.toFixed(3);
+  aVal.textContent = a.toFixed(1);
+  
+  // 计算预测值
+  const N_pred = 1e9;
+  const L_pred = a * Math.pow(N_pred, -alpha) + L_inf;
+  predictionResult.textContent = L_pred.toFixed(3);
+  
+  // 绘制坐标轴
+  ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(pad, pad);
+  ctx.lineTo(pad, h - pad);
+  ctx.lineTo(w - pad, h - pad);
+  ctx.stroke();
+  
+  // 绘制曲线
+  ctx.strokeStyle = '#7170ff';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  
+  for (let i = 0; i < 100; i++) {
+    const logN = 6 + (i / 99) * 3; // 从 10^6 到 10^9
+    const N = Math.pow(10, logN);
+    const L = a * Math.pow(N, -alpha) + L_inf;
+    
+    const x = pad + (logN - 6) / 3 * (w - 2 * pad);
+    const y = h - pad - (L - L_inf) / (a + L_inf - L_inf) * (h - 2 * pad);
+    
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+  
+  // 标注轴
+  ctx.fillStyle = '#8a8f98';
+  ctx.font = '11px Inter';
+  ctx.textAlign = 'center';
+  ctx.fillText('参数规模 N (log scale)', w / 2, h - 10);
+  
+  ctx.save();
+  ctx.translate(15, h / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('损失 L', 0, 0);
+  ctx.restore();
+}
+
+alphaSlider.addEventListener('input', drawGraph);
+aSlider.addEventListener('input', drawGraph);
+
+drawGraph();
+</script>
 
 </body>
 </html>
