@@ -9,10 +9,6 @@
 <style>
 /* ── k-NN Specific Styles ── */
 .knn-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; color: var(--accent); background: var(--accent-dim); border: 1px solid rgba(113,112,255,0.25); }
-.class-a { fill: #ef4444; }
-.class-b { fill: #3b82f6; }
-.class-a-stroke { stroke: #ef4444; }
-.class-b-stroke { stroke: #3b82f6; }
 .highlight-ring { fill: none; stroke-width: 2.5; stroke-dasharray: 4 2; animation: dash 20s linear infinite; }
 @keyframes dash { to { stroke-dashoffset: -100; } }
 .demo-svg { user-select: none; cursor: crosshair; }
@@ -32,7 +28,6 @@
 .knn-result .pred-a { color: #ef4444; font-weight: 600; }
 .knn-result .pred-b { color: #3b82f6; font-weight: 600; }
 .knn-result .count { color: var(--orange); }
-#boundaryCanvas { position: absolute; top: 0; left: 0; pointer-events: none; }
 .diagram-wrapper { position: relative; }
 .knn-history-block { background: var(--bg-surface); border: 1px solid var(--border-strong); border-radius: var(--radius-lg); padding: 20px 24px; margin-bottom: 16px; }
 .knn-history-block h3 { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 10px; }
@@ -80,13 +75,9 @@
     <div class="section-label">交互演示</div>
     <div class="section-title">可视化分类空间</div>
     <div class="demo-container diagram-wrapper">
-      <canvas id="boundaryCanvas" width="560" height="420"></canvas>
       <svg id="knnSvg" class="demo-svg" viewBox="0 0 560 420" xmlns="http://www.w3.org/2000/svg" width="560" height="420">
         <defs>
           <filter id="glow"><feGaussianBlur stdDeviation="2.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          <filter id="softGlow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          <radialGradient id="gradA" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ef4444" stop-opacity="0.9"/><stop offset="100%" stop-color="#ef4444" stop-opacity="0.2"/></radialGradient>
-          <radialGradient id="gradB" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#3b82f6" stop-opacity="0.9"/><stop offset="100%" stop-color="#3b82f6" stop-opacity="0.2"/></radialGradient>
         </defs>
         <!-- Grid -->
         <g id="grid" stroke="var(--border)" stroke-width="0.5" opacity="0.6"></g>
@@ -120,10 +111,6 @@
           <input type="range" class="knn-slider" id="kSlider" min="1" max="15" value="3" oninput="setK(this.value)">
           <span class="knn-k-value" id="kValue">3</span>
           <button class="knn-btn" onclick="toggleTestMode()" id="testModeBtn">切换测试模式</button>
-        </div>
-        <div class="knn-row">
-          <span class="knn-label">距离度量</span>
-          <button class="knn-btn active" id="minkowskiBtn" onclick="setMetric('minkowski')">闵可夫斯基 (p=2)</button>
         </div>
         <div class="knn-row">
           <span class="knn-label">预测结果</span>
@@ -450,7 +437,7 @@ function runPrediction() {
   const pred = votes.a >= votes.b ? 'a' : 'b';
 
   // Draw decision boundary regions (simplified Voronoi-like)
-  drawBoundary(withDist);
+  drawBoundary();
 
   // Draw NN highlights
   nnGroup.innerHTML = '';
@@ -497,7 +484,7 @@ neighbors.map((n, i) =>
 }
 
 // ── Draw simplified decision boundary ──
-function drawBoundary(sorted) {
+function drawBoundary() {
   boundaryLayer.innerHTML = '';
   if (trainPoints.length === 0) return;
 
