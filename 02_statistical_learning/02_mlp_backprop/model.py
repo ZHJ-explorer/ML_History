@@ -4,6 +4,13 @@ import numpy as np
 class MLP:
     """多层感知机，使用反向传播训练。"""
     def __init__(self, layer_sizes, learning_rate=0.01, max_iter=1000):
+        """初始化多层感知机。
+
+        Args:
+            layer_sizes: 各层神经元数量列表，如[784, 128, 10]。
+            learning_rate: 学习率，默认为0.01。
+            max_iter: 最大训练迭代次数，默认为1000。
+        """
         self.layer_sizes = layer_sizes
         self.learning_rate = learning_rate
         self.max_iter = max_iter
@@ -47,15 +54,41 @@ class MLP:
             self.biases[i] -= self.learning_rate * np.sum(deltas[i], axis=0)
 
     def fit(self, X, y):
+        """训练多层感知机。
+
+        Args:
+            X: 训练特征矩阵，形状为(n_samples, n_features)。
+            y: 训练标签（one-hot编码），形状为(n_samples, n_classes)。
+
+        Returns:
+            self: 训练后的模型实例。
+        """
         for _ in range(self.max_iter):
             activations, z_values = self._forward(X)
             self._backward(X, y, activations, z_values)
         return self
 
     def predict(self, X):
+        """对输入数据进行预测。
+
+        Args:
+            X: 输入特征矩阵，形状为(n_samples, n_features)。
+
+        Returns:
+            预测概率分布，形状为(n_samples, n_classes)。
+        """
         activations, _ = self._forward(X)
         return activations[-1]
 
     def score(self, X, y):
+        """计算分类准确率。
+
+        Args:
+            X: 输入特征矩阵，形状为(n_samples, n_features)。
+            y: 真实标签（one-hot编码），形状为(n_samples, n_classes)。
+
+        Returns:
+            分类准确率（0到1之间的浮点数）。
+        """
         pred = self.predict(X)
         return np.mean(np.argmax(pred, axis=1) == np.argmax(y, axis=1))

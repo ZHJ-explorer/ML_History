@@ -56,6 +56,7 @@ class ManualConv2D(nn.Module):
         # 填充
         if p > 0:
             x = nn.functional.pad(x, (p, p, p, p))
+            H, W = x.shape[2], x.shape[3]
 
         # 计算输出尺寸
         out_h = (H - k) // s + 1

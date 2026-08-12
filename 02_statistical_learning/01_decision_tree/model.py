@@ -5,6 +5,11 @@ from collections import Counter
 class DecisionTree:
     """ID3决策树分类器。"""
     def __init__(self, max_depth=None):
+        """初始化决策树分类器。
+
+        Args:
+            max_depth: 树的最大深度，None表示不限制深度，默认为None。
+        """
         self.max_depth = max_depth
         self.tree = None
 
@@ -58,6 +63,15 @@ class DecisionTree:
         }
 
     def fit(self, X, y):
+        """训练决策树分类器。
+
+        Args:
+            X: 训练特征矩阵，形状为(n_samples, n_features)。
+            y: 训练标签，形状为(n_samples,)。
+
+        Returns:
+            self: 训练后的分类器实例。
+        """
         self.tree = self._build_tree(np.array(X), np.array(y))
         return self
 
@@ -69,7 +83,24 @@ class DecisionTree:
         return self._predict_one(x, node['right'])
 
     def predict(self, X):
+        """对输入数据进行预测。
+
+        Args:
+            X: 输入特征矩阵，形状为(n_samples, n_features)。
+
+        Returns:
+            预测标签数组，形状为(n_samples,)。
+        """
         return np.array([self._predict_one(x, self.tree) for x in X])
 
     def score(self, X, y):
+        """计算分类准确率。
+
+        Args:
+            X: 输入特征矩阵，形状为(n_samples, n_features)。
+            y: 真实标签，形状为(n_samples,)。
+
+        Returns:
+            分类准确率（0到1之间的浮点数）。
+        """
         return np.mean(self.predict(X) == y)

@@ -4,6 +4,13 @@ import numpy as np
 class SVM:
     """使用简化版SMO算法求解的SVM分类器。"""
     def __init__(self, C=1.0, kernel='linear', gamma=None):
+        """初始化SVM分类器。
+
+        Args:
+            C: 正则化参数，控制间隔最大化与误分类惩罚的平衡，默认为1.0。
+            kernel: 核函数类型，支持'linear'和'rbf'，默认为'linear'。
+            gamma: RBF核函数系数，默认为None（自动计算为1/n_features）。
+        """
         self.C = C
         self.kernel = kernel
         self.gamma = gamma
@@ -22,6 +29,15 @@ class SVM:
         return np.dot(X1, X2.T)
 
     def fit(self, X, y):
+        """训练SVM分类器。
+
+        Args:
+            X: 训练特征矩阵，形状为(n_samples, n_features)。
+            y: 训练标签，形状为(n_samples,)，取值为1或-1。
+
+        Returns:
+            self: 训练后的分类器实例。
+        """
         n_samples = X.shape[0]
         self.alphas = np.zeros(n_samples)
         self.b = 0
@@ -76,7 +92,24 @@ class SVM:
         return np.dot(X, self.support_vectors.T).dot(self.alphas * self.labels) + self.b
 
     def predict(self, X):
+        """对输入数据进行预测。
+
+        Args:
+            X: 输入特征矩阵，形状为(n_samples, n_features)。
+
+        Returns:
+            预测标签数组，形状为(n_samples,)，取值为1或-1。
+        """
         return np.sign(self._decision_function(X))
 
     def score(self, X, y):
+        """计算分类准确率。
+
+        Args:
+            X: 输入特征矩阵，形状为(n_samples, n_features)。
+            y: 真实标签，形状为(n_samples,)，取值为1或-1。
+
+        Returns:
+            分类准确率（0到1之间的浮点数）。
+        """
         return np.mean(self.predict(X) == y)

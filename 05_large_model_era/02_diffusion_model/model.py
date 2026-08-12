@@ -55,12 +55,9 @@ class SimpleDiffusionModel(nn.Module):
         self.hidden_size = hidden_size
         self.num_steps = num_steps
         
-        self.net = nn.Sequential(
-            nn.Linear(input_dim, hidden_size),
-            nn.SiLU(),
-            ResBlock(hidden_size),
-            nn.Linear(hidden_size, input_dim),
-        )
+        self.initial_proj = nn.Linear(input_dim, hidden_size)
+        self.resblock = ResBlock(hidden_size)
+        self.final_proj = nn.Linear(hidden_size, input_dim)
         
         # 噪声调度
         self.register_buffer('alphas', self._cosine_noise_schedule(num_steps))
@@ -71,6 +68,14 @@ class SimpleDiffusionModel(nn.Module):
         alphas = torch.cos((steps / num_steps + 0.008) / 1.008 * math.pi / 2) ** 2
         alphas = alphas / alphas.max()
         return alphas
+    
+    def _forward_net(self, x, t):
+        """网络前向传播，正确处理ResBlock的时间参数。"""
+        h = self.initial_proj(x)
+        h = F.silu(h)
+        h = self.resblock(h, t)
+        h = self.final_proj(h)
+        return h
     
     def forward(self, x, t):
         """前向传播。
@@ -84,7 +89,7 @@ class SimpleDiffusionModel(nn.Module):
         sqrt_one_minus_alphas = torch.sqrt(1 - self.alphas[t])
         
         x_noisy = sqrt_alphas[:, None] * x + sqrt_one_minus_alphas[:, None] * noise
-        predicted_noise = self.net(x_noisy)
+        predicted_noise = self._forward_net(x_noisy, t)
         
         return predicted_noise, noise
     
@@ -94,7 +99,7 @@ class SimpleDiffusionModel(nn.Module):
         
         for t in reversed(range(self.num_steps)):
             t_tensor = torch.full((shape[0],), t, device=device)
-            predicted_noise = self.net(x)
+            predicted_noise = self._forward_net(x, t_tensor)
             
             alpha = self.alphas[t]
             alpha_prev = self.alphas[t - 1] if t > 0 else torch.tensor([1.0], device=device)

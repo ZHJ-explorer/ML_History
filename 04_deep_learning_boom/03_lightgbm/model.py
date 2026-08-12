@@ -6,10 +6,25 @@ class LightGBMTree:
     """LightGBM决策树。"""
     
     def __init__(self, max_depth=3):
+        """初始化LightGBM决策树。
+
+        Args:
+            max_depth: 树的最大深度，默认为3。
+        """
         self.max_depth = max_depth
         self.tree = None
-    
+
     def fit(self, X, gradients, hessians):
+        """训练LightGBM决策树。
+
+        Args:
+            X: 训练特征矩阵，形状为(n_samples, n_features)。
+            gradients: 一阶梯度（梯度），形状为(n_samples,)。
+            hessians: 二阶导数（海森矩阵对角），形状为(n_samples,)。
+
+        Returns:
+            self: 训练后的决策树实例。
+        """
         self.tree = self._build_tree(X, gradients, hessians, depth=0)
         return self
     
@@ -63,14 +78,31 @@ class LightGBMTree:
         return result
     
     def predict_one(self, x, node):
+        """预测单个样本。
+
+        Args:
+            x: 单个样本特征向量，形状为(n_features,)。
+            node: 当前决策树节点字典。
+
+        Returns:
+            预测值，标量。
+        """
         if node.get('leaf'):
             return node['value']
         if x[node['feature']] <= node['threshold']:
             return self.predict_one(x, node['left'])
         else:
             return self.predict_one(x, node['right'])
-    
+
     def predict(self, X):
+        """对输入数据进行预测。
+
+        Args:
+            X: 输入特征矩阵，形状为(n_samples, n_features)。
+
+        Returns:
+            预测值数组，形状为(n_samples,)。
+        """
         return np.array([self.predict_one(x, self.tree) for x in X])
 
 

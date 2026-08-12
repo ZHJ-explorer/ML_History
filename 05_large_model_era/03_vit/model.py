@@ -9,6 +9,14 @@ class PatchEmbedding(nn.Module):
     """图像块嵌入。"""
     
     def __init__(self, img_size=224, patch_size=16, in_channels=3, embed_dim=768):
+        """初始化图像块嵌入层。
+
+        Args:
+            img_size: 输入图像尺寸（方形），默认为224。
+            patch_size: 块大小，默认为16。
+            in_channels: 输入通道数，默认为3（RGB）。
+            embed_dim: 嵌入维度，默认为768。
+        """
         super().__init__()
         self.img_size = img_size
         self.patch_size = patch_size
@@ -32,6 +40,12 @@ class MultiHeadSelfAttention(nn.Module):
     """多头自注意力。"""
     
     def __init__(self, embed_dim=768, num_heads=12):
+        """初始化多头自注意力层。
+
+        Args:
+            embed_dim: 嵌入维度，默认为768。
+            num_heads: 注意力头数，默认为12。
+        """
         super().__init__()
         self.num_heads = num_heads
         self.embed_dim = embed_dim
@@ -41,10 +55,13 @@ class MultiHeadSelfAttention(nn.Module):
         self.proj = nn.Linear(embed_dim, embed_dim)
     
     def forward(self, x):
-        """前向传播。
-        
+        """前向传播（注意力计算）。
+
         Args:
-            x: 输入，shape (B, n_patches+1, embed_dim)
+            x: 输入张量，形状为(batch_size, n_patches+1, embed_dim)。
+
+        Returns:
+            注意力输出，形状为(batch_size, n_patches+1, embed_dim)。
         """
         B, n, C = x.shape
         
@@ -68,6 +85,17 @@ class ViT(nn.Module):
     
     def __init__(self, img_size=224, patch_size=16, in_channels=3, num_classes=1000,
                  embed_dim=768, num_heads=12, num_layers=12):
+        """初始化ViT模型。
+
+        Args:
+            img_size: 输入图像尺寸（方形），默认为224。
+            patch_size: 块大小，默认为16。
+            in_channels: 输入通道数，默认为3（RGB）。
+            num_classes: 分类类别数，默认为1000。
+            embed_dim: 嵌入维度，默认为768。
+            num_heads: 注意力头数，默认为12。
+            num_layers: Transformer层数，默认为12。
+        """
         super().__init__()
         self.patch_embed = PatchEmbedding(img_size, patch_size, in_channels, embed_dim)
         
@@ -95,9 +123,12 @@ class ViT(nn.Module):
     
     def forward(self, x):
         """前向传播。
-        
+
         Args:
-            x: 输入图像，shape (B, C, H, W)
+            x: 输入图像，形状为(batch_size, in_channels, img_size, img_size)。
+
+        Returns:
+            分类logits，形状为(batch_size, num_classes)。
         """
         B = x.shape[0]
         

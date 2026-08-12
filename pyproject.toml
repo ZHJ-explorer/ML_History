@@ -1,5 +1,5 @@
 [tool.pytest.ini_options]
-testpaths = ["01_foundations", "02_statistical_learning"]
+testpaths = ["01_foundations", "02_statistical_learning", "03_deep_learning_revival", "05_large_model_era"]
 python_files = ["test_*.py"]
 addopts = [
     "--ignore=01_foundations/01_mp_neuron/model.py",
@@ -15,4 +15,13 @@ addopts = [
     "--ignore=02_statistical_learning/05_bagging/model.py",
     "--ignore=02_statistical_learning/06_random_forest/model.py",
     "--ignore=02_statistical_learning/07_gbdt/model.py",
+    "--ignore=03_deep_learning_revival/01_dbn/model.py",
+    "--ignore=03_deep_learning_revival/02_lenet5_cnn/model.py",
+    "--ignore=03_deep_learning_revival/03_rnn/model.py",
+    "--ignore=03_deep_learning_revival/04_lstm/model.py",
+    "--ignore=03_deep_learning_revival/05_word2vec/model.py",
+    "--ignore=03_deep_learning_revival/06_gan/model.py",
+    "--ignore=05_large_model_era/01_scaling_law/model.py",
+    "--ignore=05_large_model_era/02_diffusion_model/model.py",
+    "--ignore=05_large_model_era/03_vit/model.py",
 ]

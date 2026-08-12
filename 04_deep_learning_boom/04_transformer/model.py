@@ -102,6 +102,15 @@ class EncoderLayer(nn.Module):
         self.dropout = nn.Dropout(dropout)
     
     def forward(self, x, mask=None):
+        """执行编码器层前向传播。
+
+        Args:
+            x: 输入张量，形状为(batch_size, seq_len, d_model)。
+            mask: 可选的掩码张量，默认为None。
+
+        Returns:
+            编码器层输出，形状为(batch_size, seq_len, d_model)。
+        """
         # 多头注意力
         attention_out = self.self_attention(x, x, x, mask)
         x = self.norm1(x + self.dropout(attention_out))
