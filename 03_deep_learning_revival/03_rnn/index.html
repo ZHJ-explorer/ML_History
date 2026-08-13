@@ -45,7 +45,7 @@
     <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">R</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="../03_deep_learning_revival/index.html">03_deep_learning_revival阶段</a>
+      <a href="../index.html">03_deep_learning_revival阶段</a>
       <span class="nav-badge">1986</span>
     </div>
   </div>
@@ -419,9 +419,9 @@
 
   <!-- FOOTER NAV -->
   <div class="nav-footer">
-    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
+    <a href="../02_lenet5_cnn/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">LeNet-5</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="../03_deep_learning_revival/04_lstm/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">LSTM</span></a>
+    <a href="../04_lstm/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">LSTM</span></a>
   </div>
 
 </main>
@@ -544,20 +544,6 @@ function drawRnnGradChart() {
 
 // Initialize gradient chart
 drawRnnGradChart();
-</script>
-    div.style.cssText = 'background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center;';
-    const hDisplay = i < currentStep ? '[' + hiddenState.map(v => v.toFixed(2)).join(', ') + ']' : '--';
-    div.innerHTML = `
-      <div style="font-size:11px;color:var(--text-faint);margin-bottom:4px;">t=${i}</div>
-      <div style="font-size:16px;color:var(--text);margin-bottom:6px;">${vocab[i]}</div>
-      <div style="font-size:10px;color:var(--green);font-family:JetBrains Mono;">h=${hDisplay}</div>
-    `;
-    grid.appendChild(div);
-  }
-}
-
-// Initialize
-renderDemo();
 </script>
 
 </body>

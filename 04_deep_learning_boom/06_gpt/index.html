@@ -8,9 +8,9 @@
 <link rel="stylesheet" href="../../styles/base.css">
 <style>
 /* ── GPT-1 specific styles ── */
-.mask-cell { transition: fill 0.2s, opacity 0.2s; cursor: pointer; }
-.mask-cell:hover { fill: rgba(113,112,255,0.35) !important; }
-.mask-cell.active { fill: rgba(113,112,255,0.5); }
+.mask-cell { transition: background 0.2s, opacity 0.2s; cursor: pointer; }
+.mask-cell:hover { background: rgba(113,112,255,0.35) !important; }
+.mask-cell.active { background: rgba(113,112,255,0.5); }
 .token-step { opacity: 0.25; transition: opacity 0.3s, transform 0.3s; }
 .token-step.current { opacity: 1; }
 .demo-output .token-revealed { color: var(--accent); font-weight: 500; }
@@ -46,7 +46,7 @@
     <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="../04_deep_learning_boom/index.html">04_deep_learning_boom阶段</a>
+      <a href="../index.html">04_deep_learning_boom阶段</a>
       <span class="nav-badge">2018</span>
     </div>
   </div>
@@ -75,9 +75,9 @@
     <div class="stat-cell"><span class="stat-value">12</span><span class="stat-label">Transformer 层</span></div>
     <div class="stat-cell"><span class="stat-value">12</span><span class="stat-label">Attention 头</span></div>
     <div class="stat-cell"><span class="stat-value">768</span><span class="stat-label">隐藏维度</span></div>
-    <div class="stat-cell"><span class="stat-value">400M</span><span class="stat-label">训练 Token 数 (WikiText-103)</span></div>
+    <div class="stat-cell"><span class="stat-value">~800M 词</span><span class="stat-label">预训练语料 (BookCorpus)</span></div>
     <div class="stat-cell"><span class="stat-value">1024</span><span class="stat-label">最大序列长度</span></div>
-    <div class="stat-cell"><span class="stat-value">50,257</span><span class="stat-label">BPE 词表大小</span></div>
+    <div class="stat-cell"><span class="stat-value">40,478</span><span class="stat-label">BPE 词表大小</span></div>
     <div class="stat-cell"><span class="stat-value">LM-1B / LM-12</span><span class="stat-label">两种预训练规格</span></div>
   </div>
 
@@ -145,7 +145,7 @@
           <!-- FFN sub-layer -->
           <rect x="10" y="52" width="66" height="36" rx="6" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
           <text x="43" y="68" text-anchor="middle" fill="var(--text-secondary)" font-size="11" font-family="Inter" font-weight="500">FFN</text>
-          <text x="43" y="82" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">ReLU / GLU</text>
+          <text x="43" y="82" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">GELU</text>
           <!-- Add & Norm -->
           <rect x="84" y="52" width="66" height="36" rx="6" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
           <text x="117" y="68" text-anchor="middle" fill="var(--text-secondary)" font-size="11" font-family="Inter" font-weight="500">Add</text>
@@ -169,7 +169,7 @@
           <text x="117" y="40" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">LayerNorm</text>
           <rect x="10" y="52" width="66" height="36" rx="6" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
           <text x="43" y="68" text-anchor="middle" fill="var(--text-secondary)" font-size="11" font-family="Inter" font-weight="500">FFN</text>
-          <text x="43" y="82" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">ReLU / GLU</text>
+          <text x="43" y="82" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">GELU</text>
           <rect x="84" y="52" width="66" height="36" rx="6" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
           <text x="117" y="68" text-anchor="middle" fill="var(--text-secondary)" font-size="11" font-family="Inter" font-weight="500">Add</text>
           <text x="117" y="82" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">LayerNorm</text>
@@ -192,7 +192,7 @@
           <text x="117" y="40" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">LayerNorm</text>
           <rect x="10" y="52" width="66" height="36" rx="6" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
           <text x="43" y="68" text-anchor="middle" fill="var(--text-secondary)" font-size="11" font-family="Inter" font-weight="500">FFN</text>
-          <text x="43" y="82" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">ReLU / GLU</text>
+          <text x="43" y="82" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">GELU</text>
           <rect x="84" y="52" width="66" height="36" rx="6" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>
           <text x="117" y="68" text-anchor="middle" fill="var(--text-secondary)" font-size="11" font-family="Inter" font-weight="500">Add</text>
           <text x="117" y="82" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">LayerNorm</text>
@@ -348,9 +348,9 @@
     </div>
 
     <div class="formula-card">
-      <div class="formula-label">Positional Encoding（RoPE 前身）</div>
-      <div class="formula">pos_embed[i, 2k]   = sin(i / 10000<sup>2k/d</sup>)<br>pos_embed[i, 2k+1] = cos(i / 10000<sup>2k/d</sup>)</div>
-      <div class="formula-note">GPT-1 使用绝对位置嵌入（learned positional embedding），每位置一个可学习向量</div>
+      <div class="formula-label">位置嵌入 (Learned Positional Embedding)</div>
+      <div class="formula">e<sub>pos</sub> = Embedding<sub>θ</sub>(pos) &nbsp;∈&nbsp; ℝ<sup>d_model</sup></div>
+      <div class="formula-note">GPT-1 使用可学习的绝对位置嵌入（每位置一个可学习向量），而非 Transformer 原版论文的正弦/余弦编码</div>
     </div>
   </section>
 
@@ -467,7 +467,7 @@
       <h4>常见误区</h4>
       <ul>
         <li>GPT-1 使用 <strong>learned positional embedding</strong>，而非 Transformer 原版的 sinusoidal encoding</li>
-        <li>GPT-1 的 FFN 使用 ReLU，GPT-2 之后改用 GLU 变体（SwiGLU）</li>
+        <li>GPT-1 的 FFN 使用 GELU 激活函数（与 BERT 一致）；SwiGLU 等 GLU 变体是 PaLM / LLaMA 时代的改进</li>
         <li>GPT-1 并未使用 Layer Scale 或 RMSNorm，这些是后续工作（Gopher、PaLM）的改进</li>
       </ul>
     </div>
@@ -475,9 +475,9 @@
 
   <!-- FOOTER NAV -->
   <div class="nav-footer">
-    <a href="../04_deep_learning_boom/05_bert/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">BERT</span></a>
+    <a href="../05_bert/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">BERT</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="../04_deep_learning_boom/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">阶段总览 →</span><span class="nav-footer-title">深度学习爆发期</span></a>
+    <a href="../../05_large_model_era/01_scaling_law/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">Scaling Law</span></a>
   </div>
 
 </main>
@@ -494,7 +494,6 @@ document.querySelectorAll('.mask-cell').forEach(cell => {
     }
   });
   cell.addEventListener('mouseleave', () => {
-    document.querySelectorAll('.mask-cell').classList?.remove('active');
     document.querySelectorAll('.mask-cell').forEach(c => c.classList.remove('active'));
   });
 });
@@ -521,6 +520,8 @@ function startDemo() {
   const prefix = document.getElementById('demoPrefix').value.trim();
   const steps = parseInt(document.getElementById('stepSlider').value);
   const outputs = continuationMap[prefix.toLowerCase()] || ['is', 'a', 'very', 'important', 'concept', 'in', 'modern', 'computer', 'science', 'research'];
+  // 候选词数量有限，超出时截断，避免生成 "undefined"
+  const maxSteps = Math.min(steps, outputs.length);
   demoStep = 0;
   demoTokens = prefix.split(' ');
   const outputEl = document.getElementById('demoOutput');
@@ -532,7 +533,7 @@ function startDemo() {
   outputEl.innerHTML = `<span class="token-revealed">${demoTokens.join(' ')}</span>`;
 
   demoInterval = setInterval(() => {
-    if (demoStep >= steps) {
+    if (demoStep >= maxSteps) {
       clearInterval(demoInterval);
       demoInterval = null;
       return;
@@ -557,7 +558,7 @@ function startDemo() {
         }).join('')}
       </div>
       <div style="font-size:11px;color:var(--text-faint);margin-top:6px;font-family:JetBrains Mono;">
-        第 ${demoStep + 1}/${steps} 步 · 输入长度 ${stepCount} · causal mask 仅允许 attend 到左侧
+        第 ${demoStep + 1}/${maxSteps} 步 · 输入长度 ${stepCount} · causal mask 仅允许 attend 到左侧
       </div>
     `;
     demoStep++;

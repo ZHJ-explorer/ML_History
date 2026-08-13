@@ -97,7 +97,7 @@
     <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="../01_foundations/index.html">01_foundations阶段</a>
+      <a href="../index.html">01_foundations阶段</a>
       <span class="nav-badge">1957</span>
     </div>
   </div>
@@ -453,9 +453,9 @@
   </section>
 
   <div class="nav-footer">
-    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
+    <a href="../05_knn/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">k近邻</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="#" class="nav-footer-next" style="text-align:right"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">继续探索</span></a>
+    <a href="../../02_statistical_learning/01_decision_tree/index.html" class="nav-footer-next" style="text-align:right"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">决策树</span></a>
   </div>
 
 </main>
@@ -586,18 +586,20 @@ function updateCentroids() {
 }
 
 function checkConvergence() {
+  // vx/vy hold the previous positions (saved before updateCentroids); measure actual movement
   let totalShift = 0;
-  for (const c of centroids) totalShift += Math.hypot(c.vx||0, c.vy||0);
+  for (const c of centroids) totalShift += Math.hypot(c.x - (c.vx || c.x), c.y - (c.vy || c.y));
   return totalShift < 2;
 }
 
 function step() {
   assignLabels();
-  // Save previous for animation
+  // Save previous positions for movement measurement
   for (const c of centroids) { c.vx = c.x; c.vy = c.y; }
   updateCentroids();
   stepCount++;
-  INFO.textContent = `第 ${stepCount} 次迭代 | 质心移动 = ${Math.hypot(centroids[0].x - (centroids[0].vx||centroids[0].x), centroids[0].y - (centroids[0].vy||centroids[0].y)).toFixed(2)} px`;
+  const shift = centroids.reduce((s, c) => s + Math.hypot(c.x - (c.vx || c.x), c.y - (c.vy || c.y)), 0);
+  INFO.textContent = `第 ${stepCount} 次迭代 | 质心总位移 = ${shift.toFixed(2)} px`;
   draw();
 }
 

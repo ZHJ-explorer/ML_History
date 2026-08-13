@@ -41,7 +41,7 @@
     <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">k</div>k近邻</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="../01_foundations/index.html">01_foundations阶段</a>
+      <a href="../index.html">01_foundations阶段</a>
       <span class="nav-badge">1951</span>
     </div>
   </div>
@@ -91,7 +91,7 @@
         <!-- Nearest neighbors highlight -->
         <g id="nnGroup"></g>
         <!-- Test point -->
-        <circle id="testPoint" class="test-point" cx="280" cy="210" r="8" fill="var(--orange)" stroke="var(--bg)" stroke-width="2" filter="url(#glow)" opacity="0" style="display:none"/>
+        <circle id="testPoint" class="test-point" cx="280" cy="210" r="8" fill="var(--orange)" stroke="var(--bg)" stroke-width="2" filter="url(#glow)" opacity="0"/>
         <!-- Mode indicator -->
         <g id="modeIndicator">
           <rect x="8" y="8" width="120" height="28" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
@@ -276,9 +276,9 @@
 
   <!-- ═══ FOOTER NAV ═══ -->
   <div class="nav-footer">
-    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
+    <a href="../04_perceptron/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">感知机</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 19 models</span>
-    <a href="../01_foundations/06_decision_tree/index.html" class="nav-footer-next" style="text-align:right"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">决策树</span></a>
+    <a href="../06_kmeans/index.html" class="nav-footer-next" style="text-align:right"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">K-Means 聚类</span></a>
   </div>
 
 </main>
@@ -357,6 +357,7 @@ function toggleTestMode() {
     testPointEl.setAttribute('opacity', '0');
     resultBox.innerHTML = '点击测试区域查看预测...';
     nnGroup.innerHTML = '';
+    boundaryLayer.innerHTML = '';
   }
 }
 
@@ -366,6 +367,7 @@ function clearPoints() {
   testPoint = null;
   testPointEl.setAttribute('opacity', '0');
   nnGroup.innerHTML = '';
+  boundaryLayer.innerHTML = '';
   resultBox.innerHTML = '点击测试区域查看预测...';
   redrawAll();
 }
@@ -425,6 +427,7 @@ function runPrediction() {
       resultBox.innerHTML = `⚠ 至少需要 ${k} 个训练点才能进行预测\n当前点数: ${trainPoints.length}`;
     }
     nnGroup.innerHTML = '';
+    boundaryLayer.innerHTML = '';
     return;
   }
 
@@ -519,3 +522,6 @@ function drawBoundary() {
 
 // ── Initial state ──
 drawGrid();
+</script>
+</body>
+</html>

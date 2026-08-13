@@ -96,7 +96,7 @@
     <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="../02_statistical_learning/index.html">02_statistical_learning阶段</a>
+      <a href="../index.html">02_statistical_learning阶段</a>
       <span class="nav-badge">1986</span>
     </div>
   </div>
@@ -556,9 +556,9 @@
 
   <!-- FOOTER NAV -->
   <div class="nav-footer">
-    <a href="../02_statistical_learning/01_decision_tree/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">决策树</span></a>
+    <a href="../01_decision_tree/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">决策树</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="../02_statistical_learning/03_svm/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">支持向量机</span></a>
+    <a href="../03_svm/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">支持向量机</span></a>
   </div>
 
 </main>
@@ -597,6 +597,11 @@ function dot(a, b) {
   return s;
 }
 
+// 权重矩阵按 行=输入神经元、列=输出神经元 存储；取第 j 列（即输出神经元 j 的入边权重向量）
+function colW(W, j) {
+  return W.map(row => row[j]);
+}
+
 function setMode(mode) {
   document.getElementById('btn-fwd').classList.toggle('active', mode==='forward');
   document.getElementById('btn-bwd').classList.toggle('active', mode==='backward');
@@ -626,12 +631,16 @@ function setDemoMode(mode) {
 
 function runDemo() {
   if(autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
-  currentStep = 0;
-  initWeights();
   if(demoMode === 'auto') {
+    currentStep = 0;
+    initWeights();
     autoNext();
   } else {
+    // 逐步模式：每次点击「运行」前进一步；新的一轮开始时重新初始化权重
+    if(currentStep > 6) currentStep = 0;
+    if(currentStep === 0) initWeights();
     showStep();
+    currentStep++;
   }
 }
 
@@ -646,7 +655,7 @@ function resetDemo() {
 
 function updateStepIndicator() {
   const dots = document.querySelectorAll('.step-dot');
-  const labels = ['输入', '层1线性', '层1激活', '层2激活', '输出', '计算误差', '更新权重'];
+  const labels = ['输入', '层1线性', '层1激活', '层2激活', '输出', '反向传播', '更新权重'];
   dots.forEach((d,i) => {
     d.style.background = i <= currentStep ? 'var(--accent)' : 'var(--border-strong)';
   });
@@ -699,7 +708,7 @@ function showStep() {
   const lr = parseFloat(document.getElementById('input-lr').value) || 0.01;
   const output = document.getElementById('demo-output');
   const x = [x1, x2];
-  const y_true = 1; // XOR target: 0^1 = 1
+  const y_true = (x[0] !== x[1]) ? 1 : 0; // XOR 目标: x1≠x2 时为 1，否则为 0
 
   clearNeuronHighlights();
   clearSynapseHighlights();
@@ -728,7 +737,7 @@ function showStep() {
 
       const z1 = [];
       for(let j=0;j<4;j++) {
-        z1[j] = dot(x, weights[0][j]) + biases[0][j];
+        z1[j] = dot(x, colW(weights[0], j)) + biases[0][j];
       }
       // Show z values on neurons
       for(let j=0;j<4;j++) {
@@ -745,7 +754,7 @@ function showStep() {
     case 2: {
       // ReLU activation
       const z1 = [];
-      for(let j=0;j<4;j++) z1[j] = dot(x, weights[0][j]) + biases[0][j];
+      for(let j=0;j<4;j++) z1[j] = dot(x, colW(weights[0], j)) + biases[0][j];
       const a1 = z1.map(z => relu(z));
 
       for(let j=0;j<4;j++) {
@@ -762,12 +771,12 @@ function showStep() {
     case 3: {
       // Layer 2
       const z1 = [];
-      for(let j=0;j<4;j++) z1[j] = dot(x, weights[0][j]) + biases[0][j];
+      for(let j=0;j<4;j++) z1[j] = dot(x, colW(weights[0], j)) + biases[0][j];
       const a1 = z1.map(z => relu(z));
 
       const z2 = [];
       for(let j=0;j<4;j++) {
-        z2[j] = dot(a1, weights[1][j]) + biases[1][j];
+        z2[j] = dot(a1, colW(weights[1], j)) + biases[1][j];
       }
       const a2 = z2.map(z => relu(z));
 
@@ -785,11 +794,11 @@ function showStep() {
     case 4: {
       // Output layer
       const z1 = [], a1 = [];
-      for(let j=0;j<4;j++) { z1[j]=dot(x,weights[0][j])+biases[0][j]; a1[j]=relu(z1[j]); }
+      for(let j=0;j<4;j++) { z1[j]=dot(x,colW(weights[0],j))+biases[0][j]; a1[j]=relu(z1[j]); }
       const z2 = [], a2 = [];
-      for(let j=0;j<4;j++) { z2[j]=dot(a1,weights[1][j])+biases[1][j]; a2[j]=relu(z2[j]); }
+      for(let j=0;j<4;j++) { z2[j]=dot(a1,colW(weights[1],j))+biases[1][j]; a2[j]=relu(z2[j]); }
 
-      const zOut = dot(a2, weights[2][0]) + biases[2][0];
+      const zOut = dot(a2, colW(weights[2], 0)) + biases[2][0];
       const yPred = zOut; // linear output
 
       const ot = document.querySelector('#neuron-o0 text:nth-child(3)');
@@ -805,12 +814,12 @@ function showStep() {
     case 5: {
       // Backpropagation
       const z1 = [], a1 = [];
-      for(let j=0;j<4;j++) { z1[j]=dot(x,weights[0][j])+biases[0][j]; a1[j]=relu(z1[j]); }
+      for(let j=0;j<4;j++) { z1[j]=dot(x,colW(weights[0],j))+biases[0][j]; a1[j]=relu(z1[j]); }
       const z2 = [], a2 = [];
-      for(let j=0;j<4;j++) { z2[j]=dot(a1,weights[1][j])+biases[1][j]; a2[j]=relu(z2[j]); }
-      const zOut = dot(a2, weights[2][0]) + biases[2][0];
+      for(let j=0;j<4;j++) { z2[j]=dot(a1,colW(weights[1],j))+biases[1][j]; a2[j]=relu(z2[j]); }
+      const zOut = dot(a2, colW(weights[2], 0)) + biases[2][0];
       const yPred = zOut;
-      const yTrue = 1;
+      const yTrue = (x[0] !== x[1]) ? 1 : 0;
       const error = yPred - yTrue;
 
       // δ3 (output layer)
@@ -849,12 +858,12 @@ function showStep() {
     case 6: {
       // Weight update
       const z1 = [], a1 = [];
-      for(let j=0;j<4;j++) { z1[j]=dot(x,weights[0][j])+biases[0][j]; a1[j]=relu(z1[j]); }
+      for(let j=0;j<4;j++) { z1[j]=dot(x,colW(weights[0],j))+biases[0][j]; a1[j]=relu(z1[j]); }
       const z2 = [], a2 = [];
-      for(let j=0;j<4;j++) { z2[j]=dot(a1,weights[1][j])+biases[1][j]; a2[j]=relu(z2[j]); }
-      const zOut = dot(a2, weights[2][0]) + biases[2][0];
+      for(let j=0;j<4;j++) { z2[j]=dot(a1,colW(weights[1],j))+biases[1][j]; a2[j]=relu(z2[j]); }
+      const zOut = dot(a2, colW(weights[2], 0)) + biases[2][0];
       const yPred = zOut;
-      const yTrue = 1;
+      const yTrue = (x[0] !== x[1]) ? 1 : 0;
       const error = yPred - yTrue;
 
       const delta3 = [error];

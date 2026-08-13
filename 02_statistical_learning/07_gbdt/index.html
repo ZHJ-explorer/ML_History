@@ -336,7 +336,7 @@ svg .tree-label {
     <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">G</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="../02_statistical_learning/index.html">02_statistical_learning阶段</a>
+      <a href="../index.html">02_statistical_learning阶段</a>
       <span class="nav-badge">2001</span>
     </div>
   </div>
@@ -746,9 +746,9 @@ svg .tree-label {
   </section>
 
   <div class="nav-footer">
-    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
+    <a href="../06_random_forest/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">随机森林</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="../02_statistical_learning/08_xgboost/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">XGBoost</span></a>
+    <a href="../../03_deep_learning_revival/01_dbn/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">深度信念网络 (DBN)</span></a>
   </div>
 
 </main>
@@ -764,41 +764,41 @@ const demoData = [
     step: 1,
     title: '初始化',
     description: '计算初始预测值 f₀(x)，通常为训练标签的均值',
-    residuals: [0.5, -0.3, 0.8, -0.6, 0.2],
+    residuals: [0.4, -0.6, 0.4, -0.6, 0.4],
     truth: [1, 0, 1, 0, 1],
-    prediction: [0.4, 0.4, 0.4, 0.4, 0.4]
+    prediction: [0.6, 0.6, 0.6, 0.6, 0.6]
   },
   {
     step: 2,
     title: '第 1 轮',
     description: '计算负梯度（伪残差），用决策树 h₁ 拟合残差',
-    residuals: [0.6, -0.7, 0.4, -0.2, 0.3],
+    residuals: [0.3, -0.3, 0.3, -0.3, 0.3],
     truth: [1, 0, 1, 0, 1],
-    prediction: [0.46, 0.34, 0.46, 0.34, 0.46]
+    prediction: [0.7, 0.3, 0.7, 0.3, 0.7]
   },
   {
     step: 3,
     title: '第 2 轮',
     description: '更新模型 f₂(x) = f₁(x) + ν·h₂(x)，继续拟合新残差',
-    residuals: [0.35, -0.45, 0.2, -0.1, 0.15],
+    residuals: [0.2, -0.2, 0.2, -0.2, 0.2],
     truth: [1, 0, 1, 0, 1],
-    prediction: [0.51, 0.29, 0.51, 0.29, 0.51]
+    prediction: [0.8, 0.2, 0.8, 0.2, 0.8]
   },
   {
     step: 4,
     title: '第 3 轮',
     description: '随着迭代进行，残差逐渐减小，模型预测越来越准确',
-    residuals: [0.18, -0.22, 0.1, -0.05, 0.08],
+    residuals: [0.1, -0.1, 0.1, -0.1, 0.1],
     truth: [1, 0, 1, 0, 1],
-    prediction: [0.56, 0.24, 0.56, 0.24, 0.56]
+    prediction: [0.9, 0.1, 0.9, 0.1, 0.9]
   },
   {
     step: 5,
     title: '收敛',
     description: '经过多轮迭代，模型已较好地拟合训练数据，残差趋于稳定',
-    residuals: [0.05, -0.08, 0.03, -0.02, 0.04],
+    residuals: [0.05, -0.05, 0.05, -0.05, 0.05],
     truth: [1, 0, 1, 0, 1],
-    prediction: [0.61, 0.19, 0.61, 0.19, 0.61]
+    prediction: [0.95, 0.05, 0.95, 0.05, 0.95]
   }
 ];
 

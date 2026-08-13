@@ -41,7 +41,7 @@
     <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="../04_deep_learning_boom/index.html">04_deep_learning_boom阶段</a>
+      <a href="../index.html">04_deep_learning_boom阶段</a>
       <span class="nav-badge">2017</span>
     </div>
   </div>
@@ -142,7 +142,7 @@
         <!-- Small gradient (采样) -->
         <rect x="460" y="90" width="50" height="20" rx="3" fill="var(--blue)" opacity="0.6"/>
         <text x="485" y="104" text-anchor="middle" fill="white" font-size="8" font-family="JetBrains Mono">小</text>
-        <text x="485" y="125" text-anchor="middle" fill="var(--blue)" font-size="8" font-family="Inter">随机采样a%</text>
+        <text x="485" y="125" text-anchor="middle" fill="var(--blue)" font-size="8" font-family="Inter">随机采样b%</text>
 
         <!-- Sampled data -->
         <rect x="570" y="55" width="140" height="65" rx="6" fill="var(--bg)" stroke="var(--green)" stroke-width="1.5"/>
@@ -153,7 +153,7 @@
 
         <!-- Info gain correction -->
         <rect x="390" y="135" width="320" height="36" rx="6" fill="var(--green-dim)" stroke="rgba(16,185,129,0.3)" stroke-width="1"/>
-        <text x="550" y="150" text-anchor="middle" fill="var(--green)" font-size="11" font-family="JetBrains Mono">修正因子:  大梯度样本权重 × (1-a)/a</text>
+        <text x="550" y="150" text-anchor="middle" fill="var(--green)" font-size="11" font-family="JetBrains Mono">修正因子:  小梯度样本权重 × (1-a)/b</text>
         <text x="550" y="165" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="Inter">通过加权补偿，保证统计无偏性</text>
 
         <!-- ====== 3. EFB ====== -->
@@ -187,7 +187,7 @@
         <text x="310" y="303" text-anchor="middle" fill="var(--orange)" font-size="10" font-family="JetBrains Mono">Bundle B: F2+F4 → 相加</text>
         <rect x="240" y="318" width="70" height="22" rx="4" fill="var(--bg-elevated)" stroke="var(--border)" stroke-width="1"/>
         <text x="275" y="333" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">F5 独立</text>
-        <text x="310" y="365" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="Inter">7个特征 → 3个特征</text>
+        <text x="310" y="365" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="Inter">5个特征 → 3个特征</text>
 
         <!-- Feature reduction summary -->
         <rect x="420" y="225" width="160" height="120" rx="6" fill="var(--bg)" stroke="var(--border-strong)" stroke-width="1"/>
@@ -251,8 +251,8 @@
     </div>
     <div class="formula-card">
       <div class="formula-label">GOSS 加权修正</div>
-      <div class="formula">w_i = (1 − a) / a &nbsp;if&nbsp; i ∈ 小梯度采样集</div>
-      <div class="formula-note">对采样的小梯度样本赋予更高权重，保证统计期望不变</div>
+      <div class="formula">w_i = (1 − a) / b &nbsp;if&nbsp; i ∈ 小梯度采样集</div>
+      <div class="formula-note">a = 大梯度样本保留比例（top a×100%），b = 小梯度样本随机采样比例。对采样的小梯度样本加权，保证统计期望不变。</div>
     </div>
     <div class="formula-card">
       <div class="formula-label">互斥特征捆绑</div>
@@ -347,6 +347,7 @@
     </div>
     <script>
       let demoRunning = false;
+      let animTimer = null;
       function runDemo() {
         if (demoRunning) return;
         demoRunning = true;
@@ -367,13 +368,14 @@
         const maxMs = xgbMs;
         let step = 0;
         const totalSteps = 30;
-        const interval = setInterval(() => {
+        animTimer = setInterval(() => {
           step++;
           const pct = (step / totalSteps) * 100;
           xgbBar.style.width = pct + '%';
           lgbmBar.style.width = Math.min(100, pct * (xgbMs / lgbmMs)) + '%';
           if (step >= totalSteps) {
-            clearInterval(interval);
+            clearInterval(animTimer);
+            animTimer = null;
             xgbBar.style.width = '100%';
             lgbmBar.style.width = '100%';
             xgbTime.textContent = xgbMs.toLocaleString() + ' ms';
@@ -393,6 +395,7 @@
         }, 30);
       }
       function resetDemo() {
+        if (animTimer) { clearInterval(animTimer); animTimer = null; }
         document.getElementById('xgbBar').style.width = '0%';
         document.getElementById('lgbmBar').style.width = '0%';
         document.getElementById('xgbTime').textContent = '— ms';
@@ -526,12 +529,12 @@
 
   <!-- FOOTER NAV -->
   <div class="nav-footer">
-    <a href="../04_deep_learning_boom/02_xgboost/index.html" class="nav-footer-prev">
+    <a href="../02_xgboost/index.html" class="nav-footer-prev">
       <span class="nav-footer-label">← 上一个</span>
       <span class="nav-footer-title">XGBoost</span>
     </a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="../04_deep_learning_boom/04_transformer/index.html" class="nav-footer-next" style="text-align:right;">
+    <a href="../04_transformer/index.html" class="nav-footer-next" style="text-align:right;">
       <span class="nav-footer-label">下一个 →</span>
       <span class="nav-footer-title">Transformer</span>
     </a>

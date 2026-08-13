@@ -174,7 +174,7 @@
     <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="../04_deep_learning_boom/index.html">04_deep_learning_boom阶段</a>
+      <a href="../index.html">04_deep_learning_boom阶段</a>
       <span class="nav-badge">2018</span>
     </div>
   </div>
@@ -416,7 +416,7 @@
           <!-- Row 7: [SEP] -->
           <rect x="0" y="224" width="40" height="32" fill="#2d3748" stroke="var(--border)" stroke-width="0.5"/>
           <rect x="40" y="224" width="40" height="32" fill="#3d4a5c" stroke="var(--border)" stroke-width="0.5"/>
-          <rect x="80" y="224" width="40" height="32" fill="2d3748" stroke="var(--border)" stroke-width="0.5"/>
+          <rect x="80" y="224" width="40" height="32" fill="#2d3748" stroke="var(--border)" stroke-width="0.5"/>
           <rect x="120" y="224" width="40" height="32" fill="#3d4a5c" stroke="var(--border)" stroke-width="0.5"/>
           <rect x="160" y="224" width="40" height="32" fill="#2d3748" stroke="var(--border)" stroke-width="0.5"/>
           <rect x="200" y="224" width="40" height="32" fill="#3d4a5c" stroke="var(--border)" stroke-width="0.5"/>
@@ -573,7 +573,7 @@
       <div class="demo-title">点击句子中的 [MASK] 词，查看 BERT 的预测分布</div>
       
       <div id="sentence-display" style="font-size: 18px; line-height: 2; color: var(--text); padding: 16px; background: var(--bg); border-radius: var(--radius); border: 1px solid var(--border);">
-        我 <span class="mask-word" data-index="0" data-mask="猫">[MASK]</span> 和 <span class="mask-word" data-index="1" data-mask="狗">[MASK]</span> 都是 <span class="mask-word" data-index="2" data-mask="宠物">[MASK]</span>
+        我 爱 <span class="mask-word" data-index="0" data-mask="猫">[MASK]</span> 和 <span class="mask-word" data-index="1" data-mask="狗">[MASK]</span>，它们 都 是 <span class="mask-word" data-index="2" data-mask="宠物">[MASK]</span>
       </div>
       
       <div id="prediction-panel" class="prediction-panel">
@@ -590,9 +590,9 @@
       <div class="notes-card">
         <h4>预测样本展示</h4>
         <ul>
-          <li><strong>猫</strong> 的预测: 狗 (28.5%), 鸟 (15.2%), 鱼 (12.8%), 鼠 (8.1%)...</li>
+          <li><strong>猫</strong> 的预测: 猫 (28.5%), 狗 (15.2%), 鸟 (12.8%), 鼠 (8.1%)...</li>
           <li><strong>狗</strong> 的预测: 猫 (32.1%), 鸟 (11.5%), 鱼 (9.8%), 兔 (7.2%)...</li>
-          <li><strong>宠物</strong> 的预测: 动物 (22.4%), 伙伴 (18.6%), 朋友 (15.3%), 玩具 (11.2%)...</li>
+          <li><strong>宠物</strong> 的预测: 宠物 (22.4%), 动物 (18.6%), 伙伴 (15.3%), 朋友 (11.2%)...</li>
         </ul>
       </div>
       <div class="notes-card">
@@ -623,12 +623,12 @@
   </section>
 
   <div class="nav-footer">
-    <a href="../04_deep_learning_boom/04_transformer/index.html" class="nav-footer-prev">
+    <a href="../04_transformer/index.html" class="nav-footer-prev">
       <span class="nav-footer-label">← 上一个</span>
       <span class="nav-footer-title">Transformer</span>
     </a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="../04_deep_learning_boom/06_gpt/index.html" class="nav-footer-next" style="text-align:right;">
+    <a href="../06_gpt/index.html" class="nav-footer-next" style="text-align:right;">
       <span class="nav-footer-label">下一个 →</span>
       <span class="nav-footer-title">GPT</span>
     </a>
@@ -700,7 +700,13 @@ maskWords.forEach(word => {
     
     // Show bidirectional info
     bidirectionalInfo.style.display = 'inline-flex';
-    bidirectionalText.textContent = `✅ [MASK] 位置同时看到左侧"我 喜欢"和右侧"和 ${preds[0].word}"的上下文`;
+    const contexts = {
+      0: { left: '我 爱', right: '和 狗' },
+      1: { left: '我 爱 猫 和', right: '，它们 都 是' },
+      2: { left: '我 爱 猫 和 狗，它们 都 是', right: '' }
+    };
+    const ctx = contexts[index] || { left: '', right: '' };
+    bidirectionalText.textContent = `✅ [MASK] 位置同时看到左侧"${ctx.left}"和右侧"${ctx.right}"的上下文`;
   });
 });
 </script>

@@ -131,7 +131,7 @@
     <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="../02_statistical_learning/index.html">02_statistical_learning阶段</a>
+      <a href="../index.html">02_statistical_learning阶段</a>
       <span class="nav-badge">1995</span>
     </div>
   </div>
@@ -513,14 +513,14 @@
   </section>
 
   <div class="nav-footer">
-    <a href="../02_statistical_learning/03_decision_tree/index.html" class="nav-footer-prev">
+    <a href="../03_svm/index.html" class="nav-footer-prev">
       <span class="nav-footer-label">← 上一个</span>
-      <span class="nav-footer-title">决策树</span>
+      <span class="nav-footer-title">支持向量机 (SVM)</span>
     </a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 02_statistical_learning</span>
-    <a href="../02_statistical_learning/05_svm/index.html" class="nav-footer-next" style="text-align:right;">
+    <a href="../05_bagging/index.html" class="nav-footer-next" style="text-align:right;">
       <span class="nav-footer-label">下一个 →</span>
-      <span class="nav-footer-title">支持向量机</span>
+      <span class="nav-footer-title">Bagging</span>
     </a>
   </div>
 
@@ -551,11 +551,11 @@
   // Pre-computed iterations with simulated decision boundaries
   const iterations = [
     { step: 0, alpha: '—', error: '—', correct: 0, boundaryX: null, info: '初始状态：所有样本权重相等' },
-    { step: 1, alpha: '0.423', error: '0.267', correct: 11, boundaryX: 280, info: 'G₁: x < 280 判为正类，错误率 26.7%' },
-    { step: 2, alpha: '0.658', error: '0.143', correct: 13, boundaryX: 380, info: 'G₂: x < 380 判为正类，错误率 14.3%' },
-    { step: 3, alpha: '0.847', error: '0.089', correct: 14, boundaryX: 420, info: 'G₃: x < 420 判为正类，错误率 8.9%' },
-    { step: 4, alpha: '1.099', error: '0.056', correct: 15, boundaryX: 480, info: 'G₄: x < 480 判为正类，错误率 5.6%' },
-    { step: 5, alpha: '1.444', error: '0.033', correct: 15, boundaryX: 520, info: 'G₅: x < 520 判为正类，错误率 3.3%' },
+    { step: 1, alpha: '0.505', error: '0.267', correct: 11, boundaryX: 280, info: 'G₁: x < 280 判为正类，错误率 26.7%' },
+    { step: 2, alpha: '0.895', error: '0.143', correct: 13, boundaryX: 380, info: 'G₂: x < 380 判为正类，错误率 14.3%' },
+    { step: 3, alpha: '1.163', error: '0.089', correct: 14, boundaryX: 420, info: 'G₃: x < 420 判为正类，错误率 8.9%' },
+    { step: 4, alpha: '1.412', error: '0.056', correct: 15, boundaryX: 480, info: 'G₄: x < 480 判为正类，错误率 5.6%' },
+    { step: 5, alpha: '1.689', error: '0.033', correct: 15, boundaryX: 520, info: 'G₅: x < 520 判为正类，错误率 3.3%' },
   ];
 
   let currentStep = 0;
@@ -575,12 +575,11 @@
       // Calculate weight based on step
       let weight = 1;
       if (step > 0) {
-        // Simulate weight increase for misclassified points
-        const isMisclassified = (step === 1 && point.x >= 280) || 
-                                (step === 2 && point.x >= 380) ||
-                                (step === 3 && point.x >= 420) ||
-                                (step === 4 && point.x >= 480) ||
-                                (step === 5 && point.x >= 520);
+        // 模拟权重更新：被当前弱分类器误分的样本权重增大
+        // G_k 语义: x < boundary 判为正类 → 误分 = (label=+1 且 x≥边界) 或 (label=-1 且 x<边界)
+        const iterB = iterations[step].boundaryX;
+        const isMisclassified = iterB != null &&
+          ((point.label === 1 && point.x >= iterB) || (point.label === -1 && point.x < iterB));
         weight = isMisclassified ? 2 + step * 0.5 : 1;
       }
       

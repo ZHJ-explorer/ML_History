@@ -84,7 +84,7 @@
     <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="../02_statistical_learning/index.html">02_statistical_learning阶段</a>
+      <a href="../index.html">02_statistical_learning阶段</a>
       <span class="nav-badge">1970</span>
     </div>
   </div>
@@ -142,27 +142,26 @@
 
         <!-- EDGES -->
         <g id="edges">
-          <!-- Root -> Node A -->
-          <line id="e-r-a" class="tree-edge" x1="400" y1="65" x2="400" y2="130" marker-end="url(#arrowhead)"/>
-          <!-- Root -> Node B -->
-          <line id="e-r-b" class="tree-edge" x1="400" y1="65" x2="400" y2="130" marker-end="url(#arrowhead)" style="display:none;"/>
+          <!-- Root -> Node A (Yes · Income>50k) -->
+          <line id="e_root_node_a" class="tree-edge" x1="400" y1="65" x2="250" y2="155" marker-end="url(#arrowhead)"/>
+          <!-- Root -> Node B (No · Income<=50k) -->
+          <line id="e_root_node_b" class="tree-edge" x1="400" y1="65" x2="550" y2="155" marker-end="url(#arrowhead)"/>
           <!-- Node A -> Leaf 1 -->
-          <line id="e-a-l1" class="tree-edge" x1="250" y1="180" x2="150" y2="280" marker-end="url(#arrowhead)"/>
-          <!-- Node A -> Node B -->
-          <line id="e-a-b" class="tree-edge" x1="250" y1="180" x2="400" y2="280" marker-end="url(#arrowhead)"/>
+          <line id="e_node_a_leaf_1" class="tree-edge" x1="250" y1="180" x2="150" y2="280" marker-end="url(#arrowhead)"/>
           <!-- Node B -> Leaf 2 -->
-          <line id="e-b-l2" class="tree-edge" x1="550" y1="180" x2="650" y2="280" marker-end="url(#arrowhead)"/>
+          <line id="e_node_b_leaf_2" class="tree-edge" x1="550" y1="180" x2="650" y2="280" marker-end="url(#arrowhead)"/>
           <!-- Node B -> Leaf 3 -->
-          <line id="e-b-l3" class="tree-edge" x1="550" y1="180" x2="550" y2="280" marker-end="url(#arrowhead)"/>
+          <line id="e_node_b_leaf_3" class="tree-edge" x1="550" y1="180" x2="550" y2="280" marker-end="url(#arrowhead)"/>
           <!-- Node B -> Leaf 4 -->
-          <line id="e-b-l4" class="tree-edge" x1="550" y1="180" x2="450" y2="280" marker-end="url(#arrowhead)"/>
+          <line id="e_node_b_leaf_4" class="tree-edge" x1="550" y1="180" x2="450" y2="280" marker-end="url(#arrowhead)"/>
         </g>
 
         <!-- EDGE LABELS -->
         <g id="edge-labels">
-          <text x="410" y="100" class="edge-label" fill="var(--accent)">Yes · Income&gt;50k</text>
-          <text x="130" y="275" class="edge-label">Age≤30</text>
-          <text x="310" y="225" class="edge-label">Age&gt;30</text>
+          <text x="250" y="120" class="edge-label" fill="var(--accent)">Yes · Income&gt;50k</text>
+          <text x="560" y="120" class="edge-label" fill="var(--text-muted)">No · Income≤50k</text>
+          <text x="140" y="250" class="edge-label">Age≤30</text>
+          <text x="265" y="295" class="edge-label">Age&gt;30</text>
           <text x="660" y="275" class="edge-label">College</text>
           <text x="560" y="275" class="edge-label">No College</text>
           <text x="440" y="275" class="edge-label">Married</text>
@@ -176,7 +175,7 @@
               fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="1.5" filter="url(#glow)"/>
             <text x="400" y="36" text-anchor="middle" class="node-label" font-weight="600">收入 > 50k?</text>
             <text x="400" y="52" text-anchor="middle" class="node-feature">Gain: 0.246</text>
-            <text x="400" y="58" text-anchor="middle" class="node-value">根节点 · 42 samples</text>
+            <text x="400" y="58" text-anchor="middle" class="node-value">根节点 · 14 samples</text>
           </g>
 
           <!-- NODE A (after root yes) -->
@@ -255,14 +254,11 @@
 
         <!-- Extra edges for deeper levels -->
         <g id="edges-deep">
-          <line class="tree-edge" x1="250" y1="205" x2="150" y2="280" marker-end="url(#arrowhead)"/>
-          <line class="tree-edge" x1="250" y1="205" x2="250" y2="360" marker-end="url(#arrowhead)"/>
-          <line class="tree-edge" x1="250" y1="410" x2="150" y2="440" marker-end="url(#arrowhead)"/>
-          <line class="tree-edge" x1="250" y1="410" x2="350" y2="440" marker-end="url(#arrowhead)"/>
+          <line id="e_node_a_node_c" class="tree-edge" x1="250" y1="205" x2="250" y2="360" marker-end="url(#arrowhead)"/>
+          <line id="e_node_c_leaf_5" class="tree-edge" x1="250" y1="410" x2="150" y2="440" marker-end="url(#arrowhead)"/>
+          <line id="e_node_c_leaf_6" class="tree-edge" x1="250" y1="410" x2="350" y2="440" marker-end="url(#arrowhead)"/>
         </g>
         <g id="edge-labels-deep">
-          <text x="130" y="245" class="edge-label">No</text>
-          <text x="260" y="285" class="edge-label">No</text>
           <text x="130" y="435" class="edge-label">未婚</text>
           <text x="300" y="435" class="edge-label">已婚</text>
         </g>
@@ -486,9 +482,9 @@
 
   <!-- FOOTER NAV -->
   <div class="nav-footer">
-    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
+    <a href="../../01_foundations/06_kmeans/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">K-Means 聚类</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="../02_statistical_learning/02_linear_regression/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">线性回归</span></a>
+    <a href="../02_mlp_backprop/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">MLP 反向传播</span></a>
   </div>
 
 </main>
@@ -500,9 +496,9 @@ const nodeData = {
     title: '根节点：收入 > 50k?',
     feature: '收入',
     gain: '0.246',
-    samples: '42',
+    samples: '14',
     entropy: '0.940',
-    desc: '信息增益最大(0.246)，说明"收入"是区分数据集的最优特征。根节点包含全部42个样本，熵为0.940（接近纯随机）。'
+    desc: '信息增益最大(0.246)，说明"收入"是区分数据集的最优特征。根节点包含全部14个样本（9正/5负），熵为0.940（接近纯随机）。'
   },
   'node-a': {
     title: '内部节点：年龄 ≤ 30?',
@@ -686,8 +682,8 @@ function calcEntropy(pos, neg) {
 }
 
 function calcIG() {
-  const pos = parseInt(document.getElementById('posCount').value) || 0;
-  const neg = parseInt(document.getElementById('negCount').value) || 0;
+  const pos = Math.max(0, parseInt(document.getElementById('posCount').value) || 0);
+  const neg = Math.max(0, parseInt(document.getElementById('negCount').value) || 0);
   const scheme = parseInt(document.getElementById('splitScheme').value);
 
   const parentEntropy = calcEntropy(pos, neg);
@@ -707,10 +703,10 @@ function calcIG() {
       rightNeg = neg;
       break;
     case 2: // Extreme uneven
-      leftPos = 1;
+      leftPos = Math.min(1, pos);
       leftNeg = Math.max(0, neg - 1);
       rightPos = Math.max(0, pos - 1);
-      rightNeg = 1;
+      rightNeg = Math.min(1, neg);
       break;
   }
 

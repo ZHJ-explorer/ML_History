@@ -10,6 +10,7 @@
 /* LSTM-specific styles */
 .gate-group { cursor: pointer; transition: all 0.2s; }
 .gate-group:hover .gate-box { stroke-width: 3; filter: brightness(1.2); }
+.gate-group.active .gate-box { stroke-width: 3; filter: url(#glow); }
 .gate-box { transition: all 0.2s; }
 .flow-line { stroke-dasharray: 6,3; opacity: 0.6; transition: all 0.4s; }
 .flow-line.active { stroke-dasharray: none; opacity: 1; stroke-width: 2.5; }
@@ -56,7 +57,7 @@
     <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="../03_deep_learning_revival/index.html">03_deep_learning_revival阶段</a>
+      <a href="../index.html">03_deep_learning_revival阶段</a>
       <span class="nav-badge">1997</span>
     </div>
   </div>
@@ -394,14 +395,14 @@
 
   <!-- Footer Nav -->
   <div class="nav-footer">
-    <a href="../03_deep_learning_revival/03_bptt/index.html" class="nav-footer-prev">
+    <a href="../03_rnn/index.html" class="nav-footer-prev">
       <span class="nav-footer-label">← 上一个</span>
-      <span class="nav-footer-title">BPTT反向传播</span>
+      <span class="nav-footer-title">循环神经网络 (RNN)</span>
     </a>
-    <span class="nav-footer-center"><a href="../index.html">ML History</a> · <a href="../03_deep_learning_revival/index.html">深度学习复兴</a></span>
-    <a href="../03_deep_learning_revival/05_gru/index.html" class="nav-footer-next" style="text-align:right;">
+    <span class="nav-footer-center"><a href="../index.html">ML History</a> · <a href="../index.html">深度学习复兴</a></span>
+    <a href="../05_word2vec/index.html" class="nav-footer-next" style="text-align:right;">
       <span class="nav-footer-label">下一个 →</span>
-      <span class="nav-footer-title">GRU门控循环单元</span>
+      <span class="nav-footer-title">Word2Vec</span>
     </a>
   </div>
 
@@ -414,6 +415,14 @@ const gateInfo = {
   candidate: `<p class="flow-desc"><strong class="highlight-c">候选细胞 C̃_t</strong> 通过 tanh 生成候选更新值，范围在 (-1, 1)。它代表"可能写入的新信息"。</p>`,
   output: `<p class="flow-desc"><strong class="highlight-o">输出门 o_t</strong> 决定输出多少当前信息。细胞状态先经过 tanh 压缩到 (-1, 1)，再与输出门相乘得到最终隐藏状态 h_t。</p>`
 };
+
+function showGate(name) {
+  const info = gateInfo[name];
+  const flowInfo = document.getElementById('flowInfo');
+  if (flowInfo && info) flowInfo.innerHTML = info;
+  document.querySelectorAll('.gate-group').forEach(g => g.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
 
 // ── Gradient Vanishing Demo ──
 const gradTimes = [1, 5, 10, 20, 50, 100];

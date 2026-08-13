@@ -218,7 +218,7 @@
     <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="../01_foundations/index.html">01_foundations阶段</a>
+      <a href="../index.html">01_foundations阶段</a>
       <span class="nav-badge">1957</span>
     </div>
   </div>
@@ -437,29 +437,29 @@
         <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
         <span class="code-lang">Python · model.py</span>
       </div>
-      <div class="code-body"><pre><span class=\"kw\">import</span> numpy <span class=\"kw\">as</span> np
+      <div class="code-body"><pre><span class="kw">import</span> numpy <span class="kw">as</span> np
 
-<span class=\"kw\">class</span> <span class=\"cls\">Perceptron</span>:
-    <span class=\"kw\">def</span> <span class=\"fn\">__init__</span>(self, lr=<span class=\"num\">0.01</span>, max_iter=<span class=\"num\">100</span>):
+<span class="kw">class</span> <span class="cls">Perceptron</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, lr=<span class="num">0.01</span>, max_iter=<span class="num">100</span>):
         self.lr = lr
         self.max_iter = max_iter
-        self.weights = <span class=\"kw\">None</span>
-        self.bias = <span class=\"kw\">None</span>
+        self.weights = <span class="kw">None</span>
+        self.bias = <span class="kw">None</span>
 
-    <span class=\"kw\">def</span> <span class=\"fn\">fit</span>(self, X, y):
+    <span class="kw">def</span> <span class="fn">fit</span>(self, X, y):
         n_samples, n_features = X.shape
-        self.weights = np.<span class=\"fn\">zeros</span>(n_features)
-        self.bias = <span class=\"num\">0</span>
-        <span class=\"kw\">for</span> _ <span class=\"kw\">in</span> <span class=\"fn\">range</span>(self.max_iter):
-            errors = <span class=\"num\">0</span>
-            <span class=\"kw\">for</span> xi, target <span class=\"kw\">in</span> <span class=\"fn\">zip</span>(X, y):
-                pred = <span class=\"num\">1</span> <span class=\"kw\">if</span> np.<span class=\"fn\">dot</span>(xi, self.weights) + self.bias >= <span class=\"num\">0</span> <span class=\"kw\">else</span> <span class=\"num\">0</span>
+        self.weights = np.<span class="fn">zeros</span>(n_features)
+        self.bias = <span class="num">0</span>
+        <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(self.max_iter):
+            errors = <span class="num">0</span>
+            <span class="kw">for</span> xi, target <span class="kw">in</span> <span class="fn">zip</span>(X, y):
+                pred = <span class="num">1</span> <span class="kw">if</span> np.<span class="fn">dot</span>(xi, self.weights) + self.bias >= <span class="num">0</span> <span class="kw">else</span> <span class="num">0</span>
                 update = self.lr * (target - pred)
                 self.weights += update * xi
                 self.bias += update
-                <span class=\"kw\">if</span> update != <span class=\"num\">0</span>: errors += <span class=\"num\">1</span>
-            <span class=\"kw\">if</span> errors == <span class=\"num\">0</span>: <span class=\"kw\">break</span>
-        <span class=\"kw\">return</span> self</pre></div>
+                <span class="kw">if</span> update != <span class="num">0</span>: errors += <span class="num">1</span>
+            <span class="kw">if</span> errors == <span class="num">0</span>: <span class="kw">break</span>
+        <span class="kw">return</span> self</pre></div>
     </div>
   </section>
 
@@ -483,7 +483,7 @@
         <!-- Left: SVG scatter + status -->
         <div>
           <div class="scatter-wrap">
-            <svg id="demo-scatter" viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;"></svg>
+            <svg id="demo-scatter" viewBox="0 0 340 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;"></svg>
           </div>
           <div id="conv-status" class="conv-badge training">⏳ 待训练</div>
           <div class="speed-row">
@@ -570,12 +570,12 @@
 
   <!-- FOOTER NAV -->
   <div class="nav-footer">
-    <a href="../01_foundations/03_logistic_regression/index.html" class="nav-footer-prev">
+    <a href="../03_logistic_regression/index.html" class="nav-footer-prev">
       <span class="nav-footer-label">← 上一个</span>
       <span class="nav-footer-title">逻辑回归</span>
     </a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 感知机</span>
-    <a href="../01_foundations/05_knn/index.html" class="nav-footer-next" style="text-align:right;">
+    <a href="../05_knn/index.html" class="nav-footer-next" style="text-align:right;">
       <span class="nav-footer-label">下一个 →</span>
       <span class="nav-footer-title">k 近邻（k-NN）</span>
     </a>
@@ -758,7 +758,7 @@ function updateWeightDisplay(stepLog) {
         y=${s.yi},
         ${s.isError ? '<span class="highlight-lr">更新</span>' : '<span style="color:var(--green)">✓</span>'}
       </div>`).join('')}
-    </div>` : ''
+    </div>` : ''}
   `;
   document.getElementById('iter-count').textContent = iterCount;
   document.getElementById('iter-total').textContent = maxIter;

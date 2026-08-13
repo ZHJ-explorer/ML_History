@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset=\"UTF-8\">
-<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>线性回归 — ML History</title>
-<link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap\" rel=\"stylesheet\">
-<link rel=\"stylesheet\" href=\"../styles/base.css\">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../styles/base.css">
 <style>
 /* ── Linear Regression specific ── */
 .residual-line { stroke: var(--red); stroke-width: 1.5; stroke-dasharray: 4,3; opacity: 0.85; }
@@ -48,290 +48,290 @@
 </head>
 <body>
 
-<nav class=\"nav\">
-  <div class=\"nav-inner\">
-    <a href=\"../index.html\" class=\"nav-logo\"><div class=\"nav-logo-icon\">L</div>ML History</a>
-    <div class=\"nav-links\">
-      <a href=\"../index.html\">全部模型</a>
-      <a href=\"../01_foundations/index.html\">01_foundations阶段</a>
-      <span class=\"nav-badge\">1809</span>
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">L</div>ML History</a>
+    <div class="nav-links">
+      <a href="../index.html">全部模型</a>
+      <a href="../index.html">01_foundations阶段</a>
+      <span class="nav-badge">1809</span>
     </div>
   </div>
 </nav>
 
-<main class=\"container\">
+<main class="container">
 
   <!-- HERO -->
-  <section class=\"hero\">
-    <div class=\"hero-eyebrow\">01_foundations阶段 · 1809</div>
+  <section class="hero">
+    <div class="hero-eyebrow">01_foundations阶段 · 1809</div>
     <h1>线性回归</h1>
-    <p class=\"hero-subtitle\">最小二乘法的奠基之作——从高斯的天体轨道计算，到现代机器学习的基石。用最简单的直线，拟合最复杂的世界。</p>
-    <div class=\"pill-row\">
-      <span class=\"pill pill-accent\">监督学习</span>
-      <span class=\"pill pill-green\">回归</span>
-      <span class=\"pill\">最小二乘法</span>
-      <span class=\"pill\">解析解</span>
+    <p class="hero-subtitle">最小二乘法的奠基之作——从高斯的天体轨道计算，到现代机器学习的基石。用最简单的直线，拟合最复杂的世界。</p>
+    <div class="pill-row">
+      <span class="pill pill-accent">监督学习</span>
+      <span class="pill pill-green">回归</span>
+      <span class="pill">最小二乘法</span>
+      <span class="pill">解析解</span>
     </div>
-    <div class=\"hero-meta\">
-      <div class=\"hero-meta-item\"><span class=\"hero-meta-label\">年份</span><span class=\"hero-meta-value\">1809</span></div>
-      <div class=\"hero-meta-item\"><span class=\"hero-meta-label\">提出者</span><span class=\"hero-meta-value\">Gauss & Legendre</span></div>
-      <div class=\"hero-meta-item\"><span class=\"hero-meta-label\">类型</span><span class=\"hero-meta-value\">回归</span></div>
-      <div class=\"hero-meta-item\"><span class=\"hero-meta-label\">框架</span><span class=\"hero-meta-value\">NumPy / PyTorch</span></div>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">1809</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">提出者</span><span class="hero-meta-value">Gauss & Legendre</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">回归</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">框架</span><span class="hero-meta-value">NumPy / PyTorch</span></div>
     </div>
   </section>
 
   <!-- STATS GRID -->
-  <div class=\"stats-grid\">
-    <div class=\"stat-cell\"><span class=\"stat-value\">1809</span><span class=\"stat-label\">提出年份</span></div>
-    <div class=\"stat-cell\"><span class=\"stat-value\">O(n³)</span><span class=\"stat-label\">解析解复杂度</span></div>
-    <div class=\"stat-cell\"><span class=\"stat-value\">MSE</span><span class=\"stat-label\">损失函数</span></div>
-    <div class=\"stat-cell\"><span class=\"stat-value\">R²</span><span class=\"stat-label\">评估指标</span></div>
+  <div class="stats-grid">
+    <div class="stat-cell"><span class="stat-value">1809</span><span class="stat-label">提出年份</span></div>
+    <div class="stat-cell"><span class="stat-value">O(n³)</span><span class="stat-label">解析解复杂度</span></div>
+    <div class="stat-cell"><span class="stat-value">MSE</span><span class="stat-label">损失函数</span></div>
+    <div class="stat-cell"><span class="stat-value">R²</span><span class="stat-label">评估指标</span></div>
   </div>
 
   <!-- SVG DIAGRAM: Scatter + Fitted Line + Residuals -->
-  <section class=\"section\">
-    <div class=\"section-label\">可视化示意</div>
-    <div class=\"section-title\">数据拟合与残差</div>
-    <div class=\"section-body\" style=\"margin-bottom:20px;\">
+  <section class="section">
+    <div class="section-label">可视化示意</div>
+    <div class="section-title">数据拟合与残差</div>
+    <div class="section-body" style="margin-bottom:20px;">
       <p>下图展示了线性回归的核心思想：通过最小化<strong>残差平方和</strong>（红色虚线），找到一条最佳拟合直线，使得所有数据点到直线的垂直距离之和最小。</p>
     </div>
-    <div class=\"diagram-container\">
-      <svg class=\"svg-diagram\" viewBox=\"0 0 720 400\" xmlns=\"http://www.w3.org/2000/svg\">
+    <div class="diagram-container">
+      <svg class="svg-diagram" viewBox="0 0 720 400" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <marker id=\"arr-gray\" markerWidth=\"8\" markerHeight=\"8\" refX=\"7\" refY=\"3\" orient=\"auto\">
-            <path d=\"M0,0 L0,6 L7,3 z\" fill=\"var(--text-faint)\"/>
+          <marker id="arr-gray" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L7,3 z" fill="var(--text-faint)"/>
           </marker>
-          <marker id=\"arr-green\" markerWidth=\"8\" markerHeight=\"8\" refX=\"7\" refY=\"3\" orient=\"auto\">
-            <path d=\"M0,0 L0,6 L7,3 z\" fill=\"var(--green)\"/>
+          <marker id="arr-green" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L7,3 z" fill="var(--green)"/>
           </marker>
-          <filter id=\"glow-green\">
-            <feGaussianBlur stdDeviation=\"3\" result=\"blur\"/>
-            <feMerge><feMergeNode in=\"blur\"/><feMergeNode in=\"SourceGraphic\"/></feMerge>
+          <filter id="glow-green">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
           </filter>
-          <filter id=\"glow-red\">
-            <feGaussianBlur stdDeviation=\"2\" result=\"blur\"/>
-            <feMerge><feMergeNode in=\"blur\"/><feMergeNode in=\"SourceGraphic\"/></feMerge>
+          <filter id="glow-red">
+            <feGaussianBlur stdDeviation="2" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
           </filter>
         </defs>
 
         <!-- Grid -->
-        <g class=\"grid\">
-          <line class=\"grid-line\" x1=\"80\" y1=\"40\" x2=\"80\" y2=\"340\"/>
-          <line class=\"grid-line\" x1=\"80\" y1=\"340\" x2=\"680\" y2=\"340\"/>
-          <line class=\"grid-line\" x1=\"80\" y1=\"190\" x2=\"680\" y2=\"190\" stroke-dasharray=\"2,6\" opacity=\"0.5\"/>
-          <line class=\"grid-line\" x1=\"380\" y1=\"40\" x2=\"380\" y2=\"340\" stroke-dasharray=\"2,6\" opacity=\"0.5\"/>
+        <g class="grid">
+          <line class="grid-line" x1="80" y1="40" x2="80" y2="340"/>
+          <line class="grid-line" x1="80" y1="340" x2="680" y2="340"/>
+          <line class="grid-line" x1="80" y1="190" x2="680" y2="190" stroke-dasharray="2,6" opacity="0.5"/>
+          <line class="grid-line" x1="380" y1="40" x2="380" y2="340" stroke-dasharray="2,6" opacity="0.5"/>
         </g>
 
         <!-- Axes -->
-        <line class=\"axis-line\" x1=\"80\" y1=\"340\" x2=\"680\" y2=\"340\" marker-end=\"url(#arr-gray)\"/>
-        <line class=\"axis-line\" x1=\"80\" y1=\"340\" x2=\"80\" y2=\"30\" marker-end=\"url(#arr-gray)\"/>
-        <text class=\"axis-label\" x=\"380\" y=\"385\" text-anchor=\"middle\">x（特征）</text>
-        <text class=\"axis-label\" x=\"35\" y=\"190\" text-anchor=\"middle\" transform=\"rotate(-90,35,190)\">y（目标）</text>
+        <line class="axis-line" x1="80" y1="340" x2="680" y2="340" marker-end="url(#arr-gray)"/>
+        <line class="axis-line" x1="80" y1="340" x2="80" y2="30" marker-end="url(#arr-gray)"/>
+        <text class="axis-label" x="380" y="385" text-anchor="middle">x（特征）</text>
+        <text class="axis-label" x="35" y="190" text-anchor="middle" transform="rotate(-90,35,190)">y（目标）</text>
 
         <!-- Tick labels -->
-        <text class=\"tick-label\" x=\"80\" y=\"358\" text-anchor=\"middle\">0</text>
-        <text class=\"tick-label\" x=\"230\" y=\"358\" text-anchor=\"middle\">2</text>
-        <text class=\"tick-label\" x=\"380\" y=\"358\" text-anchor=\"middle\">4</text>
-        <text class=\"tick-label\" x=\"530\" y=\"358\" text-anchor=\"middle\">6</text>
-        <text class=\"tick-label\" x=\"680\" y=\"358\" text-anchor=\"middle\">8</text>
-        <text class=\"tick-label\" x=\"72\" y=\"340\" text-anchor=\"end\">0</text>
-        <text class=\"tick-label\" x=\"72\" y=\"265\" text-anchor=\"end\">2</text>
-        <text class=\"tick-label\" x=\"72\" y=\"190\" text-anchor=\"end\">4</text>
-        <text class=\"tick-label\" x=\"72\" y=\"115\" text-anchor=\"end\">6</text>
-        <text class=\"tick-label\" x=\"72\" y=\"45\" text-anchor=\"end\">8</text>
+        <text class="tick-label" x="80" y="358" text-anchor="middle">0</text>
+        <text class="tick-label" x="230" y="358" text-anchor="middle">2</text>
+        <text class="tick-label" x="380" y="358" text-anchor="middle">4</text>
+        <text class="tick-label" x="530" y="358" text-anchor="middle">6</text>
+        <text class="tick-label" x="680" y="358" text-anchor="middle">8</text>
+        <text class="tick-label" x="72" y="340" text-anchor="end">0</text>
+        <text class="tick-label" x="72" y="265" text-anchor="end">2</text>
+        <text class="tick-label" x="72" y="190" text-anchor="end">4</text>
+        <text class="tick-label" x="72" y="115" text-anchor="end">6</text>
+        <text class="tick-label" x="72" y="45" text-anchor="end">8</text>
 
         <!-- Fitted line: y = 0.8x + 1.5 mapped to SVG coords -->
         <!-- SVG: x_svg = 80 + x*75, y_svg = 340 - y*30 -->
         <!-- Line from (0, 1.5) to (8, 7.9) -->
-        <line class=\"fitted-line\" x1=\"80\" y1=\"295\" x2=\"680\" y2=\"103\" filter=\"url(#glow-green)\"/>
+        <line class="fitted-line" x1="80" y1="295" x2="680" y2="103" filter="url(#glow-green)"/>
 
         <!-- Data points + residuals -->
         <!-- Point 1: x=1, y=2.2 → svg(155, 274), pred=2.3, residual=-0.1 → residual line to (155,269) -->
-        <line class=\"residual-line\" x1=\"155\" y1=\"274\" x2=\"155\" y2=\"269\" filter=\"url(#glow-red)\"/>
-        <circle class=\"point-circle\" cx=\"155\" cy=\"274\" r=\"5\"/>
-        <text class=\"residual-label\" x=\"162\" y=\"273\">e₁</text>
+        <line class="residual-line" x1="155" y1="274" x2="155" y2="269" filter="url(#glow-red)"/>
+        <circle class="point-circle" cx="155" cy="274" r="5"/>
+        <text class="residual-label" x="162" y="273">e₁</text>
 
         <!-- Point 2: x=2, y=3.5 → svg(230, 235), pred=3.1, residual=0.4 → to (230,223) -->
-        <line class=\"residual-line\" x1=\"230\" y1=\"235\" x2=\"230\" y2=\"223\" filter=\"url(#glow-red)\"/>
-        <circle class=\"point-circle\" cx=\"230\" cy=\"235\" r=\"5\"/>
+        <line class="residual-line" x1="230" y1="235" x2="230" y2="223" filter="url(#glow-red)"/>
+        <circle class="point-circle" cx="230" cy="235" r="5"/>
 
         <!-- Point 3: x=3, y=3.8 → svg(305, 226), pred=3.9, residual=-0.1 → to (305,229) -->
-        <line class=\"residual-line\" x1=\"305\" y1=\"226\" x2=\"305\" y2=\"229\" filter=\"url(#glow-red)\"/>
-        <circle class=\"point-circle\" cx=\"305\" cy=\"226\" r=\"5\"/>
+        <line class="residual-line" x1="305" y1="226" x2="305" y2="229" filter="url(#glow-red)"/>
+        <circle class="point-circle" cx="305" cy="226" r="5"/>
 
         <!-- Point 4: x=4, y=5.0 → svg(380, 190), pred=4.7, residual=0.3 → to (380,181) -->
-        <line class=\"residual-line\" x1=\"380\" y1=\"190\" x2=\"380\" y2=\"181\" filter=\"url(#glow-red)\"/>
-        <circle class=\"point-circle\" cx=\"380\" cy=\"190\" r=\"5\"/>
+        <line class="residual-line" x1="380" y1="190" x2="380" y2="181" filter="url(#glow-red)"/>
+        <circle class="point-circle" cx="380" cy="190" r="5"/>
 
         <!-- Point 5: x=5, y=5.5 → svg(455, 175), pred=5.5, residual=0 → on line -->
-        <circle class=\"point-circle\" cx=\"455\" cy=\"175\" r=\"5\"/>
+        <circle class="point-circle" cx="455" cy="175" r="5"/>
 
         <!-- Point 6: x=6, y=6.8 → svg(530, 136), pred=6.3, residual=0.5 → to (530,121) -->
-        <line class=\"residual-line\" x1=\"530\" y1=\"136\" x2=\"530\" y2=\"121\" filter=\"url(#glow-red)\"/>
-        <circle class=\"point-circle\" cx=\"530\" cy=\"136\" r=\"5\"/>
+        <line class="residual-line" x1="530" y1="136" x2="530" y2="121" filter="url(#glow-red)"/>
+        <circle class="point-circle" cx="530" cy="136" r="5"/>
 
         <!-- Point 7: x=7, y=7.0 → svg(605, 110), pred=7.1, residual=-0.1 → to (605,113) -->
-        <line class=\"residual-line\" x1=\"605\" y1=\"110\" x2=\"605\" y2=\"113\" filter=\"url(#glow-red)\"/>
-        <circle class=\"point-circle\" cx=\"605\" cy=\"110\" r=\"5\"/>
+        <line class="residual-line" x1="605" y1="110" x2="605" y2="113" filter="url(#glow-red)"/>
+        <circle class="point-circle" cx="605" cy="110" r="5"/>
 
         <!-- Legend -->
-        <rect class=\"equation-badge\" x=\"520\" y=\"48\" width=\"185\" height=\"72\" rx=\"8\"/>
-        <text class=\"equation-text\" x=\"532\" y=\"70\">拟合直线 ŷ = 0.8x + 1.5</text>
-        <text class=\"equation-text\" x=\"532\" y=\"90\" fill=\"var(--green)\">—— 最小二乘解</text>
-        <text class=\"equation-text\" x=\"532\" y=\"110\" fill=\"var(--red)\">- - - 残差 eᵢ = yᵢ - ŷᵢ</text>
+        <rect class="equation-badge" x="520" y="48" width="185" height="72" rx="8"/>
+        <text class="equation-text" x="532" y="70">拟合直线 ŷ = 0.8x + 1.5</text>
+        <text class="equation-text" x="532" y="90" fill="var(--green)">—— 最小二乘解</text>
+        <text class="equation-text" x="532" y="110" fill="var(--red)">- - - 残差 eᵢ = yᵢ - ŷᵢ</text>
 
         <!-- Annotation: MSE label -->
-        <text class=\"equation-text\" x=\"532\" y=\"130\" fill=\"var(--text-muted)\">J(w,b) = ¼Σeᵢ² → min</text>
+        <text class="equation-text" x="532" y="130" fill="var(--text-muted)">J(w,b) = ¼Σeᵢ² → min</text>
       </svg>
     </div>
-    <p class=\"diagram-caption\">图: 线性回归拟合示意 — 绿色实线为最小二乘拟合直线，红色虚线为残差</p>
+    <p class="diagram-caption">图: 线性回归拟合示意 — 绿色实线为最小二乘拟合直线，红色虚线为残差</p>
   </section>
 
   <!-- HISTORY TIMELINE -->
-  <section class=\"section\">
-    <div class=\"section-label\">历史背景</div>
-    <div class=\"section-title\">从问题到突破</div>
-    <div class=\"section-body\">
+  <section class="section">
+    <div class="section-label">历史背景</div>
+    <div class="section-title">从问题到突破</div>
+    <div class="section-body">
       <p><strong>Carl Friedrich Gauss</strong> 与 <strong>Adrien-Marie Legendre</strong> 在 <strong>1809</strong> 年独立提出了最小二乘法，用于天体轨道的计算。这是机器学习发展史上最早的系统性方法之一。</p>
     </div>
-    <div class=\"timeline\">
-      <div class=\"timeline-item\">
-        <div class=\"timeline-year\">1795</div>
-        <div class=\"timeline-title\">高斯的预见</div>
-        <div class=\"timeline-desc\">Gauss 在少年时期就用最小二乘法预测了谷神星的轨道，但未发表方法。</div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">1795</div>
+        <div class="timeline-title">高斯的预见</div>
+        <div class="timeline-desc">Gauss 在少年时期就用最小二乘法预测了谷神星的轨道，但未发表方法。</div>
       </div>
-      <div class=\"timeline-item\">
-        <div class=\"timeline-year\">1805</div>
-        <div class=\"timeline-title\">Legendre 首次发表</div>
-        <div class=\"timeline-desc\">Legendre 在《彗星轨道新确定法》中首次公开发布最小二乘法，命名为 \"least squares\"。</div>
+      <div class="timeline-item">
+        <div class="timeline-year">1805</div>
+        <div class="timeline-title">Legendre 首次发表</div>
+        <div class="timeline-desc">Legendre 在《彗星轨道新确定法》中首次公开发布最小二乘法，命名为 \"least squares\"。</div>
       </div>
-      <div class=\"timeline-item\">
-        <div class=\"timeline-year\">1809</div>
-        <div class=\"timeline-title\">Gauss 的严格证明</div>
-        <div class=\"timeline-desc\">Gauss 在《天体运动论》中给出了最小二乘法的概率论证明，确立了其理论基础。</div>
+      <div class="timeline-item">
+        <div class="timeline-year">1809</div>
+        <div class="timeline-title">Gauss 的严格证明</div>
+        <div class="timeline-desc">Gauss 在《天体运动论》中给出了最小二乘法的概率论证明，确立了其理论基础。</div>
       </div>
-      <div class=\"timeline-item\">
-        <div class=\"timeline-year\">19世纪中叶</div>
-        <div class=\"timeline-title\">广泛应用</div>
-        <div class=\"timeline-desc\">最小二乘法被广泛应用于大地测量、气象学和经济学等领域，成为科学计算的基石。</div>
+      <div class="timeline-item">
+        <div class="timeline-year">19世纪中叶</div>
+        <div class="timeline-title">广泛应用</div>
+        <div class="timeline-desc">最小二乘法被广泛应用于大地测量、气象学和经济学等领域，成为科学计算的基石。</div>
       </div>
     </div>
   </section>
 
   <!-- FORMULA CARDS -->
-  <section class=\"section\">
-    <div class=\"section-label\">数学原理</div>
-    <div class=\"section-title\">核心公式</div>
+  <section class="section">
+    <div class="section-label">数学原理</div>
+    <div class="section-title">核心公式</div>
 
-    <div class=\"formula-card highlight-accent\">
-      <div class=\"formula-label\">模型定义</div>
-      <div class=\"formula\">y = <span class=\"hl-accent\">w</span>ᵀx + b</div>
-      <div class=\"formula-note\">目标变量 y 是输入特征 x 的线性组合，w 为权重向量，b 为偏置项。</div>
+    <div class="formula-card highlight-accent">
+      <div class="formula-label">模型定义</div>
+      <div class="formula">y = <span class="hl-accent">w</span>ᵀx + b</div>
+      <div class="formula-note">目标变量 y 是输入特征 x 的线性组合，w 为权重向量，b 为偏置项。</div>
     </div>
 
-    <div class=\"formula-card highlight-green\">
-      <div class=\"formula-label\">损失函数 — 均方误差 (MSE)</div>
-      <div class=\"formula\">J(<span class=\"hl-accent\">w</span>, b) = <span class=\"hl-green\">¼</span><span class=\"hl-green\">∑</span>(yᵢ - (<span class=\"hl-accent\">w</span>ᵀxᵢ + b))²</div>
-      <div class=\"formula-note\">最小化残差平方和，使预测值与真实值之间的差距最小。</div>
+    <div class="formula-card highlight-green">
+      <div class="formula-label">损失函数 — 均方误差 (MSE)</div>
+      <div class="formula">J(<span class="hl-accent">w</span>, b) = <span class="hl-green">¼</span><span class="hl-green">∑</span>(yᵢ - (<span class="hl-accent">w</span>ᵀxᵢ + b))²</div>
+      <div class="formula-note">最小化残差平方和，使预测值与真实值之间的差距最小。</div>
     </div>
 
-    <div class=\"formula-card\">
-      <div class=\"formula-label\">方法一：正规方程（解析解）</div>
-      <div class=\"formula\"><span class=\"hl-accent\">w</span> = (<span class=\"hl-accent\">X</span>ᵀ<span class=\"hl-accent\">X</span>)<sup>-1</span><span class=\"hl-accent\">X</span>ᵀ<span class=\"hl-accent\">y</span></div>
-      <div class=\"formula-note\">直接求解，无需迭代；但当特征数很大时，O(n³) 的矩阵求逆代价较高。</div>
+    <div class="formula-card">
+      <div class="formula-label">方法一：正规方程（解析解）</div>
+      <div class="formula"><span class="hl-accent">w</span> = (<span class="hl-accent">X</span>ᵀ<span class="hl-accent">X</span>)<sup>-1</span><span class="hl-accent">X</span>ᵀ<span class="hl-accent">y</span></div>
+      <div class="formula-note">直接求解，无需迭代；但当特征数很大时，O(n³) 的矩阵求逆代价较高。</div>
     </div>
 
-    <div class=\"formula-card\">
-      <div class=\"formula-label\">方法二：梯度下降</div>
-      <div class=\"formula\"><span class=\"hl-accent\">w</span> := <span class=\"hl-accent\">w</span> - α · <span class=\"hl-green\">∂J</span>/<span class=\"hl-green\">∂w</span></div>
-      <div class=\"formula-note\">梯度 ∂J/∂w = -<span class=\"hl-green\">(2/n)</span><span class=\"hl-accent\">X</span>ᵀ(<span class=\"hl-accent\">y</span> - <span class=\"hl-accent\">X</span><span class=\"hl-accent\">w</span>)，需要仔细选择学习率 α。</div>
+    <div class="formula-card">
+      <div class="formula-label">方法二：梯度下降</div>
+      <div class="formula"><span class="hl-accent">w</span> := <span class="hl-accent">w</span> - α · <span class="hl-green">∂J</span>/<span class="hl-green">∂w</span></div>
+      <div class="formula-note">梯度 ∂J/∂w = -<span class="hl-green">(2/n)</span><span class="hl-accent">X</span>ᵀ(<span class="hl-accent">y</span> - <span class="hl-accent">X</span><span class="hl-accent">w</span>)，需要仔细选择学习率 α。</div>
     </div>
   </section>
 
   <!-- CODE BLOCK -->
-  <section class=\"section\">
-    <div class=\"section-label\">代码实现</div>
-    <div class=\"section-title\">model.py 核心逻辑</div>
-    <div class=\"code-block\">
-      <div class=\"code-header\">
-        <div class=\"code-dots\"><div class=\"code-dot\"></div><div class=\"code-dot\"></div><div class=\"code-dot\"></div></div>
-        <span class=\"code-lang\">Python · model.py</span>
+  <section class="section">
+    <div class="section-label">代码实现</div>
+    <div class="section-title">model.py 核心逻辑</div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-lang">Python · model.py</span>
       </div>
-      <div class=\"code-body\"><pre><span class=\"kw\">class</span> <span class=\"cls\">LinearRegression</span>:
-    <span class=\"kw\">def</span> <span class=\"fn\">__init__</span>(self, lr=<span class=\"num\">0.01</span>, max_iter=<span class=\"num\">1000</span>):
+      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">LinearRegression</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, lr=<span class="num">0.01</span>, max_iter=<span class="num">1000</span>):
         self.lr = lr
         self.max_iter = max_iter
-        self.weights = <span class=\"num\">None</span>
-        self.bias = <span class=\"num\">None</span>
+        self.weights = <span class="num">None</span>
+        self.bias = <span class="num">None</span>
 
-    <span class=\"kw\">def</span> <span class=\"fn\">fit_closed_form</span>(self, X, y):
-        <span class=\"cm\"># 正规方程: w = (XᵀX)⁻¹Xᵀy</span>
-        Xb = np.<span class=\"fn\">hstack</span>([np.<span class=\"fn\">ones</span>((X.shape[<span class=\"num\">0</span>], <span class=\"num\">1</span>)), X])
-        self.weights = np.<span class=\"fn\">linalg</span>.<span class=\"fn\">pinv</span>(Xb.T @ Xb) @ Xb.T @ y
-        self.bias = self.weights[<span class=\"num\">0</span>]
-        self.weights = self.weights[<span class=\"num\">1</span>:]
+    <span class="kw">def</span> <span class="fn">fit_closed_form</span>(self, X, y):
+        <span class="cm"># 正规方程: w = (XᵀX)⁻¹Xᵀy</span>
+        Xb = np.<span class="fn">hstack</span>([np.<span class="fn">ones</span>((X.shape[<span class="num">0</span>], <span class="num">1</span>)), X])
+        self.weights = np.<span class="fn">linalg</span>.<span class="fn">pinv</span>(Xb.T @ Xb) @ Xb.T @ y
+        self.bias = self.weights[<span class="num">0</span>]
+        self.weights = self.weights[<span class="num">1</span>:]
 
-    <span class=\"kw\">def</span> <span class=\"fn\">fit_gd</span>(self, X, y):
-        <span class=\"cm\"># 梯度下降迭代更新</span>
-        self.weights = np.<span class=\"fn\">zeros</span>(X.shape[<span class=\"num\">1</span>])
-        self.bias = <span class=\"num\">0</span>
-        <span class=\"kw\">for</span> i <span class=\"kw\">in</span> <span class=\"fn\">range</span>(self.max_iter):
+    <span class="kw">def</span> <span class="fn">fit_gd</span>(self, X, y):
+        <span class="cm"># 梯度下降迭代更新</span>
+        self.weights = np.<span class="fn">zeros</span>(X.shape[<span class="num">1</span>])
+        self.bias = <span class="num">0</span>
+        <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(self.max_iter):
             pred = X @ self.weights + self.bias
             error = pred - y
-            self.weights -= self.lr * (<span class=\"num\">2</span>/len(y)) * X.T @ error
-            self.bias -= self.lr * (<span class=\"num\">2</span>/len(y)) * <span class=\"fn\">sum</span>(error)
+            self.weights -= self.lr * (<span class="num">2</span>/len(y)) * X.T @ error
+            self.bias -= self.lr * (<span class="num">2</span>/len(y)) * <span class="fn">sum</span>(error)
 
-    <span class=\"kw\">def</span> <span class=\"fn\">predict</span>(self, X):
-        <span class=\"kw\">return</span> X @ self.weights + self.bias
+    <span class="kw">def</span> <span class="fn">predict</span>(self, X):
+        <span class="kw">return</span> X @ self.weights + self.bias
 
-    <span class=\"kw\">def</span> <span class=\"fn\">score</span>(self, X, y):
-        <span class=\"cm\"># R² 分数</span>
-        ss_res = <span class=\"fn\">sum</span>((y - self.<span class=\"fn\">predict</span>(X))**<span class=\"num\">2</span>)
-        ss_tot = <span class=\"fn\">sum</span>((y - np.<span class=\"fn\">mean</span>(y))**<span class=\"num\">2</span>)
-        <span class=\"kw\">return</span> <span class=\"num\">1</span> - ss_res / ss_tot</pre></div>
+    <span class="kw">def</span> <span class="fn">score</span>(self, X, y):
+        <span class="cm"># R² 分数</span>
+        ss_res = <span class="fn">sum</span>((y - self.<span class="fn">predict</span>(X))**<span class="num">2</span>)
+        ss_tot = <span class="fn">sum</span>((y - np.<span class="fn">mean</span>(y))**<span class="num">2</span>)
+        <span class="kw">return</span> <span class="num">1</span> - ss_res / ss_tot</pre></div>
     </div>
   </section>
 
   <!-- INTERACTIVE DEMO -->
-  <section class=\"section\">
-    <div class=\"section-label\">交互演示</div>
-    <div class=\"section-title\">点击添加数据点，观察拟合线变化</div>
-    <div class=\"demo-container\">
-      <div class=\"demo-title\">Interactive Demo</div>
-      <canvas id=\"demoCanvas\" width=\"720\" height=\"380\"></canvas>
-      <p class=\"demo-hint\">💡 点击画布添加数据点 · 拖动数据点调整位置 · 支持拖拽拟合线端点调节斜率</p>
-      <div class=\"demo-info\" id=\"demoInfo\">
-        <div class=\"demo-info-item">点数: <span id=\"infoN\">0</span></div>
-        <div class=\"demo-info-item\">权重 w: <span id=\"infoW\">—</span></div>
-        <div class=\"demo-info-item\">偏置 b: <span id=\"infoB\">—</span></div>
-        <div class=\"demo-info-item">R²: <span id=\"infoR2\">—</span></div>
+  <section class="section">
+    <div class="section-label">交互演示</div>
+    <div class="section-title">点击添加数据点，观察拟合线变化</div>
+    <div class="demo-container">
+      <div class="demo-title">Interactive Demo</div>
+      <canvas id="demoCanvas" width="720" height="380"></canvas>
+      <p class="demo-hint">💡 点击画布添加数据点 · 拖动数据点调整位置 · 支持拖拽拟合线端点调节斜率</p>
+      <div class="demo-info" id="demoInfo">
+        <div class="demo-info-item">点数: <span id="infoN">0</span></div>
+        <div class="demo-info-item">权重 w: <span id="infoW">—</span></div>
+        <div class="demo-info-item">偏置 b: <span id="infoB">—</span></div>
+        <div class="demo-info-item">R²: <span id="infoR2">—</span></div>
       </div>
-      <div class=\"demo-controls\">
-        <button class=\"demo-btn\" onclick=\"addPresetPoints()\">🎲 随机生成10点</button>
-        <button class=\"demo-btn-secondary\" onclick=\"resetDemo()\">重置</button>
-        <button class=\"demo-btn-secondary\" onclick=\"clearDemo()\">清空</button>
+      <div class="demo-controls">
+        <button class="demo-btn" onclick="addPresetPoints()">🎲 随机生成10点</button>
+        <button class="demo-btn-secondary" onclick="resetDemo()">重置</button>
+        <button class="demo-btn-secondary" onclick="clearDemo()">清空</button>
       </div>
     </div>
   </section>
 
   <!-- LIMITATIONS -->
-  <section class=\"section\">
-    <div class=\"section-label\">局限性</div>
-    <div class=\"section-title\">已知约束</div>
-    <div class=\"comparison-grid\">
-      <div class=\"comparison-panel\">
+  <section class="section">
+    <div class="section-label">局限性</div>
+    <div class="section-title">已知约束</div>
+    <div class="comparison-grid">
+      <div class="comparison-panel">
         <h4>只能捕捉线性关系</h4>
         <p>无法处理非线性问题，对于复杂的模式拟合效果有限。</p>
       </div>
-      <div class=\"comparison-panel\">
+      <div class="comparison-panel">
         <h4>对异常值敏感</h4>
         <p>MSE 损失函数对离群点放大了影响，单个异常值可显著偏移拟合线。</p>
       </div>
-      <div class=\"comparison-panel\">
+      <div class="comparison-panel">
         <h4>假设特征独立</h4>
         <p>忽略了特征之间的相关性（共线性），可能引入估计偏差。</p>
       </div>
-      <div class=\"comparison-panel\">
+      <div class="comparison-panel">
         <h4>需要特征缩放</h4>
         <p>不同量纲的特征会影响梯度下降的收敛速度，正规方程不受影响。</p>
       </div>
@@ -339,37 +339,37 @@
   </section>
 
   <!-- INFLUENCE -->
-  <section class=\"section\">
-    <div class=\"section-label\">历史影响</div>
-    <div class=\"section-title\">启蒙与传承</div>
-    <div class=\"section-body\">
+  <section class="section">
+    <div class="section-label">历史影响</div>
+    <div class="section-title">启蒙与传承</div>
+    <div class="section-body">
       <p>线性回归直接启发了后续众多重要模型与方法：</p>
     </div>
-    <div class=\"stats-grid\" style=\"grid-template-columns: repeat(4,1fr);\">
-      <div class=\"stat-cell\">
-        <span class=\"stat-value\" style=\"color:var(--accent);\">逻辑回归</span>
-        <span class=\"stat-label\">二分类扩展</span>
+    <div class="stats-grid" style="grid-template-columns: repeat(4,1fr);">
+      <div class="stat-cell">
+        <span class="stat-value" style="color:var(--accent);">逻辑回归</span>
+        <span class="stat-label">二分类扩展</span>
       </div>
-      <div class=\"stat-cell\">
-        <span class=\"stat-value\" style=\"color:var(--green);\">岭回归 / Lasso</span>
-        <span class=\"stat-label\">正则化方法</span>
+      <div class="stat-cell">
+        <span class="stat-value" style="color:var(--green);">岭回归 / Lasso</span>
+        <span class="stat-label">正则化方法</span>
       </div>
-      <div class=\"stat-cell\">
-        <span class=\"stat-value\" style=\"color:var(--orange);\">广义线性模型</span>
-        <span class=\"stat-label\">GLM 框架</span>
+      <div class="stat-cell">
+        <span class="stat-value" style="color:var(--orange);">广义线性模型</span>
+        <span class="stat-label">GLM 框架</span>
       </div>
-      <div class=\"stat-cell\">
-        <span class=\"stat-value\" style=\"color:var(--red);\">核方法</span>
-        <span class=\"stat-label\">非线性推广</span>
+      <div class="stat-cell">
+        <span class="stat-value" style="color:var(--red);">核方法</span>
+        <span class="stat-label">非线性推广</span>
       </div>
     </div>
   </section>
 
   <!-- NOTES -->
-  <section class=\"section\">
-    <div class=\"section-label\">学习心得</div>
-    <div class=\"section-title\">关键洞察</div>
-    <div class=\"notes-card\">
+  <section class="section">
+    <div class="section-label">学习心得</div>
+    <div class="section-title">关键洞察</div>
+    <div class="notes-card">
       <h4>学到的知识</h4>
       <ul>
         <li><strong>最小二乘法</strong>：线性回归的标准解法，具有闭式解</li>
@@ -378,14 +378,14 @@
         <li><strong>R² 分数</strong>：衡量回归模型性能的标准指标，取值范围 (-∞, 1]</li>
       </ul>
     </div>
-    <div class=\"notes-card\">
+    <div class="notes-card">
       <h4>踩坑记录</h4>
       <ul>
         <li>正规方程在特征数量很大时计算成本高（O(n³)），此时应改用梯度下降</li>
         <li>梯度下降需要仔细选择学习率——太大不收敛，太小太慢</li>
       </ul>
     </div>
-    <div class=\"notes-card\">
+    <div class="notes-card">
       <h4>思考题</h4>
       <ul>
         <li>为什么需要特征缩放？答：不同量纲导致梯度方向偏向大数值特征，收敛变慢</li>
@@ -396,15 +396,15 @@
   </section>
 
   <!-- FOOTER NAV -->
-  <div class=\"nav-footer\">
-    <a href=\"../index.html\" class=\"nav-footer-prev\">
-      <span class=\"nav-footer-label\">← 返回</span>
-      <span class=\"nav-footer-title\">全部模型</span>
+  <div class="nav-footer">
+    <a href="../01_mp_neuron/index.html" class="nav-footer-prev">
+      <span class="nav-footer-label">← 上一个</span>
+      <span class="nav-footer-title">MP神经元</span>
     </a>
-    <span class=\"nav-footer-center\"><a href=\"../index.html\">ML History</a> · 28 models</span>
-    <a href=\"../01_foundations/03_logistic_regression/index.html\" class=\"nav-footer-next\" style=\"text-align:right;\">
-      <span class=\"nav-footer-label\">下一个 →</span>
-      <span class=\"nav-footer-title\">逻辑回归</span>
+    <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
+    <a href="../03_logistic_regression/index.html" class="nav-footer-next" style="text-align:right;">
+      <span class="nav-footer-label">下一个 →</span>
+      <span class="nav-footer-title">逻辑回归</span>
     </a>
   </div>
 

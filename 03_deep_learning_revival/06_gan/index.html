@@ -67,7 +67,7 @@
     <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="../03_deep_learning_revival/index.html">03_deep_learning_revival阶段</a>
+      <a href="../index.html">03_deep_learning_revival阶段</a>
       <span class="nav-badge">2014</span>
     </div>
   </div>
@@ -514,9 +514,9 @@
 
   <!-- FOOTER NAV -->
   <div class="nav-footer">
-    <a href="05_word2vec/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">Word2Vec</span></a>
-    <span class="nav-footer-center"><a href="../index.html">ML History</a> · <a href="../03_deep_learning_revival/index.html">深度学习复兴</a></span>
-    <a href="../04_deep_learning_boom/01_transformer/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">Transformer</span></a>
+    <a href="../05_word2vec/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">Word2Vec</span></a>
+    <span class="nav-footer-center"><a href="../index.html">ML History</a> · <a href="../index.html">深度学习复兴</a></span>
+    <a href="../../04_deep_learning_boom/01_resnet/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">ResNet</span></a>
   </div>
 
 </main>
@@ -528,6 +528,7 @@ let gLoss = 0.7;   // generator loss starts high
 let dAcc = 0.52;   // discriminator accuracy starts near random
 let isAuto = false;
 let autoTimer = null;
+let converged = false;
 
 const logs = document.getElementById('demoLog');
 const gLossVal = document.getElementById('gLossVal');
@@ -540,6 +541,7 @@ const dotDisc = document.getElementById('dotDisc');
 function rand(min, max) { return Math.random() * (max - min) + min; }
 
 function runDemoStep() {
+  if (converged) return;
   epoch++;
   const isGenStep = epoch % 2 === 1; // odd = gen training, even = disc training
 
@@ -549,20 +551,28 @@ function runDemoStep() {
 
   let logHtml = '';
   if (isGenStep) {
-    // Generator trains: loss decreases, but may fluctuate
+    // Generator trains against current discriminator strength (minimax coupling):
+    // D weak -> G improves (loss falls); D too strong -> G struggles (loss rises)
     const oldGLoss = gLoss;
-    gLoss = Math.max(0.05, gLoss - rand(0.02, 0.08) + rand(0, 0.03));
-    gLoss = Math.min(0.95, gLoss);
+    if (dAcc > 0.90) {
+      gLoss = Math.min(0.95, gLoss + rand(0.02, 0.06));
+    } else {
+      gLoss = Math.max(0.05, gLoss - rand(0.02, 0.08));
+    }
     const change = ((gLoss - oldGLoss) * 100).toFixed(1);
     const arrow = parseFloat(change) >= 0 ? '↑' : '↓';
     gLossVal.textContent = gLoss.toFixed(3);
     gLossBar.style.width = (gLoss * 100) + '%';
     logHtml = `<div class="gen-step">Epoch ${epoch} | 生成器训练 | G_loss: ${oldGLoss.toFixed(3)} → ${gLoss.toFixed(3)} ${arrow}</div>`;
   } else {
-    // Discriminator trains: accuracy improves
+    // Discriminator trains against current generator strength:
+    // G weak -> D improves (accuracy rises); G produces convincing fakes -> D confused (accuracy falls toward 50%)
     const oldDAcc = dAcc;
-    dAcc = Math.min(0.98, dAcc + rand(0.01, 0.05) - rand(0, 0.02));
-    dAcc = Math.max(0.50, dAcc);
+    if (gLoss < 0.25) {
+      dAcc = Math.max(0.50, dAcc - rand(0.01, 0.04));
+    } else {
+      dAcc = Math.min(0.98, dAcc + rand(0.01, 0.05));
+    }
     dAccVal.textContent = (dAcc * 100).toFixed(1) + '%';
     dAccBar.style.width = (dAcc * 100) + '%';
     logHtml = `<div class="disc-step">Epoch ${epoch} | 判别器训练 | D_acc: ${(oldDAcc*100).toFixed(1)}% → ${(dAcc*100).toFixed(1)}%</div>`;
@@ -588,11 +598,18 @@ function runDemoStep() {
     logHtml += `<div style="color:var(--text-faint);padding-left:12px;">↳ ${action}</div>`;
   }
 
-  // Check for convergence
-  if (epoch >= 10 && gLoss < 0.15 && dAcc > 0.90) {
-    logHtml += `<div style="color:var(--green);font-weight:500;">✓ 收敛：生成器已能生成逼真样本，判别器难以区分</div>`;
-  } else if (gLoss > 0.8 && epoch > 3) {
-    logHtml += `<div style="color:var(--red);">⚠ 生成器训练困难，可能梯度消失</div>`;
+  // Check for convergence (Nash equilibrium: D can no longer distinguish real from fake, dAcc falls toward 50%)
+  if (epoch >= 10 && gLoss < 0.15 && dAcc < 0.65) {
+    converged = true;
+    if (isAuto) {
+      isAuto = false;
+      clearInterval(autoTimer);
+      const btn = document.getElementById('autoBtn');
+      if (btn) { btn.textContent = '自动模拟'; btn.style.background = ''; }
+    }
+    logHtml += `<div style="color:var(--green);font-weight:500;">✓ 收敛：生成器已能生成逼真样本，判别器难以区分（D_acc 接近 50%）</div>`;
+  } else if (gLoss > 0.8 && dAcc > 0.90 && epoch > 3) {
+    logHtml += `<div style="color:var(--red);">⚠ 判别器过强，生成器损失上升——可能梯度消失/训练失衡，可点击「重置」重试</div>`;
   }
 
   logs.innerHTML = logHtml + logs.innerHTML;
@@ -624,6 +641,7 @@ function resetDemo() {
   epoch = 0;
   gLoss = 0.7;
   dAcc = 0.52;
+  converged = false;
   gLossVal.textContent = '—';
   gLossBar.style.width = '50%';
   dAccVal.textContent = '—';

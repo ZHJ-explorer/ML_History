@@ -253,7 +253,7 @@ window.MathJax = {
     <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">R</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="../02_statistical_learning/index.html">02_statistical_learning阶段</a>
+      <a href="../index.html">02_statistical_learning阶段</a>
       <span class="nav-badge">2001</span>
     </div>
   </div>
@@ -651,13 +651,13 @@ window.MathJax = {
       
       <div class="input-group">
         <label>样本索引</label>
-        <input type="range" class="demo-slider" id="sampleSlider" min="0" max="149" value="0" style="flex:1;">
+        <input type="range" class="demo-slider" id="sampleSlider" min="0" max="144" value="0" style="flex:1;">
         <span class="value-display" id="sampleValue">0</span>
       </div>
       
       <div class="input-group">
         <label>树的数量</label>
-        <input type="range" class="demo-slider" id="treeSlider" min="3" max="21" value="10" step="2" style="flex:1;">
+        <input type="range" class="demo-slider" id="treeSlider" min="3" max="21" value="10" step="1" style="flex:1;">
         <span class="value-display" id="treeCount">10</span>
       </div>
 
@@ -711,15 +711,15 @@ window.MathJax = {
   </section>
 
   <div class="nav-footer">
-    <a href="../02_statistical_learning/05_bagging/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">Bagging</span></a>
+    <a href="../05_bagging/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">Bagging</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 8 models</span>
-    <a href="../02_statistical_learning/07_gbdt/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">GBDT</span></a>
+    <a href="../07_gbdt/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">GBDT</span></a>
   </div>
 
 </main>
 
 <script>
-// ── Iris Dataset (full 150 samples, compressed for demo) ──
+// ── Iris Dataset (145 samples: 50 setosa + 45 versicolor + 50 virginica) ──
 const irisData = [
   [5.1, 3.5, 1.4, 0.2], [4.9, 3.0, 1.4, 0.2], [4.7, 3.2, 1.3, 0.2], [4.6, 3.1, 1.5, 0.2],
   [5.0, 3.6, 1.4, 0.2], [5.4, 3.9, 1.7, 0.4], [4.6, 3.4, 1.4, 0.3], [5.0, 3.4, 1.5, 0.2],
@@ -793,26 +793,26 @@ function treePredict(treeIdx, X) {
   
   // Simple rule-based prediction simulating tree logic
   if (primaryFeat === 2 || primaryFeat === 3) { // petal features are most discriminative
-    if (X[2] < 2.0) return 0; // setosa
-    if (X[2] < 4.8) return 1; // versicolor
-    return 2; // virginica
+    if (X[2] < 2.0) return {pred: 0, feat: primaryFeat}; // setosa
+    if (X[2] < 4.8) return {pred: 1, feat: primaryFeat}; // versicolor
+    return {pred: 2, feat: primaryFeat}; // virginica
   }
   if (primaryFeat === 0) {
-    if (X[0] < 5.5) return 0;
-    if (X[0] < 6.5) return 1;
-    return 2;
+    if (X[0] < 5.5) return {pred: 0, feat: primaryFeat};
+    if (X[0] < 6.5) return {pred: 1, feat: primaryFeat};
+    return {pred: 2, feat: primaryFeat};
   }
   if (primaryFeat === 1) {
-    if (X[1] < 3.0) return 0;
-    if (X[1] < 3.5) return 1;
-    return 2;
+    if (X[1] < 3.0) return {pred: 0, feat: primaryFeat};
+    if (X[1] < 3.5) return {pred: 1, feat: primaryFeat};
+    return {pred: 2, feat: primaryFeat};
   }
-  return Math.floor(rng() * 3);
+  return {pred: Math.floor(rng() * 3), feat: primaryFeat};
 }
 
 function updateDemo() {
   const sample = irisData[currentSample];
-  const trueLabel = currentSample < 50 ? 0 : (currentSample < 100 ? 1 : 2);
+  const trueLabel = currentSample < 50 ? 0 : (currentSample < 95 ? 1 : 2);
   
   // Predict with each tree
   const predictions = [];
@@ -822,7 +822,7 @@ function updateDemo() {
   
   // Count votes
   const votes = [0, 0, 0];
-  predictions.forEach(p => votes[p]++);
+  predictions.forEach(p => votes[p.pred]++);
   
   // Find winner
   const maxVote = Math.max(...votes);
@@ -836,14 +836,14 @@ function updateDemo() {
                      '#8b5cf6', '#ec4899', '#14b8a6', '#f97316', '#06b6d4'];
   
   for (let i = 0; i < nTrees; i++) {
-    const pred = predictions[i];
+    const pred = predictions[i].pred;
     const card = document.createElement('div');
     card.className = 'demo-tree-card tree-card-animate';
     card.style.animationDelay = `${i * 0.03}s`;
     card.innerHTML = `
       <div class="tree-num">${i + 1}</div>
       <div class="tree-pred" style="color: ${treeColors[pred]}">${irisLabels[pred]}</div>
-      <div class="tree-features">feat: x${Math.floor(Math.random() * 4)}</div>
+      <div class="tree-features">feat: x${predictions[i].feat}</div>
     `;
     treeGrid.appendChild(card);
   }

@@ -80,7 +80,7 @@ svg .weight-label { transition: fill 0.3s; }
     <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="../01_foundations/index.html">01_foundations阶段</a>
+      <a href="../index.html">01_foundations阶段</a>
       <span class="nav-badge">1943</span>
     </div>
   </div>
@@ -313,21 +313,21 @@ NOT: w₁=-1,   θ=-0.5    → y=1 当 x₁=0
       </div>
       <div class="code-body"><pre><span class="kw">import</span> numpy <span class="kw">as</span> np
 
-<span class="kw">class</span> <span class=\"cls\">MPNeuron</span>:
-    <span class=\"kw\">def</span> <span class=\"fn\">__init__</span>(self, weights, threshold):
+<span class="kw">class</span> <span class="cls">MPNeuron</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, weights, threshold):
         self.weights = np.array(weights)
         self.threshold = threshold
 
-    <span class=\"kw\">def</span> <span class=\"fn\">forward</span>(self, x):
-        <span class=\"cm\"># 加权求和</span>
-        z = np.<span class=\"fn\">dot</span>(self.weights, x)
-        <span class=\"cm\"># 阶跃激活</span>
-        <span class=\"kw\">return</span> <span class=\"num\">1</span> <span class=\"kw\">if</span> z >= self.threshold <span class=\"kw\">else</span> <span class=\"num\">0</span>
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        <span class="cm"># 加权求和</span>
+        z = np.<span class="fn">dot</span>(self.weights, x)
+        <span class="cm"># 阶跃激活</span>
+        <span class="kw">return</span> <span class="num">1</span> <span class="kw">if</span> z >= self.threshold <span class="kw">else</span> <span class="num">0</span>
 
-<span class=\"cm\"># AND门: w=[1,1], θ=1.5</span>
-and_gate = <span class=\"cls\">MPNeuron</span>([<span class=\"num\">1</span>, <span class=\"num\">1</span>], <span class=\"num\">1.5</span>)
-<span class=\"fn\">print</span>(and_gate.<span class=\"fn\">forward</span>([<span class=\"num\">1</span>, <span class=\"num\">1</span>]))  <span class=\"cm\"># → 1</span>
-<span class=\"fn\">print</span>(and_gate.<span class=\"fn\">forward</span>([<span class=\"num\">1</span>, <span class=\"num\">0</span>]))  <span class=\"cm\"># → 0</span></pre>
+<span class="cm"># AND门: w=[1,1], θ=1.5</span>
+and_gate = <span class="cls">MPNeuron</span>([<span class="num">1</span>, <span class="num">1</span>], <span class="num">1.5</span>)
+<span class="fn">print</span>(and_gate.<span class="fn">forward</span>([<span class="num">1</span>, <span class="num">1</span>]))  <span class="cm"># → 1</span>
+<span class="fn">print</span>(and_gate.<span class="fn">forward</span>([<span class="num">1</span>, <span class="num">0</span>]))  <span class="cm"># → 0</span></pre>
     </div>
   </section>
 
@@ -447,8 +447,8 @@ and_gate = <span class=\"cls\">MPNeuron</span>([<span class=\"num\">1</span>, <s
   <!-- FOOTER NAV -->
   <div class="nav-footer">
     <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
-    <span class="nav-footer-center"><a href="../index.html">ML History</a> · <a href="../01_foundations/index.html">01_foundations阶段</a></span>
-    <a href="../02_perceptron/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">感知机 (Perceptron)</span></a>
+    <span class="nav-footer-center"><a href="../index.html">ML History</a> · <a href="../index.html">01_foundations阶段</a></span>
+    <a href="../02_linear_regression/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">线性回归</span></a>
   </div>
 
 </main>
@@ -539,36 +539,19 @@ function buildTruthTable(w1, w2, theta) {
 function showGate(name) {
   document.querySelectorAll('.gate-item').forEach(g => g.classList.remove('active'));
   document.getElementById('gate-' + name).classList.add('active');
-  
+
   const g = gates[name.toUpperCase()];
-  const tbody = document.getElementById('truth-body');
-  tbody.innerHTML = '';
-  
-  if (name === 'not') {
-    // NOT gate truth table
-    const pairs = [[0], [1]];
-    pairs.forEach(([x1]) => {
-      const z = g.w1 * x1;
-      const y = z >= g.theta ? 1 : 0;
-      const tr = document.createElement('tr');
-      tr.className = 'truth-cell';
-      tr.innerHTML = `<td>${x1}</td><td>-</td><td>${(g.w1*x1).toFixed(1)}</td><td>-</td><td>${z.toFixed(1)}</td><td>${g.theta.toFixed(1)}</td><td class="${y ? 'out-one' : 'out-zero'}">${y}</td>`;
-      tbody.appendChild(tr);
-    });
-  } else {
-    // AND/OR truth table
-    const pairs = [[0,0],[0,1],[1,0],[1,1]];
-    pairs.forEach(([x1, x2]) => {
-      const z = g.w1 * x1 + g.w2 * x2;
-      const y = z >= g.theta ? 1 : 0;
-      const tr = document.createElement('tr');
-      tr.className = 'truth-cell';
-      tr.innerHTML = `<td>${x1}</td><td>${x2}</td><td>${(g.w1*x1).toFixed(1)}</td><td>${(g.w2*x2).toFixed(1)}</td><td>${z.toFixed(1)}</td><td>${g.theta.toFixed(1)}</td><td class="${y ? 'out-one' : 'out-zero'}">${y}</td>`;
-      tbody.appendChild(tr);
-    });
-  }
-  
-  document.getElementById('gate-truth-table').innerHTML = '';
+  // Render the gate's static truth table into the gate section (do NOT touch the demo table)
+  const box = document.getElementById('gate-truth-table');
+  const singleInput = name === 'not';
+  const pairs = singleInput ? [[0], [1]] : [[0,0],[0,1],[1,0],[1,1]];
+  const rows = pairs.map(([x1, x2]) => {
+    const z = singleInput ? g.w1 * x1 : g.w1 * x1 + g.w2 * x2;
+    const y = z >= g.theta ? 1 : 0;
+    return `<tr><td>${x1}</td><td>${singleInput ? '—' : x2}</td><td>${(g.w1*x1).toFixed(1)}</td><td>${singleInput ? '—' : (g.w2*x2).toFixed(1)}</td><td>${z.toFixed(1)}</td><td>${g.theta.toFixed(1)}</td><td class="${y ? 'out-one' : 'out-zero'}">${y}</td></tr>`;
+  }).join('');
+  box.innerHTML = `<p>↑ 点击门类型切换查看对应真值表</p>
+    <table class="truth-table"><thead><tr><th>x₁</th><th>x₂</th><th>w₁x₁</th><th>w₂x₂</th><th>z = Σ</th><th>θ</th><th>y</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
 // Init

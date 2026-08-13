@@ -93,7 +93,7 @@
     <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="../01_foundations/index.html">01_foundations阶段</a>
+      <a href="../index.html">01_foundations阶段</a>
       <span class="nav-badge">1958</span>
     </div>
   </div>
@@ -470,12 +470,12 @@ criterion = nn.<span class="fn">BCELoss</span>()</pre></div>
 
   <!-- FOOTER NAV -->
   <div class="nav-footer">
-    <a href="../01_foundations/02_linear_regression/index.html" class="nav-footer-prev">
+    <a href="../02_linear_regression/index.html" class="nav-footer-prev">
       <span class="nav-footer-label">← 上一个</span>
       <span class="nav-footer-title">线性回归</span>
     </a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 逻辑回归</span>
-    <a href="../01_foundations/04_perceptron/index.html" class="nav-footer-next" style="text-align:right;">
+    <a href="../04_perceptron/index.html" class="nav-footer-next" style="text-align:right;">
       <span class="nav-footer-label">下一个 →</span>
       <span class="nav-footer-title">感知机</span>
     </a>
@@ -495,23 +495,25 @@ function sigmoid(z) {
   return 1 / (1 + Math.exp(-z));
 }
 
-function buildSigmoidPath() {
+function buildSigmoidPath(x0, x1, y0, yScale) {
+  // z ∈ [-4, 4] maps to x ∈ [x0, x1]; g(z) ∈ [0, 1] maps to y ∈ [y0 - yScale, y0]
   let d = '';
-  for (let i = 0; i <= 460; i++) {
-    const z = -4 + (i / 460) * 8;
+  const steps = 200;
+  for (let i = 0; i <= steps; i++) {
+    const z = -4 + (i / steps) * 8;
     const y = sigmoid(z);
-    const px = 50 + i;
-    const py = 230 - y * 200;
+    const px = x0 + (x1 - x0) * (i / steps);
+    const py = y0 - y * yScale;
     d += (i === 0 ? 'M' : 'L') + px.toFixed(1) + ',' + py.toFixed(1);
   }
   return d;
 }
 
-// Static SVG curve
-document.getElementById('sigmoid-path').setAttribute('d', buildSigmoidPath());
+// Static SVG curve — axis: x 60..520 (z -4..4), y 270..40 (g 0..1)
+document.getElementById('sigmoid-path').setAttribute('d', buildSigmoidPath(60, 520, 270, 230));
 
-// Demo SVG curve
-document.getElementById('demo-curve').setAttribute('d', buildSigmoidPath());
+// Demo SVG curve — grid: x 50..470 (z -4..4), y 230..30 (g 0..1)
+document.getElementById('demo-curve').setAttribute('d', buildSigmoidPath(50, 470, 230, 200));
 
 // ── Interactive demo ──
 const slider = document.getElementById('threshold-slider');
@@ -532,11 +534,14 @@ function updateDemo() {
   threshLabel.setAttribute('y', ty - 6);
   threshLabel.textContent = t.toFixed(2);
 
-  // Decision boundary at z=0 → x=260
-  const bx = 260;
+  // Decision boundary: z* where sigmoid(z*) = t → z* = ln(t/(1-t)), mapped to x ∈ [50, 470]
+  let bz = 0;
+  if (t > 0 && t < 1) bz = Math.log(t / (1 - t));
+  const bx = Math.max(50, Math.min(470, 50 + ((bz + 4) / 8) * 420));
   document.getElementById('boundary-line').setAttribute('x1', bx);
   document.getElementById('boundary-line').setAttribute('x2', bx);
   document.getElementById('boundary-label').setAttribute('x', bx);
+  document.getElementById('boundary-label').textContent = 'z=' + bz.toFixed(2);
 
   // Region colors
   document.getElementById('pos-region').setAttribute('x', bx);

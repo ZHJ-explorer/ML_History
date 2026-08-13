@@ -242,7 +242,7 @@
     <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="../04_deep_learning_boom/index.html">04_deep_learning_boom阶段</a>
+      <a href="../index.html">04_deep_learning_boom阶段</a>
       <span class="nav-badge">2015</span>
     </div>
   </div>
@@ -399,7 +399,7 @@
         <!-- Formula annotation -->
         <g transform="translate(20, 260)">
           <rect width="660" height="45" rx="8" fill="var(--bg-surface)" stroke="var(--border-strong)"/>
-          <text x="20" y="24" fill="var(--text-faint)" font-size="11" font-family="JetBrains Mono">F(x) = BN(Relu(BN(Conv3×3(Relu(Conv3×3(x))))))</text>
+          <text x="20" y="24" fill="var(--text-faint)" font-size="11" font-family="JetBrains Mono">F(x) = BN2(Conv3×3(ReLU(BN1(Conv3×3(x)))))</text>
           <text x="20" y="40" fill="var(--accent)" font-size="11" font-family="JetBrains Mono">y = ReLU(F(x) + x)</text>
         </g>
       </svg>
@@ -412,7 +412,7 @@
     <div class="section-label">网络架构</div>
     <div class="section-title">ResNet-18 完整架构</div>
     <div class="section-body" style="margin-bottom:20px;">
-      <p>ResNet-18 包含 <strong>10 个卷积层</strong>（不含 1×1 降维层）+ <strong>1 个全连接层</strong>，共 18 层可学习参数。使用 <strong>Basic Block</strong>，每个卷积层后都跟随 Batch Normalization。</p>
+      <p>ResNet-18 包含 <strong>17 个卷积层</strong>（不含 1×1 降维层）+ <strong>1 个全连接层</strong>，共 18 层可学习参数。使用 <strong>Basic Block</strong>，每个卷积层后都跟随 Batch Normalization。</p>
     </div>
     <div style="background:var(--bg-surface);border:1px solid var(--border-strong);border-radius:var(--radius-lg);padding:20px;">
       <div class="arch-row">
@@ -775,9 +775,9 @@
 
   <!-- FOOTER NAV -->
   <div class="nav-footer">
-    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
+    <a href="../../03_deep_learning_revival/06_gan/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">GAN</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="../04_deep_learning_boom/02_xgboost/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">XGBoost</span></a>
+    <a href="../02_xgboost/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">XGBoost</span></a>
   </div>
 
 </main>

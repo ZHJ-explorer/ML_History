@@ -73,7 +73,7 @@
     <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="../04_deep_learning_boom/index.html">04_deep_learning_boom阶段</a>
+      <a href="../index.html">04_deep_learning_boom阶段</a>
       <span class="nav-badge">2017</span>
     </div>
   </div>
@@ -132,7 +132,7 @@
         <text x="70" y="315" text-anchor="middle" fill="var(--text)" font-size="14" font-family="Inter" font-weight="600">+</text>
         
         <!-- Encoder Stack -->
-        <rect x="220" y="100" width="180" height="220" rx="12" fill="var(--bg-surface)" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4,4"/>
+        <rect x="220" y="100" width="180" height="265" rx="12" fill="var(--bg-surface)" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4,4"/>
         <text x="310" y="130" text-anchor="middle" fill="var(--accent)" font-size="13" font-family="Inter" font-weight="600">Encoder Stack ×N</text>
         
         <!-- Encoder Internal -->
@@ -160,32 +160,43 @@
         <line x1="170" y1="310" x2="220" y2="210" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrow)"/>
         
         <!-- Decoder Stack -->
-        <rect x="480" y="100" width="180" height="220" rx="12" fill="var(--bg-surface)" stroke="var(--green)" stroke-width="1.5" stroke-dasharray="4,4"/>
+        <rect x="480" y="100" width="180" height="265" rx="12" fill="var(--bg-surface)" stroke="var(--green)" stroke-width="1.5" stroke-dasharray="4,4"/>
         <text x="570" y="130" text-anchor="middle" fill="var(--green)" font-size="13" font-family="Inter" font-weight="600">Decoder Stack ×N</text>
         
         <!-- Decoder Internal -->
-        <rect x="500" y="150" width="140" height="50" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
-        <text x="570" y="175" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter">Masked Multi-Head</text>
-        <text x="570" y="190" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">Causal attention</text>
+        <rect x="500" y="140" width="140" height="38" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="570" y="162" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter">Masked Multi-Head</text>
+        <text x="570" y="176" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">Causal attention</text>
         
-        <line x1="570" y1="200" x2="570" y2="215" stroke="var(--text-faint)" stroke-width="1.5"/>
+        <line x1="570" y1="178" x2="570" y2="184" stroke="var(--text-faint)" stroke-width="1.5"/>
         
-        <rect x="500" y="215" width="140" height="40" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
-        <text x="570" y="240" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter">Add &amp; Norm</text>
+        <rect x="500" y="184" width="140" height="24" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="570" y="201" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter">Add &amp; Norm</text>
         
-        <line x1="570" y1="255" x2="570" y2="270" stroke="var(--text-faint)" stroke-width="1.5"/>
+        <line x1="570" y1="208" x2="570" y2="214" stroke="var(--text-faint)" stroke-width="1.5"/>
         
-        <rect x="500" y="270" width="140" height="50" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
-        <text x="570" y="295" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter">Cross Attention</text>
-        <text x="570" y="310" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">Query from Decoder</text>
+        <rect x="500" y="214" width="140" height="38" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="570" y="236" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter">Cross Attention</text>
+        <text x="570" y="250" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">K,V from Encoder</text>
         
-        <line x1="570" y1="320" x2="570" y2="335" stroke="var(--text-faint)" stroke-width="1.5"/>
+        <line x1="570" y1="252" x2="570" y2="258" stroke="var(--text-faint)" stroke-width="1.5"/>
         
-        <rect x="500" y="335" width="140" height="30" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
-        <text x="570" y="355" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter">Add &amp; Norm</text>
+        <rect x="500" y="258" width="140" height="24" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="570" y="275" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter">Add &amp; Norm</text>
+        
+        <line x1="570" y1="282" x2="570" y2="288" stroke="var(--text-faint)" stroke-width="1.5"/>
+        
+        <rect x="500" y="288" width="140" height="38" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="570" y="310" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter">Position-wise FFN</text>
+        <text x="570" y="324" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">d_ff = 2048</text>
+        
+        <line x1="570" y1="326" x2="570" y2="332" stroke="var(--text-faint)" stroke-width="1.5"/>
+        
+        <rect x="500" y="332" width="140" height="26" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="570" y="349" text-anchor="middle" fill="var(--text)" font-size="11" font-family="Inter">Add &amp; Norm</text>
         
         <!-- Arrow Decoder -->
-        <line x1="400" y1="210" x2="480" y2="210" stroke="var(--green)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-green)"/>
+        <line x1="400" y1="233" x2="480" y2="233" stroke="var(--green)" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-green)"/>
         
         <!-- Output -->
         <rect x="720" y="170" width="100" height="60" rx="8" fill="var(--bg-elevated)" stroke="var(--blue)" stroke-width="1.5"/>
@@ -454,7 +465,7 @@
       <div class="demo-title">注意力权重热力图 — 点击词汇查看分布</div>
       <div id="token-container" style="margin-bottom: 16px;"></div>
       <div class="interactive-demo-area">
-        <svg id="heatmap-svg" viewBox="0 0 500 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px;"></svg>
+        <svg id="heatmap-svg" viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px;"></svg>
       </div>
       <div id="attention-info" class="info-box" style="margin-top: 16px;">
         <strong>说明：</strong>点击上方词汇，观察其对其他词的注意力权重分布。对角线表示自我关注，高权重表示强关联。
@@ -496,9 +507,9 @@
 
   <!-- FOOTER NAV -->
   <div class="nav-footer">
-    <a href="../index.html" class="nav-footer-prev"><span class="nav-footer-label">← 返回</span><span class="nav-footer-title">全部模型</span></a>
+    <a href="../03_lightgbm/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">LightGBM</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="../04_deep_learning_boom/05_bert/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">BERT</span></a>
+    <a href="../05_bert/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">BERT</span></a>
   </div>
 
 </main>
@@ -608,11 +619,6 @@ function renderHeatmap(queryIndex) {
   // Column labels at bottom
   tokens.forEach((token, col) => {
     svgContent += `<text x="${startX + col * cellSize + cellSize/2}" y="${startY + rows * cellSize + 20}" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="Inter">${token}</text>`;
-  });
-  
-  // Row labels at left
-  tokens.forEach((token, row) => {
-    svgContent += `<text x="${startX - 10}" y="${startY + row * cellSize + cellSize/2 + 4}" text-anchor="end" fill="var(--text-faint)" font-size="9" font-family="Inter">${token}</text>`;
   });
   
   heatmapSvg.innerHTML = svgContent;

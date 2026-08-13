@@ -34,7 +34,7 @@
     <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
     <div class="nav-links">
       <a href="../index.html">全部模型</a>
-      <a href="../04_deep_learning_boom/index.html">04_deep_learning_boom阶段</a>
+      <a href="../index.html">04_deep_learning_boom阶段</a>
       <span class="nav-badge">2016</span>
     </div>
   </div>
@@ -393,7 +393,7 @@
           <label class="demo-slider-label">γ (Gamma) - 叶子节点惩罚: <span id="gammaValue">0.0</span></label>
           <input type="range" class="demo-slider" id="gammaSlider" min="0" max="50" value="0" step="1">
           <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-faint);">
-            <span>0.0</span><span>0.5</span><span>1.0</span><span>1.5</span><span>2.0</span>
+            <span>0.0</span><span>1.25</span><span>2.5</span><span>3.75</span><span>5.0</span>
           </div>
           
           <label class="demo-slider-label" style="margin-top: 16px;">λ (Lambda) - L2正则化: <span id="lambdaValue">1.0</span></label>
@@ -442,9 +442,9 @@
   </section>
 
   <div class="nav-footer">
-    <a href="../03_deep_learning_revival/06_dropout/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">Dropout</span></a>
+    <a href="../01_resnet/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">ResNet</span></a>
     <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
-    <a href="../04_deep_learning_boom/03_lightgbm/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">LightGBM</span></a>
+    <a href="../03_lightgbm/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">LightGBM</span></a>
   </div>
 
 </main>
@@ -555,8 +555,10 @@ function drawTree() {
   });
   
   // Draw nodes
+  let leafIdx = 0;
   nodes.forEach((node, i) => {
     if (node.isLeaf) {
+      leafIdx++;
       // Leaf node - green circle
       const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
       circle.setAttribute('cx', node.x);
@@ -576,6 +578,20 @@ function drawTree() {
       text.setAttribute('text-anchor', 'middle');
       text.textContent = node.label;
       svg.appendChild(text);
+      
+      // 叶子权重: w* = -G/(H+λ)（G/H 为示例累计梯度/海森量，随 λ 变化）
+      const Gj = 0.4 + 0.15 * leafIdx;
+      const Hj = 1.0;
+      const w = -(Gj / (Hj + lambda));
+      const wText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      wText.setAttribute('x', node.x);
+      wText.setAttribute('y', node.y + 32);
+      wText.setAttribute('fill', 'var(--text-faint)');
+      wText.setAttribute('font-size', '9');
+      wText.setAttribute('font-family', 'JetBrains Mono');
+      wText.setAttribute('text-anchor', 'middle');
+      wText.textContent = 'w=' + w.toFixed(2);
+      svg.appendChild(wText);
     } else {
       // Internal node
       const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
@@ -612,12 +628,14 @@ function drawTree() {
   });
   
   // Update output
-  const treeDepth = gamma < 3 ? 2 : 1;
-  const numLeaves = gamma < 3 ? 4 : 2;
+  const treeDepth = gamma < 2 ? 2 : gamma < 3 ? 1 : 0;
+  const numLeaves = gamma < 2 ? 4 : gamma < 3 ? 2 : 1;
+  const numSplits = gamma < 2 ? 3 : gamma < 3 ? 1 : 0;
   const output = `γ=${gamma.toFixed(1)}, λ=${lambda.toFixed(2)}
 树深度: ${treeDepth}
 叶子节点数: ${numLeaves}
-分裂次数: ${numLeaves - 1}`;
+分裂次数: ${numSplits}
+叶子权重 w* = -G/(H+λ): λ 越大 |w| 越小`;
   document.getElementById('treeOutput').textContent = output;
   
   // Update caption
