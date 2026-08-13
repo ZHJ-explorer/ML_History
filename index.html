@@ -7,42 +7,139 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles/base.css">
 <style>
-.phases-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin: 32px 0; }
-.phase-card {
-  background: var(--bg-surface); border: 1px solid var(--border-strong);
-  border-radius: var(--radius-xl); padding: 28px; text-decoration: none;
-  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-  display: flex; flex-direction: column; gap: 14px; position: relative; overflow: hidden;
+/* ── Homepage — Linear-style directory ── */
+body {
+  font-feature-settings: "cv01", "ss03";
 }
-.phase-card::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, var(--accent), var(--blue), var(--green));
-  opacity: 0.6;
+
+/* Header */
+.home-header {
+  padding: 72px 0 56px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
 }
-.phase-card:hover {
-  border-color: var(--accent); transform: translateY(-3px);
-  box-shadow: 0 8px 32px rgba(113,112,255,0.12);
+.home-eyebrow {
+  font-size: 11px;
+  font-weight: 510;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #62666d;
+  margin-bottom: 16px;
 }
-.phase-card-header { display: flex; align-items: center; justify-content: space-between; }
-.phase-card-era { font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; }
-.phase-card-count { font-size: 12px; color: var(--text-faint); font-family: var(--font-mono); }
-.phase-card h3 { font-size: 18px; font-weight: 500; color: var(--text); letter-spacing: -0.02em; margin: 0; }
-.phase-card p { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin: 0; }
-.models-list { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; padding-top: 16px; border-top: 1px solid var(--border); }
-.models-list a { font-size: 13px; color: var(--text-muted); text-decoration: none; padding: 5px 8px; border-radius: var(--radius); transition: color 0.1s, background 0.1s; display: flex; align-items: center; gap: 8px; }
-.models-list a:hover { color: var(--text); background: rgba(255,255,255,0.03); }
-.models-list a::before { content: '→'; color: var(--accent); font-size: 11px; }
-.hero-large { padding: 100px 0 60px; }
-.hero-large h1 { font-size: clamp(42px, 6vw, 72px); font-weight: 500; color: var(--text); letter-spacing: -0.035em; line-height: 1.0; margin-bottom: 24px; }
-.hero-large .subtitle { font-size: 20px; color: var(--text-muted); line-height: 1.6; max-width: 600px; margin-bottom: 32px; }
-.stats-row { display: flex; gap: 40px; flex-wrap: wrap; margin-top: 40px; padding-top: 40px; border-top: 1px solid var(--border); }
-.stats-row .stat-item { display: flex; flex-direction: column; gap: 4px; }
-.stats-row .stat-num { font-size: 32px; font-weight: 500; color: var(--text); letter-spacing: -0.03em; line-height: 1; }
-.stats-row .stat-label { font-size: 12px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
-.timeline-bar { display: flex; align-items: center; gap: 2px; margin: 40px 0; padding: 20px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); overflow-x: auto; }
-.timeline-segment { flex-shrink: 0; padding: 8px 16px; border-radius: var(--radius-md); font-size: 12px; font-weight: 500; color: var(--text-muted); background: var(--bg-surface); border: 1px solid var(--border); white-space: nowrap; text-decoration: none; transition: all 0.15s; }
-.timeline-segment:hover { color: var(--text); border-color: var(--border-strong); }
-.timeline-segment.active { color: var(--accent); border-color: rgba(113,112,255,0.3); background: var(--accent-dim); }
+.home-header h1 {
+  font-size: 48px;
+  font-weight: 510;
+  line-height: 1.0;
+  letter-spacing: -1.056px;
+  color: #f7f8f8;
+  margin: 0 0 16px;
+}
+.home-header .home-subtitle {
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: -0.165px;
+  color: #8a8f98;
+  max-width: 560px;
+  margin: 0;
+}
+
+.stage-title-link { color: inherit; text-decoration: none; }
+.stage-title-link:hover { color: #828fff; }
+.stage-title-link::after { content: ' →'; font-size: 14px; color: #62666d; margin-left: 6px; }
+.stage-title-link:hover::after { color: #828fff; }
+
+/* Stage sections */
+.stage-section {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 40px;
+  padding: 40px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.stage-meta { padding-top: 2px; }
+.stage-index {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: #7170ff;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 8px;
+}
+.stage-meta h2 {
+  font-size: 20px;
+  font-weight: 510;
+  letter-spacing: -0.24px;
+  color: #f7f8f8;
+  margin: 0 0 8px;
+}
+.stage-era {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  color: #62666d;
+}
+.stage-desc {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: -0.13px;
+  color: #8a8f98;
+  margin: 12px 0 0;
+}
+
+/* Model link grid */
+.model-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+  align-content: start;
+}
+.model-link {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background 0.12s ease;
+}
+.model-link:hover { background: rgba(255,255,255,0.04); }
+.model-name {
+  font-size: 14px;
+  font-weight: 510;
+  color: #d0d6e0;
+  letter-spacing: -0.13px;
+}
+.model-link:hover .model-name { color: #f7f8f8; }
+.model-year {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  color: #62666d;
+  flex-shrink: 0;
+}
+.model-link:hover .model-year { color: #8a8f98; }
+
+/* Footer */
+.home-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32px 0 48px;
+  font-size: 13px;
+  color: #62666d;
+}
+.home-footer a { color: #8a8f98; text-decoration: none; }
+.home-footer a:hover { color: #828fff; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .stage-section { grid-template-columns: 1fr; gap: 20px; padding: 32px 0; }
+  .model-grid { grid-template-columns: 1fr; }
+  .home-header { padding: 48px 0 40px; }
+  .home-header h1 { font-size: 36px; letter-spacing: -0.792px; }
+}
 </style>
 </head>
 <body>
@@ -50,107 +147,105 @@
   <div class="nav-inner">
     <a href="index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
     <div class="nav-links">
-      <a href="#phases">阶段</a>
-      <a href="#timeline">时间线</a>
       <a href="https://github.com/ZHJ-explorer/ML_History" target="_blank">GitHub ↗</a>
     </div>
   </div>
 </nav>
+
 <main class="container">
-  <section class="hero-large">
-    <div class="hero-eyebrow">Build it to understand it</div>
-    <h1>机器学习<br>发展史</h1>
-    <p class="subtitle">从1943年的MP神经元到2020年的大模型时代，以时间线为主轴，从零实现机器学习发展史上的28个里程碑模型。</p>
-    <div class="stats-row">
-      <div class="stat-item"><span class="stat-num">28</span><span class="stat-label">模型</span></div>
-      <div class="stat-item"><span class="stat-num">5</span><span class="stat-label">时代</span></div>
-      <div class="stat-item"><span class="stat-num">47</span><span class="stat-label">测试通过</span></div>
-      <div class="stat-item"><span class="stat-num">1943</span><span class="stat-label">~ 2020</span></div>
+  <header class="home-header">
+    <div class="home-eyebrow">Build it to understand it</div>
+    <h1>机器学习发展史</h1>
+    <p class="home-subtitle">从 1943 年的 MP 神经元到 2020 年的大模型时代，以时间线为主轴，从数学原理出发手写实现 28 个里程碑模型。</p>
+  </header>
+
+  <section class="stage-section">
+    <div class="stage-meta">
+      <span class="stage-index">Phase 01</span>
+      <h2><a href="01_foundations/index.html" class="stage-title-link">奠基时代</a></h2>
+      <span class="stage-era">1943 – 1969 · 6 models</span>
+      <p class="stage-desc">从数学逻辑到第一个可学习模型的诞生。线性回归、感知机与聚类思想的萌芽。</p>
+    </div>
+    <div class="model-grid">
+      <a class="model-link" href="01_foundations/01_mp_neuron/index.html"><span class="model-name">MP 神经元</span><span class="model-year">1943</span></a>
+      <a class="model-link" href="01_foundations/02_linear_regression/index.html"><span class="model-name">线性回归</span><span class="model-year">1809</span></a>
+      <a class="model-link" href="01_foundations/03_logistic_regression/index.html"><span class="model-name">逻辑回归</span><span class="model-year">1958</span></a>
+      <a class="model-link" href="01_foundations/04_perceptron/index.html"><span class="model-name">感知机</span><span class="model-year">1957</span></a>
+      <a class="model-link" href="01_foundations/05_knn/index.html"><span class="model-name">k 近邻</span><span class="model-year">1951</span></a>
+      <a class="model-link" href="01_foundations/06_kmeans/index.html"><span class="model-name">k-Means 聚类</span><span class="model-year">1957</span></a>
     </div>
   </section>
-  <div class="timeline-bar" id="timeline">
-    <a href="01_foundations/index.html" class="timeline-segment active">1943–1969 奠基时代</a>
-    <a href="02_statistical_learning/index.html" class="timeline-segment">1980s–2000s 统计学习</a>
-    <a href="03_deep_learning_revival/index.html" class="timeline-segment">2006–2014 复兴</a>
-    <a href="04_deep_learning_boom/index.html" class="timeline-segment">2015–2019 爆发</a>
-    <a href="05_large_model_era/index.html" class="timeline-segment">2020+ 大模型时代</a>
-  </div>
-  <section id="phases">
-    <div class="section-label">探索路径</div>
-    <div class="section-title" style="margin-bottom:8px;">按时代浏览</div>
-    <p class="section-body" style="margin-bottom:24px;">每个阶段代表机器学习发展的一个重要时期，包含该时期的核心模型和思想突破。</p>
+
+  <section class="stage-section">
+    <div class="stage-meta">
+      <span class="stage-index">Phase 02</span>
+      <h2><a href="02_statistical_learning/index.html" class="stage-title-link">统计学习时代</a></h2>
+      <span class="stage-era">1980s – 2000s · 7 models</span>
+      <p class="stage-desc">决策树、支持向量机与集成学习的黄金时代，统计理论驱动算法繁荣。</p>
+    </div>
+    <div class="model-grid">
+      <a class="model-link" href="02_statistical_learning/01_decision_tree/index.html"><span class="model-name">决策树</span><span class="model-year">1970</span></a>
+      <a class="model-link" href="02_statistical_learning/02_mlp_backprop/index.html"><span class="model-name">多层感知机与反向传播</span><span class="model-year">1986</span></a>
+      <a class="model-link" href="02_statistical_learning/03_svm/index.html"><span class="model-name">支持向量机</span><span class="model-year">1992</span></a>
+      <a class="model-link" href="02_statistical_learning/04_adaboost/index.html"><span class="model-name">AdaBoost</span><span class="model-year">1995</span></a>
+      <a class="model-link" href="02_statistical_learning/05_bagging/index.html"><span class="model-name">Bagging</span><span class="model-year">1996</span></a>
+      <a class="model-link" href="02_statistical_learning/06_random_forest/index.html"><span class="model-name">随机森林</span><span class="model-year">2001</span></a>
+      <a class="model-link" href="02_statistical_learning/07_gbdt/index.html"><span class="model-name">GBDT</span><span class="model-year">2001</span></a>
+    </div>
   </section>
-  <div class="phases-grid">
-    <a href="01_foundations/index.html" class="phase-card">
-      <div class="phase-card-header"><span class="phase-card-era">第一阶段</span><span class="phase-card-count">6 models</span></div>
-      <h3>奠基时代</h3>
-      <p>1943–1969。MP神经元、线性回归、感知机——从数学逻辑到第一个可学习模型的诞生。</p>
-      <div class="models-list">
-        <a href="01_foundations/01_mp_neuron/index.html">MP神经元 (1943)</a>
-        <a href="01_foundations/02_linear_regression/index.html">线性回归 (1809)</a>
-        <a href="01_foundations/03_logistic_regression/index.html">逻辑回归 (1958)</a>
-        <a href="01_foundations/04_perceptron/index.html">感知机 (1957)</a>
-        <a href="01_foundations/05_knn/index.html">k近邻 (1951)</a>
-        <a href="01_foundations/06_kmeans/index.html">k-Means (1957)</a>
-      </div>
-    </a>
-    <a href="02_statistical_learning/index.html" class="phase-card">
-      <div class="phase-card-header"><span class="phase-card-era">第二阶段</span><span class="phase-card-count">7 models</span></div>
-      <h3>统计学习时代</h3>
-      <p>1980s–2000s。决策树、SVM、集成学习——结构化风险最小化的黄金时代。</p>
-      <div class="models-list">
-        <a href="02_statistical_learning/01_decision_tree/index.html">决策树 (1970)</a>
-        <a href="02_statistical_learning/02_mlp_backprop/index.html">MLP + 反向传播 (1986)</a>
-        <a href="02_statistical_learning/03_svm/index.html">支持向量机 (1992)</a>
-        <a href="02_statistical_learning/04_adaboost/index.html">AdaBoost (1995)</a>
-        <a href="02_statistical_learning/05_bagging/index.html">Bagging (1996)</a>
-        <a href="02_statistical_learning/06_random_forest/index.html">随机森林 (2001)</a>
-        <a href="02_statistical_learning/07_gbdt/index.html">GBDT (2001)</a>
-      </div>
-    </a>
-    <a href="03_deep_learning_revival/index.html" class="phase-card">
-      <div class="phase-card-header"><span class="phase-card-era">第三阶段</span><span class="phase-card-count">6 models</span></div>
-      <h3>深度学习复兴</h3>
-      <p>2006–2014。DBN、CNN、RNN、GAN——深度网络重新成为主流。</p>
-      <div class="models-list">
-        <a href="03_deep_learning_revival/01_dbn/index.html">深度信念网络 DBN (2006)</a>
-        <a href="03_deep_learning_revival/02_lenet5_cnn/index.html">LeNet-5 CNN (1998)</a>
-        <a href="03_deep_learning_revival/03_rnn/index.html">循环神经网络 RNN (1986)</a>
-        <a href="03_deep_learning_revival/04_lstm/index.html">LSTM (1997)</a>
-        <a href="03_deep_learning_revival/05_word2vec/index.html">Word2Vec (2013)</a>
-        <a href="03_deep_learning_revival/06_gan/index.html">GAN (2014)</a>
-      </div>
-    </a>
-    <a href="04_deep_learning_boom/index.html" class="phase-card">
-      <div class="phase-card-header"><span class="phase-card-era">第四阶段</span><span class="phase-card-count">6 models</span></div>
-      <h3>深度学习爆发</h3>
-      <p>2015–2019。ResNet、Transformer、BERT、GPT——架构创新井喷期。</p>
-      <div class="models-list">
-        <a href="04_deep_learning_boom/01_resnet/index.html">ResNet (2015)</a>
-        <a href="04_deep_learning_boom/02_xgboost/index.html">XGBoost (2016)</a>
-        <a href="04_deep_learning_boom/03_lightgbm/index.html">LightGBM (2017)</a>
-        <a href="04_deep_learning_boom/04_transformer/index.html">Transformer (2017)</a>
-        <a href="04_deep_learning_boom/05_bert/index.html">BERT (2018)</a>
-        <a href="04_deep_learning_boom/06_gpt/index.html">GPT-1 (2018)</a>
-      </div>
-    </a>
-    <a href="05_large_model_era/index.html" class="phase-card">
-      <div class="phase-card-header"><span class="phase-card-era">第五阶段</span><span class="phase-card-count">3 models</span></div>
-      <h3>大模型时代</h3>
-      <p>2020–至今。缩放定律、扩散模型、ViT——规模即能力的新范式。</p>
-      <div class="models-list">
-        <a href="05_large_model_era/01_scaling_law/index.html">缩放定律 (2020)</a>
-        <a href="05_large_model_era/02_diffusion_model/index.html">扩散模型 (2020)</a>
-        <a href="05_large_model_era/03_vit/index.html">ViT (2020)</a>
-      </div>
-    </a>
-  </div>
-  <section class="section" style="border-top:1px solid var(--border);padding-top:48px;">
-    <div class="section-label">项目理念</div>
-    <div class="section-title">Build it to understand it</div>
-    <div class="section-body"><p>不调库、不抄代码，从数学原理出发手写实现，亲手踩坑，感受技术演进的必然性。</p><p>每个模型包含完整的README、可运行的Python代码、pytest测试和学习笔记。第一阶段使用纯NumPy（无ML库），后续阶段使用PyTorch但关键模块手写。</p></div>
+
+  <section class="stage-section">
+    <div class="stage-meta">
+      <span class="stage-index">Phase 03</span>
+      <h2><a href="03_deep_learning_revival/index.html" class="stage-title-link">深度学习复兴</a></h2>
+      <span class="stage-era">2006 – 2014 · 6 models</span>
+      <p class="stage-desc">深度网络重新成为主流：预训练、卷积结构、序列建模与生成对抗。</p>
+    </div>
+    <div class="model-grid">
+      <a class="model-link" href="03_deep_learning_revival/01_dbn/index.html"><span class="model-name">深度信念网络 DBN</span><span class="model-year">2006</span></a>
+      <a class="model-link" href="03_deep_learning_revival/02_lenet5_cnn/index.html"><span class="model-name">LeNet-5 CNN</span><span class="model-year">1998</span></a>
+      <a class="model-link" href="03_deep_learning_revival/03_rnn/index.html"><span class="model-name">循环神经网络 RNN</span><span class="model-year">1986</span></a>
+      <a class="model-link" href="03_deep_learning_revival/04_lstm/index.html"><span class="model-name">LSTM</span><span class="model-year">1997</span></a>
+      <a class="model-link" href="03_deep_learning_revival/05_word2vec/index.html"><span class="model-name">Word2Vec</span><span class="model-year">2013</span></a>
+      <a class="model-link" href="03_deep_learning_revival/06_gan/index.html"><span class="model-name">GAN</span><span class="model-year">2014</span></a>
+    </div>
   </section>
+
+  <section class="stage-section">
+    <div class="stage-meta">
+      <span class="stage-index">Phase 04</span>
+      <h2><a href="04_deep_learning_boom/index.html" class="stage-title-link">深度学习爆发</a></h2>
+      <span class="stage-era">2015 – 2019 · 6 models</span>
+      <p class="stage-desc">残差连接、注意力机制与大规模预训练——架构创新井喷期。</p>
+    </div>
+    <div class="model-grid">
+      <a class="model-link" href="04_deep_learning_boom/01_resnet/index.html"><span class="model-name">ResNet</span><span class="model-year">2015</span></a>
+      <a class="model-link" href="04_deep_learning_boom/02_xgboost/index.html"><span class="model-name">XGBoost</span><span class="model-year">2016</span></a>
+      <a class="model-link" href="04_deep_learning_boom/03_lightgbm/index.html"><span class="model-name">LightGBM</span><span class="model-year">2017</span></a>
+      <a class="model-link" href="04_deep_learning_boom/04_transformer/index.html"><span class="model-name">Transformer</span><span class="model-year">2017</span></a>
+      <a class="model-link" href="04_deep_learning_boom/05_bert/index.html"><span class="model-name">BERT</span><span class="model-year">2018</span></a>
+      <a class="model-link" href="04_deep_learning_boom/06_gpt/index.html"><span class="model-name">GPT-1</span><span class="model-year">2018</span></a>
+    </div>
+  </section>
+
+  <section class="stage-section" style="border-bottom:none;">
+    <div class="stage-meta">
+      <span class="stage-index">Phase 05</span>
+      <h2><a href="05_large_model_era/index.html" class="stage-title-link">大模型时代</a></h2>
+      <span class="stage-era">2020 – 至今 · 3 models</span>
+      <p class="stage-desc">规模即能力的新范式：缩放定律、生成式扩散与视觉 Transformer。</p>
+    </div>
+    <div class="model-grid">
+      <a class="model-link" href="05_large_model_era/01_scaling_law/index.html"><span class="model-name">缩放定律</span><span class="model-year">2020</span></a>
+      <a class="model-link" href="05_large_model_era/02_diffusion_model/index.html"><span class="model-name">扩散模型</span><span class="model-year">2020</span></a>
+      <a class="model-link" href="05_large_model_era/03_vit/index.html"><span class="model-name">ViT</span><span class="model-year">2020</span></a>
+    </div>
+  </section>
+
+  <footer class="home-footer">
+    <span>ML History · 5 phases · 28 models</span>
+    <a href="https://github.com/ZHJ-explorer/ML_History" target="_blank">GitHub ↗</a>
+  </footer>
 </main>
-<footer style="padding:40px 0;border-top:1px solid var(--border);text-align:center;"><p style="font-size:13px;color:var(--text-faint);">ML History · 28 models · 47 tests passing · <a href="https://github.com/ZHJ-explorer/ML_History" style="color:var(--accent);text-decoration:none;">GitHub</a></p></footer>
 </body>
 </html>
