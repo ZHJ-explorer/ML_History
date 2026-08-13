@@ -339,6 +339,19 @@ x = self.fc3(x)     <span class="layer-tag layer-fc">FC3: 84→10</span></pre></
     </div>
   </section>
 
+  <!-- Feature Maps -->
+  <section class="section">
+    <div class="section-label">卷积核</div>
+    <div class="section-title">常见卷积核与特征提取</div>
+    <div class="section-body" style="margin-bottom:16px;">
+      <p>不同的卷积核可以提取不同的视觉特征：边缘、纹理、角点等。LeNet-5 的卷积层使用自适应学习的滤波器。</p>
+    </div>
+    <div class="demo-container">
+      <div class="demo-title">典型卷积核示例</div>
+      <svg id="featureMap" viewBox="0 0 560 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;"></svg>
+    </div>
+  </section>
+
   <!-- NOTES -->
   <section class="section">
     <div class="section-label">学习心得</div>
@@ -489,6 +502,32 @@ function resetDemo() { curStep = -1; stepTo(-1); }
 buildInput();
 buildKernel();
 buildOutput();
+
+// ── Feature Map Visualization ──
+function drawFeatureMap() {
+  const svg = document.getElementById('featureMap');
+  if (!svg) return;
+  
+  const filters = [
+    { name: '边缘检测', kernel: [[-1,-1,-1],[-1,8,-1],[-1,-1,-1]], color: 'var(--accent)' },
+    { name: '模糊', kernel: [[1,1,1],[1,1,1],[1,1,1]], color: 'var(--green)' },
+    { name: '锐化', kernel: [[0,-1,0],[-1,5,-1],[0,-1,0]], color: 'var(--orange)' }
+  ];
+  
+  let html = '';
+  filters.forEach((f, i) => {
+    const x = 30 + i * 180;
+    html += `
+      <rect x="${x}" y="10" width="150" height="100" rx="6" fill="var(--bg-elevated)" stroke="${f.color}" stroke-width="1"/>
+      <text x="${x+75}" y="28" text-anchor="middle" fill="${f.color}" font-size="11" font-family="Inter" font-weight="600">${f.name}</text>
+      <text x="${x+75}" y="48" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">${f.kernel.map(r=>r.join(',')).join(';')}</text>
+      <text x="${x+75}" y="75" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="Inter">输出特征图</text>
+      <rect x="${x+40}" y="80" width="70" height="20" rx="3" fill="${f.color}" opacity="0.2"/>
+    `;
+  });
+  svg.innerHTML = html;
+}
+drawFeatureMap();
 </script>
 
 </body>
