@@ -686,5 +686,18 @@ generatePoints();
 draw();
 </script>
 
+<!-- Convergence Visualization -->
+<section class="section">
+  <div class="section-label">算法分析</div>
+  <div class="section-title">聚类收敛过程</div>
+  <div class="section-body" style="margin-bottom:16px;">
+    <p>k-Means通过迭代优化惯性（Inertia）来收敛：分配阶段将点划给最近的质心，更新阶段重新计算质心位置。当质心不再移动或达到最大迭代次数时停止。</p>
+  </div>
+  <div class="demo-container">
+    <div class="demo-title">惯性（Inertia）随迭代下降</div>
+    <svg id="convergenceChart" viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;"></svg>
+  </div>
+</section>
+
 </body>
 </html>

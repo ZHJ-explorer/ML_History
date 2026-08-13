@@ -50,6 +50,27 @@
 .truth-table .out-zero { color: var(--text-faint); }
 svg .node-circle { transition: all 0.3s; }
 svg .weight-label { transition: fill 0.3s; }
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.15); opacity: 0.1; }
+  100% { transform: scale(1); opacity: 0.4; }
+}
+.pulse-ring { animation: pulse-ring 2s ease-in-out infinite; transform-origin: center; }
+@keyframes flowDash {
+  to { stroke-dashoffset: -18; }
+}
+.logic-gate-svg { width: 100%; max-width: 700px; }
+.gate-visual { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
+.gate-item { text-align: center; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); transition: all 0.2s; cursor: pointer; }
+.gate-item:hover { border-color: var(--accent); background: var(--accent-dim); }
+.gate-item.active { border-color: var(--accent); background: var(--accent-dim); box-shadow: 0 0 12px var(--accent-glow); }
+.gate-item svg { margin-bottom: 8px; }
+.gate-label { font-size: 12px; font-weight: 600; color: var(--text); margin-top: 8px; }
+.truth-cell { cursor: pointer; transition: all 0.2s; }
+.truth-cell:hover { filter: brightness(1.3); background: var(--accent-dim); }
+.truth-cell.active-row { filter: brightness(1.5); background: var(--accent-dim); }
+.token-hover { transition: all 0.2s; cursor: pointer; }
+.token-hover:hover { stroke: var(--accent); stroke-width: 2.5; filter: url(#glow); }
 </style>
 </head>
 <body>
@@ -104,43 +125,116 @@ svg .weight-label { transition: fill 0.3s; }
           <marker id="arrow-m" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
             <path d="M0,0 L0,6 L7,3 z" fill="var(--text-muted)"/>
           </marker>
+          <marker id="arrow-glow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L7,3 z" fill="var(--accent)"/>
+          </marker>
           <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="glow-strong"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <linearGradient id="nodeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:var(--bg-elevated);stop-opacity:1"/>
+            <stop offset="100%" style="stop-color:var(--bg-surface);stop-opacity:1"/>
+          </linearGradient>
         </defs>
 
-        <!-- Input nodes -->
-        <circle id="node-x1" cx="60" cy="80" r="28" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2" class="node-circle"/>
+        <!-- Input nodes with glow -->
+        <circle id="node-x1" cx="60" cy="80" r="28" fill="url(#nodeGrad)" stroke="var(--accent)" stroke-width="2" class="node-circle" filter="url(#glow)" style="transition: all 0.3s ease;"/>
         <text x="60" y="76" text-anchor="middle" fill="var(--text)" font-size="14" font-weight="600" font-family="JetBrains Mono">x₁</text>
         <text x="60" y="96" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter">输入 1</text>
+        <circle cx="60" cy="80" r="32" fill="none" stroke="var(--accent)" stroke-width="1" opacity="0.3" class="pulse-ring"/>
 
-        <circle id="node-x2" cx="60" cy="200" r="28" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2" class="node-circle"/>
+        <circle id="node-x2" cx="60" cy="200" r="28" fill="url(#nodeGrad)" stroke="var(--accent)" stroke-width="2" class="node-circle" filter="url(#glow)" style="transition: all 0.3s ease;"/>
         <text x="60" y="196" text-anchor="middle" fill="var(--text)" font-size="14" font-weight="600" font-family="JetBrains Mono">x₂</text>
         <text x="60" y="216" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter">输入 2</text>
+        <circle cx="60" cy="200" r="32" fill="none" stroke="var(--accent)" stroke-width="1" opacity="0.3" class="pulse-ring"/>
 
         <!-- Weight labels -->
         <text id="w1-label" x="130" y="68" fill="var(--green)" font-size="12" font-weight="600" font-family="JetBrains Mono" class="weight-label">w₁=1</text>
         <text id="w2-label" x="130" y="228" fill="var(--green)" font-size="12" font-weight="600" font-family="JetBrains Mono" class="weight-label">w₂=1</text>
 
-        <!-- Connection lines -->
-        <line id="line-w1" x1="88" y1="80" x2="220" y2="110" stroke="var(--green)" stroke-width="2" marker-end="url(#arrow-m)" opacity="0.8"/>
-        <line id="line-w2" x1="88" y1="200" x2="220" y2="190" stroke="var(--green)" stroke-width="2" marker-end="url(#arrow-m)" opacity="0.8"/>
+        <!-- Connection lines with glow -->
+        <line id="line-w1" x1="88" y1="80" x2="220" y2="110" stroke="var(--green)" stroke-width="2.5" marker-end="url(#arrow-m)" opacity="0.9" filter="url(#glow)" style="stroke-dasharray: 6,3; animation: flowDash 20s linear infinite;"/>
+        <line id="line-w2" x1="88" y1="200" x2="220" y2="190" stroke="var(--green)" stroke-width="2.5" marker-end="url(#arrow-m)" opacity="0.9" filter="url(#glow)" style="stroke-dasharray: 6,3; animation: flowDash 20s linear infinite;"/>
 
-        <!-- Neuron body -->
-        <rect x="220" y="90" width="120" height="120" rx="16" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2" filter="url(#glow)"/>
+        <!-- Neuron body with enhanced glow -->
+        <rect x="220" y="90" width="120" height="120" rx="16" fill="url(#nodeGrad)" stroke="var(--accent)" stroke-width="2.5" filter="url(#glow-strong)" class="neuron-body"/>
+        <rect x="220" y="90" width="120" height="120" rx="16" fill="none" stroke="var(--accent)" stroke-width="1" opacity="0.3" class="neuron-glow"/>
         <text x="280" y="130" text-anchor="middle" fill="var(--text)" font-size="13" font-weight="600" font-family="Inter">神经元</text>
         <text x="280" y="150" text-anchor="middle" fill="var(--text-muted)" font-size="11" font-family="JetBrains Mono">Σ wᵢxᵢ − θ</text>
-        <text id="theta-label" x="280" y="175" text-anchor="middle" fill="var(--orange)" font-size="11" font-family="JetBrains Mono">θ = 1.5</text>
+        <text id="theta-label" x="280" y="175" text-anchor="middle" fill="var(--orange)" font-size="11" font-family="JetBrains Mono" font-weight="600">θ = 1.5</text>
         <text x="280" y="195" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter">阶跃激活</text>
 
         <!-- Output arrow -->
         <line x1="340" y1="150" x2="420" y2="150" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arrow-m)"/>
 
-        <!-- Output node -->
-        <circle id="node-out" cx="460" cy="150" r="28" fill="var(--bg-elevated)" stroke="var(--green)" stroke-width="2"/>
+        <!-- Output node with pulse effect -->
+        <circle id="node-out" cx="460" cy="150" r="28" fill="url(#nodeGrad)" stroke="var(--green)" stroke-width="2.5" filter="url(#glow)"/>
+        <circle id="node-out-pulse" cx="460" cy="150" r="32" fill="none" stroke="var(--green)" stroke-width="1" opacity="0.4" class="pulse-ring"/>
         <text id="output-text" x="460" y="156" text-anchor="middle" fill="var(--green)" font-size="18" font-weight="700" font-family="JetBrains Mono">0</text>
         <text x="460" y="190" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter">输出 y</text>
       </svg>
     </div>
     <p class="diagram-caption">图：MP神经元将加权输入与阈值比较，通过阶跃函数输出二元结果</p>
+  </section>
+
+  <!-- LOGIC GATES SECTION -->
+  <section class="section">
+    <div class="section-label">逻辑门实现</div>
+    <div class="section-title">AND / OR / NOT 门结构</div>
+    <div class="section-body" style="margin-bottom:16px;">
+      <p>MP神经元通过设置不同权重和阈值，可以实现基本逻辑门。点击下方门类型查看结构。</p>
+    </div>
+    <div class="gate-visual" id="gate-visual">
+      <div class="gate-item active" onclick="showGate('and')" id="gate-and">
+        <svg viewBox="0 0 180 100" width="160" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="15" width="40" height="30" rx="4" fill="var(--bg-elevated)" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="30" y="35" text-anchor="middle" fill="var(--green)" font-size="12" font-weight="600" font-family="JetBrains Mono">AND</text>
+          <line x1="50" y1="30" x2="80" y2="30" stroke="var(--text-muted)" stroke-width="1.5"/>
+          <line x1="50" y1="30" x2="80" y2="70" stroke="var(--text-muted)" stroke-width="1.5"/>
+          <rect x="80" y="20" width="35" height="40" rx="4" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="97" y="44" text-anchor="middle" fill="var(--accent)" font-size="10" font-family="JetBrains Mono">Σ-θ</text>
+          <line x1="115" y1="40" x2="140" y2="40" stroke="var(--text-muted)" stroke-width="1.5"/>
+          <circle cx="150" cy="40" r="12" fill="var(--bg-elevated)" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="150" y="44" text-anchor="middle" fill="var(--green)" font-size="10" font-weight="600" font-family="JetBrains Mono">1</text>
+          <text x="20" y="65" text-anchor="middle" fill="var(--text-faint)" font-size="8" font-family="JetBrains Mono">w=[1,1]</text>
+          <text x="97" y="75" text-anchor="middle" fill="var(--orange)" font-size="8" font-family="JetBrains Mono">θ=1.5</text>
+        </svg>
+        <div class="gate-label">AND 门</div>
+      </div>
+      <div class="gate-item" onclick="showGate('or')" id="gate-or">
+        <svg viewBox="0 0 180 100" width="160" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="15" width="40" height="30" rx="4" fill="var(--bg-elevated)" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="30" y="35" text-anchor="middle" fill="var(--green)" font-size="12" font-weight="600" font-family="JetBrains Mono">OR</text>
+          <line x1="50" y1="30" x2="80" y2="30" stroke="var(--text-muted)" stroke-width="1.5"/>
+          <line x1="50" y1="30" x2="80" y2="70" stroke="var(--text-muted)" stroke-width="1.5"/>
+          <rect x="80" y="20" width="35" height="40" rx="4" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="97" y="44" text-anchor="middle" fill="var(--accent)" font-size="10" font-family="JetBrains Mono">Σ-θ</text>
+          <line x1="115" y1="40" x2="140" y2="40" stroke="var(--text-muted)" stroke-width="1.5"/>
+          <circle cx="150" cy="40" r="12" fill="var(--bg-elevated)" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="150" y="44" text-anchor="middle" fill="var(--green)" font-size="10" font-weight="600" font-family="JetBrains Mono">1</text>
+          <text x="20" y="65" text-anchor="middle" fill="var(--text-faint)" font-size="8" font-family="JetBrains Mono">w=[1,1]</text>
+          <text x="97" y="75" text-anchor="middle" fill="var(--orange)" font-size="8" font-family="JetBrains Mono">θ=0.5</text>
+        </svg>
+        <div class="gate-label">OR 门</div>
+      </div>
+      <div class="gate-item" onclick="showGate('not')" id="gate-not">
+        <svg viewBox="0 0 180 100" width="160" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="15" width="40" height="30" rx="4" fill="var(--bg-elevated)" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="30" y="35" text-anchor="middle" fill="var(--green)" font-size="12" font-weight="600" font-family="JetBrains Mono">NOT</text>
+          <line x1="50" y1="30" x2="80" y2="30" stroke="var(--text-muted)" stroke-width="1.5"/>
+          <rect x="80" y="20" width="35" height="40" rx="4" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="97" y="44" text-anchor="middle" fill="var(--accent)" font-size="10" font-family="JetBrains Mono">Σ-θ</text>
+          <line x1="115" y1="40" x2="140" y2="40" stroke="var(--text-muted)" stroke-width="1.5"/>
+          <circle cx="150" cy="40" r="12" fill="var(--bg-elevated)" stroke="var(--red)" stroke-width="1.5"/>
+          <text x="150" y="44" text-anchor="middle" fill="var(--red)" font-size="10" font-weight="600" font-family="JetBrains Mono">0</text>
+          <text x="20" y="65" text-anchor="middle" fill="var(--text-faint)" font-size="8" font-family="JetBrains Mono">w=-1</text>
+          <text x="97" y="75" text-anchor="middle" fill="var(--orange)" font-size="8" font-family="JetBrains Mono">θ=-0.5</text>
+        </svg>
+        <div class="gate-label">NOT 门</div>
+      </div>
+    </div>
+    <div id="gate-truth-table" style="margin-top:20px;text-align:center;color:var(--text-muted);font-size:13px;">
+      <p>↑ 点击门类型切换查看对应真值表</p>
+    </div>
   </section>
 
   <!-- HISTORY TIMELINE -->
@@ -442,8 +536,44 @@ function buildTruthTable(w1, w2, theta) {
   });
 }
 
+function showGate(name) {
+  document.querySelectorAll('.gate-item').forEach(g => g.classList.remove('active'));
+  document.getElementById('gate-' + name).classList.add('active');
+  
+  const g = gates[name.toUpperCase()];
+  const tbody = document.getElementById('truth-body');
+  tbody.innerHTML = '';
+  
+  if (name === 'not') {
+    // NOT gate truth table
+    const pairs = [[0], [1]];
+    pairs.forEach(([x1]) => {
+      const z = g.w1 * x1;
+      const y = z >= g.theta ? 1 : 0;
+      const tr = document.createElement('tr');
+      tr.className = 'truth-cell';
+      tr.innerHTML = `<td>${x1}</td><td>-</td><td>${(g.w1*x1).toFixed(1)}</td><td>-</td><td>${z.toFixed(1)}</td><td>${g.theta.toFixed(1)}</td><td class="${y ? 'out-one' : 'out-zero'}">${y}</td>`;
+      tbody.appendChild(tr);
+    });
+  } else {
+    // AND/OR truth table
+    const pairs = [[0,0],[0,1],[1,0],[1,1]];
+    pairs.forEach(([x1, x2]) => {
+      const z = g.w1 * x1 + g.w2 * x2;
+      const y = z >= g.theta ? 1 : 0;
+      const tr = document.createElement('tr');
+      tr.className = 'truth-cell';
+      tr.innerHTML = `<td>${x1}</td><td>${x2}</td><td>${(g.w1*x1).toFixed(1)}</td><td>${(g.w2*x2).toFixed(1)}</td><td>${z.toFixed(1)}</td><td>${g.theta.toFixed(1)}</td><td class="${y ? 'out-one' : 'out-zero'}">${y}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+  
+  document.getElementById('gate-truth-table').innerHTML = '';
+}
+
 // Init
 updateDemo();
+showGate('and');
 </script>
 
 </body>

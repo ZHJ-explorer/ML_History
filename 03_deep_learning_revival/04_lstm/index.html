@@ -32,6 +32,21 @@
 .highlight-i { color: #10b981; }
 .highlight-o { color: #3b82f6; }
 .highlight-c { color: #f59e0b; }
+
+/* Gradient vanishing demo */
+.grad-bar { transition: height 0.5s ease; }
+.grad-bar.rnn { background: var(--red); }
+.grad-bar.lstm { background: var(--green); }
+.time-step-btn { padding: 6px 12px; border-radius: var(--radius); background: var(--bg-elevated); border: 1px solid var(--border-strong); color: var(--text-muted); font-size: 12px; cursor: pointer; transition: all 0.2s; }
+.time-step-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+.time-step-btn:hover { border-color: var(--accent); }
+.prediction-display { font-family: 'JetBrains Mono', monospace; font-size: 13px; padding: 12px; background: var(--bg); border-radius: var(--radius); border: 1px solid var(--border); }
+
+@keyframes gradientFade {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+.grad-highlight { animation: gradientFade 2s ease-in-out infinite; }
 </style>
 </head>
 <body>
@@ -268,6 +283,38 @@
     </div>
   </section>
 
+  <!-- Gradient Vanishing Demo -->
+  <section class="section">
+    <div class="section-label">梯度对比</div>
+    <div class="section-title">RNN vs LSTM 梯度消失问题</div>
+    <div class="section-body" style="margin-bottom:16px;">
+      <p>RNN在长序列上训练时，梯度随时间步指数衰减（<strong style="color:var(--red)">红色</strong>），导致早期输入信息无法影响后期输出。LSTM通过门控机制维持梯度流动（<strong style="color:var(--green)">绿色</strong>）。</p>
+    </div>
+    <div class="demo-container">
+      <div class="demo-title">梯度大小 vs 序列长度</div>
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;" id="gradSteps">
+        <button class="time-step-btn active grad-step-btn" onclick="setGradStep(0)">1步</button>
+        <button class="time-step-btn grad-step-btn" onclick="setGradStep(1)">5步</button>
+        <button class="time-step-btn grad-step-btn" onclick="setGradStep(2)">10步</button>
+        <button class="time-step-btn grad-step-btn" onclick="setGradStep(3)">20步</button>
+        <button class="time-step-btn grad-step-btn" onclick="setGradStep(4)">50步</button>
+        <button class="time-step-btn grad-step-btn" onclick="setGradStep(5)">100步</button>
+      </div>
+      <svg id="gradChart" viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:760px;"></svg>
+      <p class="diagram-caption">点击时间步按钮观察梯度变化 · RNN梯度指数衰减，LSTM保持稳定</p>
+    </div>
+  </section>
+
+  <!-- Sequence Prediction Demo -->
+  <section class="section">
+    <div class="section-label">交互演示</div>
+    <div class="section-title">序列预测能力</div>
+    <div class="demo-container">
+      <div class="demo-title">测试LSTM的序列记忆能力</div>
+      <div id="seqQuestion" style="padding:16px;background:var(--bg);border-radius:var(--radius);border:1px solid var(--border);"></div>
+    </div>
+  </section>
+
   <!-- Code Block -->
   <section class="section">
     <div class="section-label">代码实现</div>
@@ -368,25 +415,87 @@ const gateInfo = {
   output: `<p class="flow-desc"><strong class="highlight-o">输出门 o_t</strong> 决定输出多少当前信息。细胞状态先经过 tanh 压缩到 (-1, 1)，再与输出门相乘得到最终隐藏状态 h_t。</p>`
 };
 
-function showGate(gate) {
-  // Reset all flow lines
-  document.querySelectorAll('.flow-line').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.gate-box').forEach(el => el.style.strokeWidth = '2');
-  
-  // Highlight selected gate
-  const gateMap = { forget: 0, input: 1, candidate: 2, output: 3 };
-  const gates = document.querySelectorAll('.gate-box');
-  if (gates[gateMap[gate]]) gates[gateMap[gate]].style.strokeWidth = '3';
-  
-  // Activate corresponding flow line
-  const flowMap = { forget: 'flow-f', input: 'flow-i', candidate: 'flow-c', output: 'flow-o' };
-  const flowEl = document.getElementById(flowMap[gate]);
-  if (flowEl) flowEl.classList.add('active');
-  
-  // Show info
-  document.getElementById('flowInfo').innerHTML = gateInfo[gate];
+// ── Gradient Vanishing Demo ──
+const gradTimes = [1, 5, 10, 20, 50, 100];
+const rnnGrads = [1.0, 0.6, 0.36, 0.13, 0.004, 0.00002];
+const lstmGrads = [1.0, 0.95, 0.90, 0.88, 0.85, 0.82];
+let currentGradStep = 0;
+
+function drawGradientChart() {
+  const svg = document.getElementById('gradChart');
+  if (!svg) return;
+  const W = 660, H = 200, pad = 50;
+  const barW = (W - pad * 2) / gradTimes.length;
+  const maxH = H - 70;
+  let html = '';
+
+  // Axes
+  html += `<line x1="${pad}" y1="${pad}" x2="${pad}" y2="${H-20}" stroke="var(--border-strong)" stroke-width="1"/>`;
+  html += `<line x1="${pad}" y1="${H-20}" x2="${W-pad}" y2="${H-20}" stroke="var(--border-strong)" stroke-width="1"/>`;
+  html += `<text x="${W/2}" y="${H-4}" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter">时间步长度</text>`;
+  html += `<text x="14" y="${H/2}" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter" transform="rotate(-90,14,${H/2})">梯度大小</text>`;
+
+  gradTimes.forEach((t, i) => {
+    const x = pad + i * barW + barW * 0.25;
+    const bw = barW * 0.5;
+    const rnnH = rnnGrads[i] * maxH;
+    const lstmH = lstmGrads[i] * maxH;
+    const yRnn = H - 20 - rnnH;
+    const yLstm = H - 20 - lstmH;
+
+    html += `<rect x="${x}" y="${yRnn}" width="${bw*0.9}" height="${rnnH}" fill="#ef4444" opacity="0.7" rx="2" class="grad-bar ${currentGradStep === i ? 'grad-highlight' : ''}"/>`;
+    html += `<rect x="${x+bw*0.95}" y="${yLstm}" width="${bw*0.9}" height="${lstmH}" fill="#10b981" opacity="0.8" rx="2" class="grad-bar"/>`;
+    html += `<text x="${x+bw*0.45}" y="${H-8}" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">${t}</text>`;
+  });
+
+  // Legend
+  html += `<circle cx="${W-120}" cy="${pad-15}" r="5" fill="#ef4444" opacity="0.8"/>`;
+  html += `<text x="${W-110}" y="${pad-11}" fill="var(--text-muted)" font-size="10" font-family="Inter">RNN</text>`;
+  html += `<circle cx="${W-60}" cy="${pad-15}" r="5" fill="#10b981" opacity="0.8"/>`;
+  html += `<text x="${W-50}" y="${pad-11}" fill="var(--text-muted)" font-size="10" font-family="Inter">LSTM</text>`;
+
+  svg.innerHTML = html;
+}
+
+function setGradStep(i) {
+  currentGradStep = i;
+  document.querySelectorAll('.grad-step-btn').forEach((b, idx) => b.classList.toggle('active', idx === i));
+  drawGradientChart();
+}
+
+// ── Sequence Prediction Demo ──
+const seqData = [
+  { seq: 'a b c e f g → ?', answer: 'h', options: ['h','a','z','e'] },
+  { seq: '1 2 4 8 16 → ?', answer: '32', options: ['32','20','24','64'] },
+  { seq: 'John Mary → King Queen :: Bill → ?', answer: 'Prince', options: ['Prince','Bill','Queen','Alice'] },
+];
+let seqIdx = 0;
+let seqAnswered = false;
+
+function renderSeqDemo() {
+  const d = seqData[seqIdx];
+  document.getElementById('seqQuestion').innerHTML = `
+    <div style="font-size:15px;color:var(--text);margin-bottom:12px;">预测下一个:</div>
+    <div style="font-family:'JetBrains Mono';font-size:14px;color:var(--accent);margin-bottom:16px;">${d.seq}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;" id="seqOptions">
+      ${d.options.map(o => `<button class="demo-btn ${o===d.answer?'':'btn-secondary'}" onclick="checkSeq('${o}','${d.answer}')" style="min-width:70px;">${o}</button>`).join('')}
+    </div>
+    <div id="seqResult" style="margin-top:12px;font-size:13px;"></div>
+  `;
+  seqAnswered = false;
+}
+
+function checkSeq(sel, ans) {
+  if (seqAnswered) return;
+  seqAnswered = true;
+  const ok = sel === ans;
+  const el = document.getElementById('seqResult');
+  el.innerHTML = `<span style="color:${ok?'var(--green)':'var(--red)'}">${ok?'✓ 正确!':'✗ 错误，正确答案是 '+ans}</span>`;
+  setTimeout(() => {
+    seqIdx = (seqIdx + 1) % seqData.length;
+    renderSeqDemo();
+  }, 1500);
 }
 </script>
-
 </body>
 </html>

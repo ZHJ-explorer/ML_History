@@ -41,6 +41,23 @@
 @keyframes dash {
   to { stroke-dashoffset: -18; }
 }
+
+/* Mode collapse visualization */
+.mode-collapse-chart { margin-top: 16px; }
+.modes-bar { height: 12px; border-radius: 6px; background: var(--border-strong); overflow: hidden; margin-bottom: 6px; }
+.modes-fill { height: 100%; border-radius: 6px; transition: width 0.3s ease; }
+
+/* Pattern collapse comparison */
+.collapse-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+.collapse-panel { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.collapse-panel h4 { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+.collapse-panel.stable h4 { color: var(--green); }
+.collapse-panel.collapsed h4 { color: var(--red); }
+.collapse-panel p { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+@media (max-width: 600px) {
+  .collapse-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -316,6 +333,153 @@
       <div class="demo-output demo-log" id="demoLog">
         <div style="color:var(--text-faint);">点击「单步训练」或「自动模拟」开始...</div>
       </div>
+    </div>
+  </section>
+
+  </section>
+
+  <!-- Mode Collapse Visualization -->
+  <section class="section">
+    <div class="section-label">训练挑战</div>
+    <div class="section-title">模式崩溃 vs 稳定生成</div>
+    <div class="section-body" style="margin-bottom:16px;">
+      <p>模式崩溃（Mode Collapse）是 GAN 的主要挑战：生成器只学会生成少数几种样本，无法覆盖真实数据的全部分布。</p>
+    </div>
+    <div class="demo-container">
+      <div class="demo-title">模式多样性对比</div>
+      <div class="collapse-grid">
+        <div class="collapse-panel stable">
+          <h4>✓ 稳定训练（理想情况）</h4>
+          <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px;">
+            <!-- Real data distribution -->
+            <text x="140" y="16" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter">真实数据分布</text>
+            <!-- Multi-modal Gaussian -->
+            <ellipse cx="70" cy="50" rx="30" ry="20" fill="rgba(113,112,255,0.2)" stroke="var(--accent)" stroke-width="1"/>
+            <ellipse cx="140" cy="50" rx="30" ry="20" fill="rgba(16,185,129,0.2)" stroke="var(--green)" stroke-width="1"/>
+            <ellipse cx="210" cy="50" rx="30" ry="20" fill="rgba(245,158,11,0.2)" stroke="var(--orange)" stroke-width="1"/>
+            <text x="70" y="78" text-anchor="middle" fill="var(--accent)" font-size="9" font-family="JetBrains Mono">模态A</text>
+            <text x="140" y="78" text-anchor="middle" fill="var(--green)" font-size="9" font-family="JetBrains Mono">模态B</text>
+            <text x="210" y="78" text-anchor="middle" fill="var(--orange)" font-size="9" font-family="JetBrains Mono">模态C</text>
+            
+            <!-- Generated samples -->
+            <text x="140" y="100" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter">生成样本分布</text>
+            <!-- Match real distribution -->
+            <ellipse cx="70" cy="120" rx="28" ry="18" fill="rgba(113,112,255,0.3)" stroke="var(--accent)" stroke-width="1.5"/>
+            <ellipse cx="140" cy="120" rx="28" ry="18" fill="rgba(16,185,129,0.3)" stroke="var(--green)" stroke-width="1.5"/>
+            <ellipse cx="210" cy="120" rx="28" ry="18" fill="rgba(245,158,11,0.3)" stroke="var(--orange)" stroke-width="1.5"/>
+            <text x="140" y="148" text-anchor="middle" fill="var(--green)" font-size="10" font-family="Inter">✓ 多样性良好</text>
+          </svg>
+          <p style="margin-top:8px;">生成器能够覆盖所有模态，多样性与真实数据一致。</p>
+        </div>
+        <div class="collapse-panel collapsed">
+          <h4>✗ 模式崩溃（常见问题）</h4>
+          <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px;">
+            <!-- Real data distribution -->
+            <text x="140" y="16" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter">真实数据分布</text>
+            <!-- Multi-modal Gaussian -->
+            <ellipse cx="70" cy="50" rx="30" ry="20" fill="rgba(113,112,255,0.2)" stroke="var(--accent)" stroke-width="1"/>
+            <ellipse cx="140" cy="50" rx="30" ry="20" fill="rgba(16,185,129,0.2)" stroke="var(--green)" stroke-width="1"/>
+            <ellipse cx="210" cy="50" rx="30" ry="20" fill="rgba(245,158,11,0.2)" stroke="var(--orange)" stroke-width="1"/>
+            
+            <!-- Generated samples - collapsed -->
+            <text x="140" y="100" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter">生成样本分布</text>
+            <!-- Only one mode -->
+            <ellipse cx="140" cy="120" rx="40" ry="25" fill="rgba(239,68,68,0.2)" stroke="var(--red)" stroke-width="1.5" stroke-dasharray="4,2"/>
+            <text x="140" y="124" text-anchor="middle" fill="var(--red)" font-size="9" font-family="JetBrains Mono">只有模态B</text>
+            <text x="70" y="120" text-anchor="middle" fill="var(--text-faint)" font-size="14">✗</text>
+            <text x="210" y="120" text-anchor="middle" fill="var(--text-faint)" font-size="14">✗</text>
+            <text x="140" y="148" text-anchor="middle" fill="var(--red)" font-size="10" font-family="Inter">✗ 多样性丧失</text>
+          </svg>
+          <p style="margin-top:8px;">生成器只学会生成单一类型样本，丢失了其他模态的信息。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Training Dynamics Chart -->
+  <section class="section">
+    <div class="section-label">性能分析</div>
+    <div class="section-title">对抗训练动态</div>
+    <div class="section-body" style="margin-bottom:16px;">
+      <p>GAN 训练是生成器和判别器之间的动态博弈。理想的纳什均衡点是两者能力相当。</p>
+    </div>
+    <div class="demo-container">
+      <div class="demo-title">G/D 能力演化曲线</div>
+      <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:760px;">
+        <defs>
+          <linearGradient id="gGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.3"/>
+            <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0"/>
+          </linearGradient>
+          <linearGradient id="dGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:0.3"/>
+            <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:0"/>
+          </linearGradient>
+        </defs>
+        
+        <text x="380" y="22" text-anchor="middle" fill="var(--text-faint)" font-size="12" font-family="Inter" font-weight="500">对抗训练动态 — G/D 能力演化</text>
+        
+        <!-- Axes -->
+        <line x1="80" y1="190" x2="700" y2="190" stroke="var(--border-strong)" stroke-width="1.5"/>
+        <line x1="80" y1="40" x2="80" y2="190" stroke="var(--border-strong)" stroke-width="1.5"/>
+        
+        <!-- Grid -->
+        <line x1="80" y1="75" x2="700" y2="75" stroke="var(--border)" stroke-width="0.5" stroke-dasharray="4,4"/>
+        <line x1="80" y1="110" x2="700" y2="110" stroke="var(--border)" stroke-width="0.5" stroke-dasharray="4,4"/>
+        <line x1="80" y1="145" x2="700" y2="145" stroke="var(--border)" stroke-width="0.5" stroke-dasharray="4,4"/>
+        
+        <!-- Y labels -->
+        <text x="70" y="79" text-anchor="end" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">高</text>
+        <text x="70" y="114" text-anchor="end" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">中</text>
+        <text x="70" y="149" text-anchor="end" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">低</text>
+        <text x="70" y="194" text-anchor="end" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">初始</text>
+        
+        <!-- X labels -->
+        <text x="80" y="208" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">0</text>
+        <text x="236" y="208" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">500</text>
+        <text x="392" y="208" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">1000</text>
+        <text x="548" y="208" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">1500</text>
+        <text x="700" y="208" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">2000</text>
+        
+        <!-- Axis titles -->
+        <text x="390" y="224" text-anchor="middle" fill="var(--text-faint)" font-size="11" font-family="Inter">训练步数</text>
+        <text x="16" y="115" text-anchor="middle" fill="var(--text-faint)" font-size="11" font-family="Inter" transform="rotate(-90,16,115)">能力</text>
+        
+        <!-- Generator curve (improves over time) -->
+        <path d="M 80 170 L 158 155 L 236 135 L 314 115 L 392 95 L 470 80 L 548 72 L 626 68 L 700 65" 
+              fill="none" stroke="#3b82f6" stroke-width="2.5"/>
+        <path d="M 80 170 L 158 155 L 236 135 L 314 115 L 392 95 L 470 80 L 548 72 L 626 68 L 700 65 L 700 190 L 80 190 Z" 
+              fill="url(#gGrad)"/>
+        
+        <!-- Discriminator curve (fluctuates, eventually converges) -->
+        <path d="M 80 60 L 158 80 L 236 70 L 314 90 L 392 85 L 470 75 L 548 80 L 626 78 L 700 80" 
+              fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+        <path d="M 80 60 L 158 80 L 236 70 L 314 90 L 392 85 L 470 75 L 548 80 L 626 78 L 700 80 L 700 190 L 80 190 Z" 
+              fill="url(#dGrad)"/>
+        
+        <!-- Equilibrium line -->
+        <line x1="80" y1="110" x2="700" y2="110" stroke="var(--green)" stroke-width="1" stroke-dasharray="6,4" opacity="0.6"/>
+        <text x="705" y="106" text-anchor="end" fill="var(--green)" font-size="9" font-family="JetBrains Mono">纳什均衡</text>
+        
+        <!-- Key points -->
+        <circle cx="80" cy="170" r="4" fill="#3b82f6" opacity="0.9"/>
+        <text x="80" y="162" text-anchor="middle" fill="#3b82f6" font-size="9" font-family="JetBrains Mono">G弱</text>
+        
+        <circle cx="80" cy="60" r="4" fill="#f59e0b" opacity="0.9"/>
+        <text x="80" y="52" text-anchor="middle" fill="#f59e0b" font-size="9" font-family="JetBrains Mono">D强</text>
+        
+        <!-- Final equilibrium point -->
+        <circle cx="700" cy="80" r="5" fill="var(--green)" opacity="0.9"/>
+        <circle cx="700" cy="65" r="5" fill="#3b82f6" opacity="0.9"/>
+        <text x="700" y="56" text-anchor="middle" fill="var(--green)" font-size="9" font-family="JetBrains Mono">收敛</text>
+        
+        <!-- Legend -->
+        <rect x="80" y="28" width="180" height="32" rx="4" fill="var(--bg-elevated)" stroke="var(--border-strong)"/>
+        <line x1="90" y1="40" x2="120" y2="40" stroke="#3b82f6" stroke-width="2.5"/>
+        <text x="128" y="44" fill="var(--text-muted)" font-size="10" font-family="Inter">生成器 G 能力</text>
+        <line x1="90" y1="54" x2="120" y2="54" stroke="#f59e0b" stroke-width="2.5"/>
+        <text x="128" y="58" fill="var(--text-muted)" font-size="10" font-family="Inter">判别器 D 能力</text>
+      </svg>
     </div>
   </section>
 
