@@ -22,6 +22,20 @@
 .demo-step.completed { opacity: 0.7; }
 .fade-in { animation: fadeIn 0.5s ease forwards; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* Gradient vanishing chart */
+.grad-bar { transition: height 0.4s ease; }
+.grad-bar.rnn { background: var(--red); }
+.grad-bar.lstm { background: var(--green); }
+.grad-btn { padding: 5px 10px; border-radius: var(--radius); background: var(--bg-elevated); border: 1px solid var(--border-strong); color: var(--text-muted); font-size: 11px; cursor: pointer; transition: all 0.2s; font-family: Inter; }
+.grad-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+/* Info flow comparison */
+.flow-bar { transition: width 0.5s ease; }
+
+/* RNN step highlight */
+.rnn-node { transition: all 0.3s; }
+.rnn-node.active rect { stroke-width: 2.5; filter: drop-shadow(0 0 6px var(--accent-glow)); }
 </style>
 </head>
 <body>
@@ -282,6 +296,96 @@
     </div>
   </section>
 
+  <!-- INTERACTIVE DEMO -->
+  <section class="section">
+    <div class="section-label">交互演示</div>
+    <div class="section-title">梯度消失可视化</div>
+    <div class="section-body" style="margin-bottom:16px;">
+      <p>观察RNN在长序列训练时梯度如何指数衰减。点击不同时间步，查看RNN和LSTM的梯度保持能力对比。</p>
+    </div>
+    <div class="demo-container">
+      <div class="demo-title">梯度大小 vs 时间步长度</div>
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;" id="rnnGradSteps">
+        <button class="grad-btn active" onclick="rnnGradStep(0)">1步</button>
+        <button class="grad-btn" onclick="rnnGradStep(1)">5步</button>
+        <button class="grad-btn" onclick="rnnGradStep(2)">10步</button>
+        <button class="grad-btn" onclick="rnnGradStep(3)">20步</button>
+        <button class="grad-btn" onclick="rnnGradStep(4)">50步</button>
+      </div>
+      <svg id="rnnGradChart" viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:760px;"></svg>
+      <p class="diagram-caption">RNN梯度指数衰减（红色），LSTM通过门控保持梯度稳定（绿色）</p>
+    </div>
+  </section>
+
+  <!-- Info Flow Comparison -->
+  <section class="section">
+    <div class="section-label">信息流对比</div>
+    <div class="section-title">RNN vs LSTM 信息传递完整性</div>
+    <div class="section-body" style="margin-bottom:16px;">
+      <p>长序列中，RNN的信息流严重衰减，早期输入难以影响后期输出。LSTM的细胞状态提供了一条"高速公路"，保持信息完整。</p>
+    </div>
+    <div class="demo-container">
+      <div class="demo-title">信息传递衰减对比</div>
+      <svg viewBox="0 0 760 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:760px;">
+        <defs>
+          <linearGradient id="rnnGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#ef4444;stop-opacity:0.9"/>
+            <stop offset="100%" style="stop-color:#ef4444;stop-opacity:0.05"/>
+          </linearGradient>
+          <linearGradient id="lstmGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.9"/>
+            <stop offset="100%" style="stop-color:#10b981;stop-opacity:0.85"/>
+          </linearGradient>
+        </defs>
+        
+        <!-- Title -->
+        <text x="380" y="22" text-anchor="middle" fill="var(--text-faint)" font-size="12" font-family="Inter" font-weight="500">信息流衰减对比</text>
+        
+        <!-- Time axis -->
+        <line x1="80" y1="240" x2="700" y2="240" stroke="var(--border-strong)" stroke-width="1.5"/>
+        <text x="80" y="258" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter">t₀</text>
+        <text x="235" y="258" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter">t₅</text>
+        <text x="390" y="258" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter">t₁₀</text>
+        <text x="545" y="258" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter">t₂₀</text>
+        <text x="700" y="258" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter">t₅₀</text>
+        
+        <!-- RNN decay curve -->
+        <path d="M 80 60 Q 200 70 300 100 T 500 180 T 700 230" fill="none" stroke="#ef4444" stroke-width="2.5" opacity="0.9"/>
+        <!-- RNN shaded area -->
+        <path d="M 80 60 Q 200 70 300 100 T 500 180 T 700 230 L 700 240 L 80 240 Z" fill="url(#rnnGrad)" opacity="0.3"/>
+        
+        <!-- LSTM stable line -->
+        <path d="M 80 60 L 700 65" fill="none" stroke="#10b981" stroke-width="2.5" opacity="0.9"/>
+        <rect x="80" y="55" width="620" height="20" fill="#10b981" opacity="0.1" rx="3"/>
+        
+        <!-- Labels -->
+        <text x="710" y="58" fill="#10b981" font-size="11" font-family="Inter" font-weight="500">LSTM</text>
+        <text x="710" y="235" fill="#ef4444" font-size="11" font-family="Inter" font-weight="500">RNN</text>
+        
+        <!-- Info icons -->
+        <circle cx="80" cy="60" r="6" fill="#10b981" opacity="0.9"/>
+        <text x="80" y="48" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="JetBrains Mono">I₀=1.0</text>
+        
+        <circle cx="700" cy="65" r="6" fill="#10b981" opacity="0.8"/>
+        <text x="700" y="80" text-anchor="middle" fill="#10b981" font-size="9" font-family="JetBrains Mono">I₅₀≈0.85</text>
+        
+        <circle cx="700" cy="230" r="6" fill="#ef4444" opacity="0.5"/>
+        <text x="700" y="220" text-anchor="middle" fill="#ef4444" font-size="9" font-family="JetBrains Mono">I₅₀≈0.01</text>
+        
+        <!-- Key insight box -->
+        <rect x="80" y="140" width="620" height="40" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="390" y="160" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter">
+          <tspan fill="var(--red)">RNN: 梯度连乘 → 指数衰减</tspan>
+          <tspan fill="var(--text-muted)">  |  </tspan>
+          <tspan fill="var(--green)">LSTM: 门控机制 → 梯度自由流动</tspan>
+        </text>
+        <text x="390" y="176" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">
+          ∂C_t/∂C_{t-1} = f_t （遗忘门控制）→ 不衰减
+        </text>
+      </svg>
+    </div>
+  </section>
+
   <!-- NOTES -->
   <section class="section">
     <div class="section-label">学习心得</div>
@@ -373,6 +477,74 @@ function renderDemo() {
   for (let i = 0; i < vocab.length; i++) {
     const div = document.createElement('div');
     div.className = 'demo-step' + (i < currentStep ? ' completed' : '') + (i === currentStep - 1 ? ' active' : '');
+    const h = i < currentStep ? hiddenState.slice(0).map(v => v.toFixed(2)).join(', ') : '—';
+    div.innerHTML = `
+      <div style="font-size:16px;font-weight:500;color:var(--text);margin-bottom:4px;">x<tspan baseline-shift="sub" font-size="10">${i+1}</tspan></div>
+      <div style="font-size:11px;color:var(--green);font-family:JetBrains Mono;">h=[${h}]</div>
+    `;
+    grid.appendChild(div);
+  }
+}
+
+// ── Gradient Vanishing Chart ──
+const rnnTimes = [1, 5, 10, 20, 50];
+const rnnVals = [1.0, 0.6, 0.36, 0.13, 0.004];
+const lstmVals = [1.0, 0.95, 0.90, 0.88, 0.85];
+let rnnGradIdx = 0;
+
+function rnnGradStep(i) {
+  rnnGradIdx = i;
+  document.querySelectorAll('#rnnGradSteps .grad-btn').forEach((b, idx) => b.classList.toggle('active', idx === i));
+  drawRnnGradChart();
+}
+
+function drawRnnGradChart() {
+  const svg = document.getElementById('rnnGradChart');
+  if (!svg) return;
+  const W = 760, H = 220, pad = 60;
+  const barW = (W - pad * 2) / rnnTimes.length;
+  const maxH = H - 70;
+  let html = '';
+
+  // Axes
+  html += `<line x1="${pad}" y1="${pad}" x2="${pad}" y2="${H-20}" stroke="var(--border-strong)" stroke-width="1"/>`;
+  html += `<line x1="${pad}" y1="${H-20}" x2="${W-pad}" y2="${H-20}" stroke="var(--border-strong)" stroke-width="1"/>`;
+  html += `<text x="${W/2}" y="${H-4}" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter">时间步长度</text>`;
+  html += `<text x="14" y="${H/2}" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter" transform="rotate(-90,14,${H/2})">梯度大小</text>`;
+
+  // Grid lines
+  for (let g = 0; g <= 4; g++) {
+    const gy = H - 20 - g * maxH / 4;
+    html += `<line x1="${pad}" y1="${gy}" x2="${W-pad}" y2="${gy}" stroke="var(--border)" stroke-width="0.5" stroke-dasharray="3,3"/>`;
+    html += `<text x="${pad-6}" y="${gy+4}" text-anchor="end" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">${(g*0.25).toFixed(2)}</text>`;
+  }
+
+  rnnTimes.forEach((t, i) => {
+    const x = pad + i * barW + barW * 0.2;
+    const bw = barW * 0.35;
+    const rnnH = rnnVals[i] * maxH;
+    const lstmH = lstmVals[i] * maxH;
+    const yRnn = H - 20 - rnnH;
+    const yLstm = H - 20 - lstmH;
+    const isActive = i === rnnGradIdx;
+
+    html += `<rect x="${x}" y="${yRnn}" width="${bw}" height="${rnnH}" fill="#ef4444" opacity="${isActive ? 0.9 : 0.5}" rx="2" class="grad-bar" style="transition:all 0.4s"/>`;
+    html += `<rect x="${x+bw+2}" y="${yLstm}" width="${bw}" height="${lstmH}" fill="#10b981" opacity="0.8" rx="2" class="grad-bar"/>`;
+    html += `<text x="${x+bw+1}" y="${H-6}" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">${t}</text>`;
+  });
+
+  // Legend
+  html += `<circle cx="${W-120}" cy="${pad-15}" r="5" fill="#ef4444" opacity="0.8"/>`;
+  html += `<text x="${W-110}" y="${pad-11}" fill="var(--text-muted)" font-size="10" font-family="Inter">RNN</text>`;
+  html += `<circle cx="${W-60}" cy="${pad-15}" r="5" fill="#10b981" opacity="0.8"/>`;
+  html += `<text x="${W-50}" y="${pad-11}" fill="var(--text-muted)" font-size="10" font-family="Inter">LSTM</text>`;
+
+  svg.innerHTML = html;
+}
+
+// Initialize gradient chart
+drawRnnGradChart();
+</script>
     div.style.cssText = 'background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center;';
     const hDisplay = i < currentStep ? '[' + hiddenState.map(v => v.toFixed(2)).join(', ') + ']' : '--';
     div.innerHTML = `

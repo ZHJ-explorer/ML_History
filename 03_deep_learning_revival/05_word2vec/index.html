@@ -251,6 +251,84 @@
     </div>
   </section>
 
+  <!-- Word Analogy Demo -->
+  <section class="section">
+    <div class="section-label">交互演示</div>
+    <div class="section-title">词向量类比运算</div>
+    <div class="section-body" style="margin-bottom:16px;">
+      <p>Word2Vec的词向量能够捕捉语义关系。经典的例子：<strong style="color:var(--accent)">king - man + woman ≈ queen</strong>。点击下方词汇，观察向量空间中的类比关系。</p>
+    </div>
+    <div class="demo-container">
+      <div class="demo-title">向量类比运算</div>
+      <svg viewBox="0 0 760 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:760px;">
+        <defs>
+          <marker id="arr-accent" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="var(--accent)"/>
+          </marker>
+          <marker id="arr-green" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="var(--green)"/>
+          </marker>
+          <linearGradient id="spaceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:var(--accent);stop-opacity:0.1"/>
+            <stop offset="100%" style="stop-color:var(--green);stop-opacity:0.1"/>
+          </linearGradient>
+        </defs>
+        
+        <text x="380" y="22" text-anchor="middle" fill="var(--text-faint)" font-size="12" font-family="Inter" font-weight="500">词向量空间中的类比关系</text>
+        
+        <!-- Vector space background -->
+        <rect x="100" y="50" width="560" height="200" rx="8" fill="url(#spaceGrad)" stroke="var(--border-strong)" stroke-width="1"/>
+        
+        <!-- Axes -->
+        <line x1="120" y1="230" x2="640" y2="230" stroke="var(--border-strong)" stroke-width="1"/>
+        <line x1="120" y1="70" x2="120" y2="230" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="640" y="245" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter">维度₁ (性别)</text>
+        <text x="105" y="70" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="Inter" transform="rotate(-90,105,70)">维度₂ (地位)</text>
+        
+        <!-- Word vectors -->
+        <!-- King: high status, male -->
+        <circle cx="350" cy="100" r="12" fill="var(--accent)" opacity="0.8"/>
+        <text x="350" y="85" text-anchor="middle" fill="var(--text)" font-size="13" font-family="Inter" font-weight="600">king</text>
+        <text x="350" y="125" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">[0.8, 0.7]</text>
+        
+        <!-- Queen: high status, female -->
+        <circle cx="350" cy="180" r="12" fill="var(--green)" opacity="0.8"/>
+        <text x="350" y="165" text-anchor="middle" fill="var(--text)" font-size="13" font-family="Inter" font-weight="600">queen</text>
+        <text x="350" y="200" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">[0.2, 0.7]</text>
+        
+        <!-- Man: low status, male -->
+        <circle cx="200" cy="100" r="10" fill="var(--orange)" opacity="0.7"/>
+        <text x="200" y="85" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter" font-weight="600">man</text>
+        <text x="200" y="125" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">[0.8, 0.1]</text>
+        
+        <!-- Woman: low status, female -->
+        <circle cx="200" cy="180" r="10" fill="#f472b6" opacity="0.7"/>
+        <text x="200" y="165" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter" font-weight="600">woman</text>
+        <text x="200" y="200" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-family="JetBrains Mono">[0.2, 0.1]</text>
+        
+        <!-- Arrows showing vector relationships -->
+        <!-- king → man (male-female direction) -->
+        <line x1="338" y1="108" x2="212" y2="108" stroke="#ef4444" stroke-width="2" marker-end="url(#arr-accent)" opacity="0.8"/>
+        <text x="275" y="100" text-anchor="middle" fill="#ef4444" font-size="9" font-family="JetBrains Mono">-man</text>
+        
+        <!-- woman → queen (low→high status) -->
+        <line x1="212" y1="172" x2="338" y2="172" stroke="var(--green)" stroke-width="2" marker-end="url(#arr-green)" opacity="0.8"/>
+        <text x="275" y="165" text-anchor="middle" fill="var(--green)" font-size="9" font-family="JetBrains Mono">+woman</text>
+        
+        <!-- Computation result -->
+        <rect x="500" y="100" width="220" height="80" rx="6" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="1.5"/>
+        <text x="610" y="120" text-anchor="middle" fill="var(--text)" font-size="12" font-family="Inter" font-weight="600">计算结果</text>
+        <text x="610" y="140" text-anchor="middle" fill="var(--accent)" font-size="11" font-family="JetBrains Mono">king - man + woman</text>
+        <text x="610" y="158" text-anchor="middle" fill="var(--text-muted)" font-size="11" font-family="JetBrains Mono">= [0.8, 0.7] - [0.8, 0.1] + [0.2, 0.1]</text>
+        <text x="610" y="176" text-anchor="middle" fill="var(--green)" font-size="12" font-family="JetBrains Mono" font-weight="600">≈ [0.2, 0.7] = queen</text>
+        
+        <!-- Explanation box -->
+        <rect x="100" y="260" width="560" height="30" rx="4" fill="var(--bg-surface)" stroke="var(--border)"/>
+        <text x="380" y="279" text-anchor="middle" fill="var(--text-muted)" font-size="11" font-family="Inter">词向量空间中的线性关系反映了语义关系：性别差异沿维度₁，地位差异沿维度₂</text>
+      </svg>
+    </div>
+  </section>
+
   <section class="section">
     <div class="section-label">数学原理</div>
     <div class="section-title">核心公式</div>
