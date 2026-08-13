@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang=\"zh-CN\">
+<html lang="zh-CN">
 <head>
-<meta charset=\"UTF-8\">
-<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>XGBoost — ML History</title>
-<link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap\" rel=\"stylesheet\">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../styles/base.css">
 <style>
 /* XGBoost-specific styles */
@@ -29,347 +29,347 @@
 </head>
 <body>
 
-<nav class=\"nav\">
-  <div class=\"nav-inner\">
-    <a href=\"../index.html\" class=\"nav-logo\"><div class=\"nav-logo-icon\">M</div>ML History</a>
-    <div class=\"nav-links\">
-      <a href=\"../index.html\">全部模型</a>
-      <a href=\"../04_deep_learning_boom/index.html\">04_deep_learning_boom阶段</a>
-      <span class=\"nav-badge\">2016</span>
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">M</div>ML History</a>
+    <div class="nav-links">
+      <a href="../index.html">全部模型</a>
+      <a href="../04_deep_learning_boom/index.html">04_deep_learning_boom阶段</a>
+      <span class="nav-badge">2016</span>
     </div>
   </div>
 </nav>
 
-<main class=\"container\">
+<main class="container">
 
-  <section class=\"hero\">
-    <div class=\"hero-eyebrow\">04_deep_learning_boom阶段 · 2016</div>
+  <section class="hero">
+    <div class="hero-eyebrow">04_deep_learning_boom阶段 · 2016</div>
     <h1>XGBoost</h1>
-    <p class=\"hero-subtitle\">可扩展的梯度提升树框架，通过二阶泰勒展开优化和正则化控制，成为机器学习竞赛的王者工具。</p>
-    <div class=\"hero-meta\">
-      <div class=\"hero-meta-item\"><span class=\"hero-meta-label\">年份</span><span class=\"hero-meta-value\">2016</span></div>
-      <div class=\"hero-meta-item\"><span class=\"hero-meta-label\">作者</span><span class=\"hero-meta-value\">Tianqi Chen</span></div>
-      <div class=\"hero-meta-item\"><span class=\"hero-meta-label\">类型</span><span class=\"hero-meta-value\">梯度提升树</span></div>
-      <div class=\"hero-meta-item\"><span class=\"hero-meta-label\">框架</span><span class=\"hero-meta-value\">Python / C++</span></div>
+    <p class="hero-subtitle">可扩展的梯度提升树框架，通过二阶泰勒展开优化和正则化控制，成为机器学习竞赛的王者工具。</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><span class="hero-meta-label">年份</span><span class="hero-meta-value">2016</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">作者</span><span class="hero-meta-value">Tianqi Chen</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">类型</span><span class="hero-meta-value">梯度提升树</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-label">框架</span><span class="hero-meta-value">Python / C++</span></div>
     </div>
   </section>
 
-  <div class=\"stats-grid\">
-    <div class=\"stat-cell\"><span class=\"stat-value\">2016</span><span class=\"stat-label\">提出年份</span></div>
-    <div class=\"stat-cell\"><span class=\"stat-value\">GBDT</span><span class=\"stat-label\">模型类型</span></div>
-    <div class=\"stat-cell\"><span class=\"stat-value\">✓</span><span class=\"stat-label\">有测试</span></div>
-    <div class=\"stat-cell\"><span class=\"stat-value\">Sklearn</span><span class=\"stat-label\">常用接口</span></div>
+  <div class="stats-grid">
+    <div class="stat-cell"><span class="stat-value">2016</span><span class="stat-label">提出年份</span></div>
+    <div class="stat-cell"><span class="stat-value">GBDT</span><span class="stat-label">模型类型</span></div>
+    <div class="stat-cell"><span class="stat-value">✓</span><span class="stat-label">有测试</span></div>
+    <div class="stat-cell"><span class="stat-value">Sklearn</span><span class="stat-label">常用接口</span></div>
   </div>
 
   <!-- SVG Diagram: Tree Structure -->
-  <section class=\"section\">
-    <div class=\"section-label\">核心架构</div>
-    <div class=\"section-title\">梯度提升树结构</div>
-    <div class=\"section-body\">
+  <section class="section">
+    <div class="section-label">核心架构</div>
+    <div class="section-title">梯度提升树结构</div>
+    <div class="section-body">
       <p><strong>XGBoost</strong> 的核心思想是用一棵棵决策树依次学习前序模型的残差。每一轮迭代都拟合当前模型的负梯度（一阶梯度）和二阶导数信息。</p>
     </div>
     
-    <div class=\"diagram-container\">
-      <svg viewBox=\"0 0 700 320\" xmlns=\"http://www.w3.org/2000/svg\" class=\"tree-svg\" style=\"max-width:700px;\">
+    <div class="diagram-container">
+      <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" class="tree-svg" style="max-width:700px;">
         <!-- Background grid -->
         <defs>
-          <pattern id=\"grid\" width=\"20\" height=\"20\" patternUnits=\"userSpaceOnUse\">
-            <path d=\"M 20 0 L 0 0 0 20\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"0.5\"/>
+          <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="var(--border)" stroke-width="0.5"/>
           </pattern>
           <!-- Arrow marker -->
-          <marker id=\"arrow-green\" markerWidth=\"10\" markerHeight=\"10\" refX=\"9\" refY=\"3\" orient=\"auto\" markerUnits=\"strokeWidth\">
-            <path d=\"M0,0 L0,6 L9,3 z\" fill=\"var(--green)\"/>
+          <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="var(--green)"/>
           </marker>
-          <marker id=\"arrow-accent\" markerWidth=\"10\" markerHeight=\"10\" refX=\"9\" refY=\"3\" orient=\"auto\" markerUnits=\"strokeWidth\">
-            <path d=\"M0,0 L0,6 L9,3 z\" fill=\"var(--accent)\"/>
+          <marker id="arrow-accent" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="var(--accent)"/>
           </marker>
           <!-- Gradient fills -->
-          <linearGradient id=\"nodeGrad\" x1=\"0%\" y1=\"0%\" x2=\"0%\" y2=\"100%\">
-            <stop offset=\"0%\" style=\"stop-color:var(--bg-elevated);stop-opacity:1\" />
-            <stop offset=\"100%\" style=\"stop-color:var(--bg-surface);stop-opacity:1\" />
+          <linearGradient id="nodeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:var(--bg-elevated);stop-opacity:1" />
+            <stop offset="100%" style="stop-color:var(--bg-surface);stop-opacity:1" />
           </linearGradient>
         </defs>
-        <rect width=\"700\" height=\"320\" fill=\"url(#grid)\" opacity=\"0.5\"/>
+        <rect width="700" height="320" fill="url(#grid)" opacity="0.5"/>
         
         <!-- Title -->
-        <text x=\"350\" y=\"28\" text-anchor=\"middle\" fill=\"var(--text-muted)\" font-size=\"13\" font-family=\"Inter\" font-weight=\"500\">集成学习：多棵树的加权组合</text>
+        <text x="350" y="28" text-anchor="middle" fill="var(--text-muted)" font-size="13" font-family="Inter" font-weight="500">集成学习：多棵树的加权组合</text>
         
         <!-- Individual trees -->
-        <g transform=\"translate(80, 80)\">
-          <rect width=\"120\" height=\"180\" rx=\"12\" fill=\"var(--bg-surface)\" stroke=\"var(--border-strong)\"/>
-          <text x=\"60\" y=\"20\" text-anchor=\"middle\" fill=\"var(--text-faint)\" font-size=\"10\" font-family=\"JetBrains Mono\">T₁</text>
+        <g transform="translate(80, 80)">
+          <rect width="120" height="180" rx="12" fill="var(--bg-surface)" stroke="var(--border-strong)"/>
+          <text x="60" y="20" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">T₁</text>
           <!-- Tree structure -->
-          <circle cx=\"60\" cy=\"45\" r=\"18\" fill=\"var(--bg-elevated)\" stroke=\"var(--accent)\" stroke-width=\"2\"/>
-          <text x=\"60\" y=\"49\" text-anchor=\"middle\" fill=\"var(--text)\" font-size=\"9\" font-family=\"JetBrains Mono\">x₁?</text>
-          <line x1=\"48\" y1=\"60\" x2=\"30\" y2=\"90\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\"/>
-          <line x1=\"72\" y1=\"60\" x2=\"90\" y2=\"90\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\"/>
-          <circle cx=\"30\" cy=\"105\" r=\"14\" fill=\"var(--green-dim)\" stroke=\"var(--green)\" stroke-width=\"1.5\"/>
-          <text x=\"30\" y=\"109\" text-anchor=\"middle\" fill=\"var(--green)\" font-size=\"8\" font-family=\"JetBrains Mono\">w₁</text>
-          <circle cx=\"90\" cy=\"105\" r=\"14\" fill=\"var(--green-dim)\" stroke=\"var(--green)\" stroke-width=\"1.5\"/>
-          <text x=\"90\" y=\"109\" text-anchor=\"middle\" fill=\"var(--green)\" font-size=\"8\" font-family=\"JetBrains Mono\">w₂</text>
+          <circle cx="60" cy="45" r="18" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
+          <text x="60" y="49" text-anchor="middle" fill="var(--text)" font-size="9" font-family="JetBrains Mono">x₁?</text>
+          <line x1="48" y1="60" x2="30" y2="90" stroke="var(--text-muted)" stroke-width="1.5"/>
+          <line x1="72" y1="60" x2="90" y2="90" stroke="var(--text-muted)" stroke-width="1.5"/>
+          <circle cx="30" cy="105" r="14" fill="var(--green-dim)" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="30" y="109" text-anchor="middle" fill="var(--green)" font-size="8" font-family="JetBrains Mono">w₁</text>
+          <circle cx="90" cy="105" r="14" fill="var(--green-dim)" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="90" y="109" text-anchor="middle" fill="var(--green)" font-size="8" font-family="JetBrains Mono">w₂</text>
         </g>
         
-        <g transform=\"translate(260, 80)\">
-          <rect width=\"120\" height=\"180\" rx=\"12\" fill=\"var(--bg-surface)\" stroke=\"var(--border-strong)\"/>
-          <text x=\"60\" y=\"20\" text-anchor=\"middle\" fill=\"var(--text-faint)\" font-size=\"10\" font-family=\"JetBrains Mono\">T₂</text>
-          <circle cx=\"60\" cy=\"45\" r=\"18\" fill=\"var(--bg-elevated)\" stroke=\"var(--accent)\" stroke-width=\"2\"/>
-          <text x=\"60\" y=\"49\" text-anchor=\"middle\" fill=\"var(--text)\" font-size=\"9\" font-family=\"JetBrains Mono\">x₂?</text>
-          <line x1=\"48\" y1=\"60\" x2=\"30\" y2=\"90\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\"/>
-          <line x1=\"72\" y1=\"60\" x2=\"90\" y2=\"90\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\"/>
-          <circle cx=\"30\" cy=\"105\" r=\"14\" fill=\"var(--green-dim)\" stroke=\"var(--green)\" stroke-width=\"1.5\"/>
-          <text x=\"30\" y=\"109\" text-anchor=\"middle\" fill=\"var(--green)\" font-size=\"8\" font-family=\"JetBrains Mono\">w₃</text>
-          <circle cx=\"90\" cy=\"105\" r=\"14\" fill=\"var(--green-dim)\" stroke=\"var(--green)\" stroke-width=\"1.5\"/>
-          <text x=\"90\" y=\"109\" text-anchor=\"middle\" fill=\"var(--green)\" font-size=\"8\" font-family=\"JetBrains Mono\">w₄</text>
+        <g transform="translate(260, 80)">
+          <rect width="120" height="180" rx="12" fill="var(--bg-surface)" stroke="var(--border-strong)"/>
+          <text x="60" y="20" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">T₂</text>
+          <circle cx="60" cy="45" r="18" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
+          <text x="60" y="49" text-anchor="middle" fill="var(--text)" font-size="9" font-family="JetBrains Mono">x₂?</text>
+          <line x1="48" y1="60" x2="30" y2="90" stroke="var(--text-muted)" stroke-width="1.5"/>
+          <line x1="72" y1="60" x2="90" y2="90" stroke="var(--text-muted)" stroke-width="1.5"/>
+          <circle cx="30" cy="105" r="14" fill="var(--green-dim)" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="30" y="109" text-anchor="middle" fill="var(--green)" font-size="8" font-family="JetBrains Mono">w₃</text>
+          <circle cx="90" cy="105" r="14" fill="var(--green-dim)" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="90" y="109" text-anchor="middle" fill="var(--green)" font-size="8" font-family="JetBrains Mono">w₄</text>
         </g>
         
-        <g transform=\"translate(440, 80)\">
-          <rect width=\"120\" height=\"180\" rx=\"12\" fill=\"var(--bg-surface)\" stroke=\"var(--border-strong)\"/>
-          <text x=\"60\" y=\"20\" text-anchor=\"middle\" fill=\"var(--text-faint)\" font-size=\"10\" font-family=\"JetBrains Mono\">Tₖ</text>
-          <circle cx=\"60\" cy=\"45\" r=\"18\" fill=\"var(--bg-elevated)\" stroke=\"var(--accent)\" stroke-width=\"2\"/>
-          <text x=\"60\" y=\"49\" text-anchor=\"middle\" fill=\"var(--text)\" font-size=\"9\" font-family=\"JetBrains Mono\">x₃?</text>
-          <line x1=\"48\" y1=\"60\" x2=\"30\" y2=\"90\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\"/>
-          <line x1=\"72\" y1=\"60\" x2=\"90\" y2=\"90\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\"/>
-          <circle cx=\"30\" cy=\"105\" r=\"14\" fill=\"var(--green-dim)\" stroke=\"var(--green)\" stroke-width=\"1.5\"/>
-          <text x=\"30\" y=\"109\" text-anchor=\"middle\" fill=\"var(--green)\" font-size=\"8\" font-family=\"JetBrains Mono\">w₅</text>
-          <circle cx=\"90\" cy=\"105\" r=\"14\" fill=\"var(--green-dim)\" stroke=\"var(--green)\" stroke-width=\"1.5\"/>
-          <text x=\"90\" y=\"109\" text-anchor=\"middle\" fill=\"var(--green)\" font-size=\"8\" font-family=\"JetBrains Mono\">w₆</text>
+        <g transform="translate(440, 80)">
+          <rect width="120" height="180" rx="12" fill="var(--bg-surface)" stroke="var(--border-strong)"/>
+          <text x="60" y="20" text-anchor="middle" fill="var(--text-faint)" font-size="10" font-family="JetBrains Mono">Tₖ</text>
+          <circle cx="60" cy="45" r="18" fill="var(--bg-elevated)" stroke="var(--accent)" stroke-width="2"/>
+          <text x="60" y="49" text-anchor="middle" fill="var(--text)" font-size="9" font-family="JetBrains Mono">x₃?</text>
+          <line x1="48" y1="60" x2="30" y2="90" stroke="var(--text-muted)" stroke-width="1.5"/>
+          <line x1="72" y1="60" x2="90" y2="90" stroke="var(--text-muted)" stroke-width="1.5"/>
+          <circle cx="30" cy="105" r="14" fill="var(--green-dim)" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="30" y="109" text-anchor="middle" fill="var(--green)" font-size="8" font-family="JetBrains Mono">w₅</text>
+          <circle cx="90" cy="105" r="14" fill="var(--green-dim)" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="90" y="109" text-anchor="middle" fill="var(--green)" font-size="8" font-family="JetBrains Mono">w₆</text>
         </g>
         
         <!-- Plus signs -->
-        <text x=\"210\" y=\"175\" text-anchor=\"middle\" fill=\"var(--text-faint)\" font-size=\"20\" font-weight=\"300\">+</text>
-        <text x=\"390\" y=\"175\" text-anchor=\"middle\" fill=\"var(--text-faint)\" font-size=\"20\" font-weight=\"300\">+</text>
+        <text x="210" y="175" text-anchor="middle" fill="var(--text-faint)" font-size="20" font-weight="300">+</text>
+        <text x="390" y="175" text-anchor="middle" fill="var(--text-faint)" font-size="20" font-weight="300">+</text>
         
         <!-- Summation arrow -->
-        <line x1=\"350\" y1=\"270\" x2=\"350\" y2=\"300\" stroke=\"var(--accent)\" stroke-width=\"2\" marker-end=\"url(#arrow-accent)\"/>
-        <text x=\"350\" y=\"315\" text-anchor=\"middle\" fill=\"var(--accent)\" font-size=\"11\" font-family=\"JetBrains Mono\">输出 = Σ fᵢ(x)</text>
+        <line x1="350" y1="270" x2="350" y2="300" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow-accent)"/>
+        <text x="350" y="315" text-anchor="middle" fill="var(--accent)" font-size="11" font-family="JetBrains Mono">输出 = Σ fᵢ(x)</text>
       </svg>
     </div>
-    <p class=\"diagram-caption\">图：XGBoost 使用多棵决策树串联合成最终预测结果</p>
+    <p class="diagram-caption">图：XGBoost 使用多棵决策树串联合成最终预测结果</p>
   </section>
 
   <!-- SVG Diagram: Second-order Taylor Expansion -->
-  <section class=\"section\">
-    <div class=\"section-label\">数学原理</div>
-    <div class=\"section-title\">二阶泰勒展开优化</div>
-    <div class=\"section-body\">
+  <section class="section">
+    <div class="section-label">数学原理</div>
+    <div class="section-title">二阶泰勒展开优化</div>
+    <div class="section-body">
       <p>XGBoost 的关键创新在于使用<strong>二阶泰勒展开</strong>近似损失函数。通过同时利用一阶导数（梯度）和二阶导数（Hessian），可以更早收敛并获得更精确的树分裂点选择。</p>
     </div>
     
-    <div class=\"diagram-container\">
-      <svg viewBox=\"0 0 700 300\" xmlns=\"http://www.w3.org/2000/svg\" style=\"max-width:700px;\">
+    <div class="diagram-container">
+      <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;">
         <defs>
-          <linearGradient id=\"curveGrad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">
-            <stop offset=\"0%\" style=\"stop-color:var(--accent);stop-opacity:1\" />
-            <stop offset=\"100%\" style=\"stop-color:var(--blue);stop-opacity:1\" />
+          <linearGradient id="curveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:var(--accent);stop-opacity:1" />
+            <stop offset="100%" style="stop-color:var(--blue);stop-opacity:1" />
           </linearGradient>
-          <linearGradient id=\"tangentGrad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">
-            <stop offset=\"0%\" style=\"stop-color:var(--orange);stop-opacity:0.6\" />
-            <stop offset=\"100%\" style=\"stop-color:var(--orange);stop-opacity:0.2\" />
+          <linearGradient id="tangentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:var(--orange);stop-opacity:0.6" />
+            <stop offset="100%" style="stop-color:var(--orange);stop-opacity:0.2" />
           </linearGradient>
         </defs>
         
         <!-- Title -->
-        <text x=\"350\" y=\"28\" text-anchor=\"middle\" fill=\"var(--text-muted)\" font-size=\"13\" font-family=\"Inter\" font-weight=\"500\">损失函数的二阶近似</text>
+        <text x="350" y="28" text-anchor="middle" fill="var(--text-muted)" font-size="13" font-family="Inter" font-weight="500">损失函数的二阶近似</text>
         
         <!-- Coordinate axes -->
-        <line x1=\"80\" y1=\"250\" x2=\"650\" y2=\"250\" stroke=\"var(--text-faint)\" stroke-width=\"1.5\"/>
-        <line x1=\"80\" y1=\"250\" x2=\"80\" y2=\"40\" stroke=\"var(--text-faint)\" stroke-width=\"1.5\"/>
-        <text x=\"60\" y=\"265\" fill=\"var(--text-faint)\" font-size=\"11\" font-family=\"JetBrains Mono\">0</text>
-        <text x=\"660\" y=\"255\" fill=\"var(--text-faint)\" font-size=\"11\" font-family=\"JetBrains Mono\">x</text>
-        <text x=\"65\" y=\"35\" fill=\"var(--text-faint)\" font-size=\"11\" font-family=\"JetBrains Mono\">y</text>
+        <line x1="80" y1="250" x2="650" y2="250" stroke="var(--text-faint)" stroke-width="1.5"/>
+        <line x1="80" y1="250" x2="80" y2="40" stroke="var(--text-faint)" stroke-width="1.5"/>
+        <text x="60" y="265" fill="var(--text-faint)" font-size="11" font-family="JetBrains Mono">0</text>
+        <text x="660" y="255" fill="var(--text-faint)" font-size="11" font-family="JetBrains Mono">x</text>
+        <text x="65" y="35" fill="var(--text-faint)" font-size="11" font-family="JetBrains Mono">y</text>
         
         <!-- Loss curve (convex) -->
-        <path d=\"M 100 230 Q 250 180 350 120 Q 450 60 600 40\" fill=\"none\" stroke=\"url(#curveGrad)\" stroke-width=\"3\"/>
-        <text x=\"620\" y=\"35\" fill=\"var(--accent)\" font-size=\"11\" font-family=\"JetBrains Mono\">L(θ)</text>
+        <path d="M 100 230 Q 250 180 350 120 Q 450 60 600 40" fill="none" stroke="url(#curveGrad)" stroke-width="3"/>
+        <text x="620" y="35" fill="var(--accent)" font-size="11" font-family="JetBrains Mono">L(θ)</text>
         
         <!-- Taylor approximation (quadratic) -->
-        <path d=\"M 120 225 Q 250 175 350 120 Q 450 65 580 45\" fill=\"none\" stroke=\"var(--green)\" stroke-width=\"2\" stroke-dasharray=\"6,3\" opacity=\"0.7\"/>
-        <text x=\"580\" y=\"55\" fill=\"var(--green)\" font-size=\"10\" font-family=\"JetBrains Mono\">近似</text>
+        <path d="M 120 225 Q 250 175 350 120 Q 450 65 580 45" fill="none" stroke="var(--green)" stroke-width="2" stroke-dasharray="6,3" opacity="0.7"/>
+        <text x="580" y="55" fill="var(--green)" font-size="10" font-family="JetBrains Mono">近似</text>
         
         <!-- Point of expansion -->
-        <circle cx=\"350\" cy=\"120\" r=\"6\" fill=\"var(--accent)\" stroke=\"var(--bg)\" stroke-width=\"2\"/>
-        <circle cx=\"350\" cy=\"120\" r=\"12\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"1\" opacity=\"0.5\"/>
-        <text x=\"360\" y=\"115\" fill=\"var(--text)\" font-size=\"11\" font-family=\"JetBrains Mono\">θ₀</text>
+        <circle cx="350" cy="120" r="6" fill="var(--accent)" stroke="var(--bg)" stroke-width="2"/>
+        <circle cx="350" cy="120" r="12" fill="none" stroke="var(--accent)" stroke-width="1" opacity="0.5"/>
+        <text x="360" y="115" fill="var(--text)" font-size="11" font-family="JetBrains Mono">θ₀</text>
         
         <!-- Tangent line (first derivative) -->
-        <line x1=\"200\" y1=\"180\" x2=\"500\" y2=\"60\" stroke=\"var(--orange)\" stroke-width=\"1.5\" stroke-dasharray=\"4,4\" opacity=\"0.6\"/>
-        <text x=\"500\" y=\"55\" fill=\"var(--orange)\" font-size=\"10\" font-family=\"JetBrains Mono\">g = ∂L/∂θ</text>
+        <line x1="200" y1="180" x2="500" y2="60" stroke="var(--orange)" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.6"/>
+        <text x="500" y="55" fill="var(--orange)" font-size="10" font-family="JetBrains Mono">g = ∂L/∂θ</text>
         
         <!-- Second derivative indicator -->
-        <path d=\"M 350 120 L 350 160\" stroke=\"var(--blue)\" stroke-width=\"2\" marker-end=\"url(#arrow-green)\"/>
-        <text x=\"360\" y=\"145\" fill=\"var(--blue)\" font-size=\"10\" font-family=\"JetBrains Mono\">h = ∂²L/∂θ²</text>
+        <path d="M 350 120 L 350 160" stroke="var(--blue)" stroke-width="2" marker-end="url(#arrow-green)"/>
+        <text x="360" y="145" fill="var(--blue)" font-size="10" font-family="JetBrains Mono">h = ∂²L/∂θ²</text>
         
         <!-- Formula annotations -->
-        <g transform=\"translate(480, 180)\">
-          <rect width=\"200\" height=\"80\" rx=\"8\" fill=\"var(--bg-surface)\" stroke=\"var(--border-strong)\"/>
-          <text x=\"10\" y=\"20\" fill=\"var(--text-faint)\" font-size=\"9\" font-family=\"JetBrains Mono\">二阶展开:</text>
-          <text x=\"10\" y=\"40\" fill=\"var(--text)\" font-size=\"11\" font-family=\"JetBrains Mono\">L ≈ L(θ₀) + g·Δθ</text>
-          <text x=\"10\" y=\"58\" fill=\"var(--text)\" font-size=\"11\" font-family=\"JetBrains Mono\">     + ½h·Δθ²</text>
-          <text x=\"10\" y=\"73\" fill=\"var(--text-faint)\" font-size=\"9\" font-family=\"JetBrains Mono\">g:一阶导, h:二阶导</text>
+        <g transform="translate(480, 180)">
+          <rect width="200" height="80" rx="8" fill="var(--bg-surface)" stroke="var(--border-strong)"/>
+          <text x="10" y="20" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">二阶展开:</text>
+          <text x="10" y="40" fill="var(--text)" font-size="11" font-family="JetBrains Mono">L ≈ L(θ₀) + g·Δθ</text>
+          <text x="10" y="58" fill="var(--text)" font-size="11" font-family="JetBrains Mono">     + ½h·Δθ²</text>
+          <text x="10" y="73" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono">g:一阶导, h:二阶导</text>
         </g>
         
         <!-- Legend -->
-        <g transform=\"translate(40, 280)\">
-          <line x1=\"0\" y1=\"0\" x2=\"20\" y2=\"0\" stroke=\"var(--accent)\" stroke-width=\"3\"/>
-          <text x=\"25\" y=\"4\" fill=\"var(--text-muted)\" font-size=\"10\" font-family=\"Inter\">真实损失</text>
-          <line x1=\"100\" y1=\"0\" x2=\"120\" y2=\"0\" stroke=\"var(--green)\" stroke-width=\"2\" stroke-dasharray=\"6,3\"/>
-          <text x=\"125\" y=\"4\" fill=\"var(--text-muted)\" font-size=\"10\" font-family=\"Inter\">二阶近似</text>
-          <line x1=\"210\" y1=\"0\" x2=\"230\" y2=\"0\" stroke=\"var(--orange)\" stroke-width=\"1.5\" stroke-dasharray=\"4,4\"/>
-          <text x=\"235\" y=\"4\" fill=\"var(--text-muted)\" font-size=\"10\" font-family=\"Inter\">一阶梯度</text>
+        <g transform="translate(40, 280)">
+          <line x1="0" y1="0" x2="20" y2="0" stroke="var(--accent)" stroke-width="3"/>
+          <text x="25" y="4" fill="var(--text-muted)" font-size="10" font-family="Inter">真实损失</text>
+          <line x1="100" y1="0" x2="120" y2="0" stroke="var(--green)" stroke-width="2" stroke-dasharray="6,3"/>
+          <text x="125" y="4" fill="var(--text-muted)" font-size="10" font-family="Inter">二阶近似</text>
+          <line x1="210" y1="0" x2="230" y2="0" stroke="var(--orange)" stroke-width="1.5" stroke-dasharray="4,4"/>
+          <text x="235" y="4" fill="var(--text-muted)" font-size="10" font-family="Inter">一阶梯度</text>
         </g>
       </svg>
     </div>
-    <p class=\"diagram-caption\">图：XGBoost 使用二阶泰勒展开精确逼近损失函数</p>
+    <p class="diagram-caption">图：XGBoost 使用二阶泰勒展开精确逼近损失函数</p>
   </section>
 
   <!-- Regularization Diagram -->
-  <section class=\"section\">
-    <div class=\"section-label\">正则化</div>
-    <div class=\"section-title\">防止过拟合的正则化项</div>
-    <div class=\"section-body\">
+  <section class="section">
+    <div class="section-label">正则化</div>
+    <div class="section-title">防止过拟合的正则化项</div>
+    <div class="section-body">
       <p>XGBoost 在目标函数中显式加入<strong>正则化项</strong>，控制树的复杂度和叶子权重，从而有效防止过拟合。这是 XGBoost 相比传统 GBDT 的重要改进。</p>
     </div>
     
-    <div class=\"formula-card\">
-      <div class=\"formula-label\">目标函数</div>
-      <div class=\"formula\">
-        <span style=\"color: var(--text);\">Obj</span> = 
-        <span style=\"color: var(--green);\">∑ <sub>i</sub> <span style=\"color: var(--text-faint);\">l</span>(y<sub>i</sub>, f̂<sub>i</sub>)</span> 
+    <div class="formula-card">
+      <div class="formula-label">目标函数</div>
+      <div class="formula">
+        <span style="color: var(--text);">Obj</span> = 
+        <span style="color: var(--green);">∑ <sub>i</sub> <span style="color: var(--text-faint);">l</span>(y<sub>i</sub>, f̂<sub>i</sub>)</span> 
         + 
-        <span style=\"color: var(--accent);\">Ω(f)</span>
+        <span style="color: var(--accent);">Ω(f)</span>
         <br/><br/>
-        <span style=\"color: var(--accent);\">Ω(f) =</span> 
-        <span style=\"color: var(--green);\">γT</span> 
+        <span style="color: var(--accent);">Ω(f) =</span> 
+        <span style="color: var(--green);">γT</span> 
         + 
-        <span style=\"color: var(--blue);\">½λ ∑<sub>j</sub> w<sub>j</sub><sup>2</sup></span>
+        <span style="color: var(--blue);">½λ ∑<sub>j</sub> w<sub>j</sub><sup>2</sup></span>
       </div>
-      <div style=\"display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px;\">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px;">
         <div>
-          <div style=\"font-size: 12px; color: var(--green); font-weight: 600; margin-bottom: 6px;\">γ (Gamma) · 叶子节点惩罚</div>
-          <div style=\"font-size: 13px; color: var(--text-muted); line-height: 1.6;\">控制树的复杂度。γ 越大，树越简单。只有当分裂带来的增益大于 γ 时才会继续分裂。</div>
+          <div style="font-size: 12px; color: var(--green); font-weight: 600; margin-bottom: 6px;">γ (Gamma) · 叶子节点惩罚</div>
+          <div style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">控制树的复杂度。γ 越大，树越简单。只有当分裂带来的增益大于 γ 时才会继续分裂。</div>
         </div>
         <div>
-          <div style=\"font-size: 12px; color: var(--blue); font-weight: 600; margin-bottom: 6px;\">λ (Lambda) · L2 正则化</div>
-          <div style=\"font-size: 13px; color: var(--text-muted); line-height: 1.6;\">对叶子节点的权重施加 L2 正则化，防止单个叶子权重过大，提升模型泛化能力。</div>
+          <div style="font-size: 12px; color: var(--blue); font-weight: 600; margin-bottom: 6px;">λ (Lambda) · L2 正则化</div>
+          <div style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">对叶子节点的权重施加 L2 正则化，防止单个叶子权重过大，提升模型泛化能力。</div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- History Timeline -->
-  <section class=\"section\">
-    <div class=\"section-label\">历史背景</div>
-    <div class=\"section-title\">从问题到突破</div>
-    <div class=\"section-body\">
+  <section class="section">
+    <div class="section-label">历史背景</div>
+    <div class="section-title">从问题到突破</div>
+    <div class="section-body">
       <p><strong>Tianqi Chen</strong> 在 <strong>2016</strong> 年提出了 XGBoost，这是机器学习发展史上的一个重要里程碑。XGBoost 的全称是 eXtreme Gradient Boosting，以其高效的分布式计算和正则化能力著称。</p>
       <p>XGBoost 在 Kaggle 等数据科学竞赛中大放异彩，多次成为获胜方案的核心算法。其核心理念是将梯度提升与正则化、二阶优化相结合，实现了精度和效率的双重突破。</p>
     </div>
-    <div class=\"timeline\">
-      <div class=\"timeline-item\">
-        <div class=\"timeline-year\">2014</div>
-        <div class=\"timeline-title\">陈天奇开始研究可扩展的梯度提升</div>
-        <div class=\"timeline-desc\">在加州大学伯克利分校攻读博士期间，关注机器学习系统的性能瓶颈</div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">2014</div>
+        <div class="timeline-title">陈天奇开始研究可扩展的梯度提升</div>
+        <div class="timeline-desc">在加州大学伯克利分校攻读博士期间，关注机器学习系统的性能瓶颈</div>
       </div>
-      <div class=\"timeline-item\">
-        <div class=\"timeline-year\">2016</div>
-        <div class=\"timeline-title\">XGBoost 论文发表</div>
-        <div class=\"timeline-desc\">《XGBoost: A Scalable Tree Boosting System》在 KDD 会议上发表</div>
+      <div class="timeline-item">
+        <div class="timeline-year">2016</div>
+        <div class="timeline-title">XGBoost 论文发表</div>
+        <div class="timeline-desc">《XGBoost: A Scalable Tree Boosting System》在 KDD 会议上发表</div>
       </div>
-      <div class=\"timeline-item\">
-        <div class=\"timeline-year\">2016-2020</div>
-        <div class=\"timeline-title\">统治结构化数据竞赛</div>
-        <div class=\"timeline-desc\">在 Kaggle 平台上成为最流行的算法之一，大量获胜方案依赖 XGBoost</div>
+      <div class="timeline-item">
+        <div class="timeline-year">2016-2020</div>
+        <div class="timeline-title">统治结构化数据竞赛</div>
+        <div class="timeline-desc">在 Kaggle 平台上成为最流行的算法之一，大量获胜方案依赖 XGBoost</div>
       </div>
     </div>
   </section>
 
   <!-- Core Formulas -->
-  <section class=\"section\">
-    <div class=\"section-label\">数学原理</div>
-    <div class=\"section-title\">核心公式</div>
+  <section class="section">
+    <div class="section-label">数学原理</div>
+    <div class="section-title">核心公式</div>
     
-    <div class=\"formula-card\">
-      <div class=\"formula-label\">一阶泰勒展开</div>
-      <div class=\"formula\">f̂<sub>i</sub> = <span style=\"color: var(--accent);\">∑<sub>k=1</sub><sup>K</sup> f<sub>k</sub>(x<sub>i</sub>)</span></div>
-      <div class=\"formula-note\">预测值 = 所有树的输出之和</div>
+    <div class="formula-card">
+      <div class="formula-label">一阶泰勒展开</div>
+      <div class="formula">f̂<sub>i</sub> = <span style="color: var(--accent);">∑<sub>k=1</sub><sup>K</sup> f<sub>k</sub>(x<sub>i</sub>)</span></div>
+      <div class="formula-note">预测值 = 所有树的输出之和</div>
     </div>
     
-    <div class=\"formula-card\">
-      <div class=\"formula-label\">二阶泰勒展开目标函数</div>
-      <div class=\"formula\">
-        <span style=\"color: var(--text-faint);\">Obj ≈ </span>
-        <span style=\"color: var(--green);\">∑<sub>i</sub>[ l(y<sub>i</sub>, f̂<sub>i</sub><sup>(t)</sup>) + g<sub>i</sub>f<sub>t</sub>(x<sub>i</sub>) + ½h<sub>i</sub>f<sub>t</sub><sup>2</sup>(x<sub>i</sub>) ]</span>
-        <span style=\"color: var(--accent);\"> + Ω(f<sub>t</sub>)</span>
+    <div class="formula-card">
+      <div class="formula-label">二阶泰勒展开目标函数</div>
+      <div class="formula">
+        <span style="color: var(--text-faint);">Obj ≈ </span>
+        <span style="color: var(--green);">∑<sub>i</sub>[ l(y<sub>i</sub>, f̂<sub>i</sub><sup>(t)</sup>) + g<sub>i</sub>f<sub>t</sub>(x<sub>i</sub>) + ½h<sub>i</sub>f<sub>t</sub><sup>2</sup>(x<sub>i</sub>) ]</span>
+        <span style="color: var(--accent);"> + Ω(f<sub>t</sub>)</span>
         <br/><br/>
-        <span style=\"color: var(--text-faint);\">其中 g<sub>i</sub> = </span><span style=\"color: var(--orange);\">∂l(y<sub>i</sub>, f̂<sub>i</sub><sup>(t-1)</sup>) / ∂f̂<sub>i</sub><sup>(t-1)</sup></span>
-        <span style=\"color: var(--text-faint);\">， h<sub>i</sub> = </span><span style=\"color: var(--blue);\">∂²l(y<sub>i</sub>, f̂<sub>i</sub><sup>(t-1)</sup>) / ∂f̂<sub>i</sub><sup>2(t-1)</sup></span>
+        <span style="color: var(--text-faint);">其中 g<sub>i</sub> = </span><span style="color: var(--orange);">∂l(y<sub>i</sub>, f̂<sub>i</sub><sup>(t-1)</sup>) / ∂f̂<sub>i</sub><sup>(t-1)</sup></span>
+        <span style="color: var(--text-faint);">， h<sub>i</sub> = </span><span style="color: var(--blue);">∂²l(y<sub>i</sub>, f̂<sub>i</sub><sup>(t-1)</sup>) / ∂f̂<sub>i</sub><sup>2(t-1)</sup></span>
       </div>
-      <div class=\"formula-note\">g 为梯度（一阶导数），h 为 Hessian（二阶导数）</div>
+      <div class="formula-note">g 为梯度（一阶导数），h 为 Hessian（二阶导数）</div>
     </div>
     
-    <div class=\"formula-card\">
-      <div class=\"formula-label\">叶子权重最优解</div>
-      <div class=\"formula\">w<sub>j</sub><sup>*</sup> = <span style=\"color: var(--green);\">-G<sub>j</sub> / (H<sub>j</sub> + λ)</span></div>
-      <div class=\"formula-note\">G<sub>j</sub> = ∑<sub>i∈I<sub>j</sub></sub> g<sub>i</sub>，H<sub>j</sub> = ∑<sub>i∈I<sub>j</sub></sub> h<sub>i</sub>，I<sub>j</sub> 为叶子 j 的样本集合</div>
+    <div class="formula-card">
+      <div class="formula-label">叶子权重最优解</div>
+      <div class="formula">w<sub>j</sub><sup>*</sup> = <span style="color: var(--green);">-G<sub>j</sub> / (H<sub>j</sub> + λ)</span></div>
+      <div class="formula-note">G<sub>j</sub> = ∑<sub>i∈I<sub>j</sub></sub> g<sub>i</sub>，H<sub>j</sub> = ∑<sub>i∈I<sub>j</sub></sub> h<sub>i</sub>，I<sub>j</sub> 为叶子 j 的样本集合</div>
     </div>
     
-    <div class=\"formula-card\">
-      <div class=\"formula-label\">分裂增益公式</div>
-      <div class=\"formula\">
-        Gain = <span style=\"color: var(--green);\">½</span>[
-        <span style=\"color: var(--accent);\">(G<sub>L</sub><sup>2</sup> / (H<sub>L</sub> + λ))</span> + 
-        <span style=\"color: var(--accent);\">(G<sub>R</sub><sup>2</sup> / (H<sub>R</sub> + λ))</span> - 
-        <span style=\"color: var(--orange);\">(G<sub>Total</sub><sup>2</sup> / (H<sub>Total</sub> + λ))</span>
-        ] - <span style=\"color: var(--blue);\">γ</span>
+    <div class="formula-card">
+      <div class="formula-label">分裂增益公式</div>
+      <div class="formula">
+        Gain = <span style="color: var(--green);">½</span>[
+        <span style="color: var(--accent);">(G<sub>L</sub><sup>2</sup> / (H<sub>L</sub> + λ))</span> + 
+        <span style="color: var(--accent);">(G<sub>R</sub><sup>2</sup> / (H<sub>R</sub> + λ))</span> - 
+        <span style="color: var(--orange);">(G<sub>Total</sub><sup>2</sup> / (H<sub>Total</sub> + λ))</span>
+        ] - <span style="color: var(--blue);">γ</span>
       </div>
-      <div class=\"formula-note\">只有当 Gain &gt; 0 时才进行分裂，γ 惩罚新增叶子节点</div>
+      <div class="formula-note">只有当 Gain &gt; 0 时才进行分裂，γ 惩罚新增叶子节点</div>
     </div>
   </section>
 
   <!-- Code Implementation -->
-  <section class=\"section\">
-    <div class=\"section-label\">代码实现</div>
-    <div class=\"section-title\">model.py 核心逻辑</div>
-    <div class=\"code-block\">
-      <div class=\"code-header\">
-        <div class=\"code-dots\"><div class=\"code-dot\"></div><div class=\"code-dot\"></div><div class=\"code-dot\"></div></div>
-        <span class=\"code-lang\">Python · model.py</span>
+  <section class="section">
+    <div class="section-label">代码实现</div>
+    <div class="section-title">model.py 核心逻辑</div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-lang">Python · model.py</span>
       </div>
-      <div class=\"code-body\"><pre><span class=\"kw\">class</span> <span class=\"cls\">XGBoostTree</span>:
-    <span class=\"kw\">def</span> <span class=\"fn\">__init__</span>(self, max_depth=<span class=\"num\">3</span>):
+      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">XGBoostTree</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, max_depth=<span class="num">3</span>):
         self.max_depth = max_depth
-        self.tree = <span class=\"kw\">None</span>
+        self.tree = <span class="kw">None</span>
     
-    <span class=\"kw\">def</span> <span class=\"fn\">fit</span>(self, X, gradients, hessians):
-        <span class=\"cm\"># 递归构建树</span>
-        self.tree = self._build_tree(X, gradients, hessians, depth=<span class=\"num\">0</span>)
+    <span class="kw">def</span> <span class="fn">fit</span>(self, X, gradients, hessians):
+        <span class="cm"># 递归构建树</span>
+        self.tree = self._build_tree(X, gradients, hessians, depth=<span class="num">0</span>)
     
-    <span class=\"kw\">def</span> <span class=\"fn\">_build_tree</span>(self, X, g, h, depth):
-        <span class=\"cm\"># 叶子节点条件</span>
-        <span class=\"kw\">if</span> depth >= self.max_depth <span class=\"kw\">or</span> len(np.unique(g)) <= <span class=\"num\">1</span>:
-            <span class=\"kw\">return</span> {<span class=\"str\">'leaf'</span>: <span class=\"kw\">True</span>, <span class=\"str\">'value'</span>: np.sum(g) / (np.sum(h) + <span class=\"num\">1e-8</span>)}
+    <span class="kw">def</span> <span class="fn">_build_tree</span>(self, X, g, h, depth):
+        <span class="cm"># 叶子节点条件</span>
+        <span class="kw">if</span> depth >= self.max_depth <span class="kw">or</span> len(np.unique(g)) <= <span class="num">1</span>:
+            <span class="kw">return</span> {<span class="str">'leaf'</span>: <span class="kw">True</span>, <span class="str">'value'</span>: np.sum(g) / (np.sum(h) + <span class="num">1e-8</span>)}
         
-        <span class=\"cm\"># 寻找最佳分裂点</span>
-        best_gain = -<span class=\"num\">1</span>
-        <span class=\"kw\">for</span> feature <span class=\"kw\">in</span> range(X.shape[<span class=\"num\">1</span>]):
-            <span class=\"cm\"># 遍历所有可能的阈值</span>
-            <span class=\"cm\"># 计算分裂增益</span>
-            <span class=\"cm\"># gain = (G_L²/(H_L+λ)) + (G_R²/(H_R+λ)) - γ</span>
-            <span class=\"kw\">pass</span>
+        <span class="cm"># 寻找最佳分裂点</span>
+        best_gain = -<span class="num">1</span>
+        <span class="kw">for</span> feature <span class="kw">in</span> range(X.shape[<span class="num">1</span>]):
+            <span class="cm"># 遍历所有可能的阈值</span>
+            <span class="cm"># 计算分裂增益</span>
+            <span class="cm"># gain = (G_L²/(H_L+λ)) + (G_R²/(H_R+λ)) - γ</span>
+            <span class="kw">pass</span>
 
-<span class=\"kw\">class</span> <span class=\"cls\">XGBoost</span>:
-    <span class=\"kw\">def</span> <span class=\"fn\">__init__</span>(self, n_estimators=<span class=\"num\">50</span>, max_depth=<span class=\"num\">3</span>, 
-                 learning_rate=<span class=\"num\">0.01</span>):
+<span class="kw">class</span> <span class="cls">XGBoost</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, n_estimators=<span class="num">50</span>, max_depth=<span class="num">3</span>, 
+                 learning_rate=<span class="num">0.01</span>):
         self.n_estimators = n_estimators
         self.max_depth = max_depth
         self.learning_rate = learning_rate
         self.trees = []
     
-    <span class=\"kw\">def</span> <span class=\"fn\">fit</span>(self, X, y):
+    <span class="kw">def</span> <span class="fn">fit</span>(self, X, y):
         predictions = np.full(n, initial_pred)
-        <span class=\"kw\">for</span> i <span class=\"kw\">in</span> range(self.n_estimators):
-            gradients = probs - y           <span class=\"cm\"># 一阶梯度</span>
-            hessians = probs * (<span class=\"num\">1</span> - probs)  <span class=\"cm\"># 二阶Hessian</span>
+        <span class="kw">for</span> i <span class="kw">in</span> range(self.n_estimators):
+            gradients = probs - y           <span class="cm"># 一阶梯度</span>
+            hessians = probs * (<span class="num">1</span> - probs)  <span class="cm"># 二阶Hessian</span>
             tree = XGBoostTree(max_depth=self.max_depth)
             tree.fit(X, gradients, hessians)
             predictions += self.learning_rate * tree.predict(X)
@@ -378,57 +378,57 @@
   </section>
 
   <!-- Interactive Demo -->
-  <section class=\"section\">
-    <div class=\"section-label\">交互演示</div>
-    <div class=\"section-title\">正则化参数调节</div>
-    <div class=\"section-body\">
+  <section class="section">
+    <div class="section-label">交互演示</div>
+    <div class="section-title">正则化参数调节</div>
+    <div class="section-body">
       <p>调整正则化参数 <strong>γ (gamma)</strong> 和 <strong>λ (lambda)</strong>，观察决策树结构如何变化。γ 控制树的复杂度，λ 控制叶子权重的平滑程度。</p>
     </div>
     
-    <div class=\"demo-container\">
-      <div class=\"demo-title\">参数控制面板</div>
+    <div class="demo-container">
+      <div class="demo-title">参数控制面板</div>
       
-      <div style=\"display: grid; grid-template-columns: 1fr 1fr; gap: 24px;\">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
         <div>
-          <label class=\"demo-slider-label\">γ (Gamma) - 叶子节点惩罚: <span id=\"gammaValue\">0.0</span></label>
-          <input type=\"range\" class=\"demo-slider\" id=\"gammaSlider\" min=\"0\" max=\"50\" value=\"0\" step=\"1\">
-          <div style=\"display: flex; justify-content: space-between; font-size: 11px; color: var(--text-faint);\">
+          <label class="demo-slider-label">γ (Gamma) - 叶子节点惩罚: <span id="gammaValue">0.0</span></label>
+          <input type="range" class="demo-slider" id="gammaSlider" min="0" max="50" value="0" step="1">
+          <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-faint);">
             <span>0.0</span><span>0.5</span><span>1.0</span><span>1.5</span><span>2.0</span>
           </div>
           
-          <label class=\"demo-slider-label\" style=\"margin-top: 16px;\">λ (Lambda) - L2正则化: <span id=\"lambdaValue\">1.0</span></label>
-          <input type=\"range\" class=\"demo-slider\" id=\"lambdaSlider\" min=\"0\" max=\"200\" value=\"100\" step=\"1\">
-          <div style=\"display: flex; justify-content: space-between; font-size: 11px; color: var(--text-faint);\">
+          <label class="demo-slider-label" style="margin-top: 16px;">λ (Lambda) - L2正则化: <span id="lambdaValue">1.0</span></label>
+          <input type="range" class="demo-slider" id="lambdaSlider" min="0" max="200" value="100" step="1">
+          <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-faint);">
             <span>0.0</span><span>0.5</span><span>1.0</span><span>1.5</span><span>2.0</span>
           </div>
         </div>
         
         <div>
-          <div class=\"demo-output\" id=\"treeOutput\">
+          <div class="demo-output" id="treeOutput">
 正在构建树...
           </div>
         </div>
       </div>
       
-      <div style=\"margin-top: 20px;\">
-        <button class=\"demo-btn\" onclick=\"runDemo()\">运行演示</button>
-        <button class=\"demo-btn\" style=\"background: var(--bg-elevated); margin-left: 8px;\" onclick=\"resetDemo()\">重置</button>
+      <div style="margin-top: 20px;">
+        <button class="demo-btn" onclick="runDemo()">运行演示</button>
+        <button class="demo-btn" style="background: var(--bg-elevated); margin-left: 8px;" onclick="resetDemo()">重置</button>
       </div>
     </div>
     
-    <div class=\"diagram-container\" style=\"margin-top: 24px;\">
-      <svg id=\"treeSvg\" viewBox=\"0 0 700 280\" xmlns=\"http://www.w3.org/2000/svg\" style=\"max-width:700px;\">
+    <div class="diagram-container" style="margin-top: 24px;">
+      <svg id="treeSvg" viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;">
         <!-- Tree will be drawn here by JavaScript -->
       </svg>
     </div>
-    <p class=\"diagram-caption\" id=\"treeCaption\">调整参数并点击"运行演示"查看树结构变化</p>
+    <p class="diagram-caption" id="treeCaption">调整参数并点击"运行演示"查看树结构变化</p>
   </section>
 
   <!-- Notes -->
-  <section class=\"section\">
-    <div class=\"section-label\">学习心得</div>
-    <div class=\"section-title\">关键洞察</div>
-    <div class=\"notes-card\">
+  <section class="section">
+    <div class="section-label">学习心得</div>
+    <div class="section-title">关键洞察</div>
+    <div class="notes-card">
       <h4>学到的知识</h4>
       <ul>
         <li>XGBoost 使用<strong>二阶泰勒展开</strong>比传统 GBDT 的仅一阶更精确，能更快收敛</li>
@@ -441,10 +441,10 @@
     </div>
   </section>
 
-  <div class=\"nav-footer\">
-    <a href=\"../03_deep_learning_revival/06_dropout/index.html\" class=\"nav-footer-prev\"><span class=\"nav-footer-label\">← 上一个</span><span class=\"nav-footer-title\">Dropout</span></a>
-    <span class=\"nav-footer-center\"><a href=\"../index.html\">ML History</a> · 28 models</span>
-    <a href=\"../04_deep_learning_boom/03_lightgbm/index.html\" class=\"nav-footer-next\" style=\"text-align:right;\"><span class=\"nav-footer-label\">下一个 →</span><span class=\"nav-footer-title\">LightGBM</span></a>
+  <div class="nav-footer">
+    <a href="../03_deep_learning_revival/06_dropout/index.html" class="nav-footer-prev"><span class="nav-footer-label">← 上一个</span><span class="nav-footer-title">Dropout</span></a>
+    <span class="nav-footer-center"><a href="../index.html">ML History</a> · 28 models</span>
+    <a href="../04_deep_learning_boom/03_lightgbm/index.html" class="nav-footer-next" style="text-align:right;"><span class="nav-footer-label">下一个 →</span><span class="nav-footer-title">LightGBM</span></a>
   </div>
 
 </main>
